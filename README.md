@@ -85,3 +85,56 @@ Lower Bound: 192.168.56.1
 Upper Bound: 192.168.56.199
 ```
 - I attached both VMs 02 and 03 to this host-only network
+
+*[Date: 2026-01-07]*
+
+**Configuring Netowork for Ubuntu-Server-02 and Ubuntu-Server-03:**
+
+I manually created a new YAML file in `/etc/netplan/` on both servers to initialize the network interfaces.
+
+Netplan YAML file:
+```
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    enp0s8:
+      dhcp4: true
+    enp0s9:
+      dhcp4: true
+```
+* `network:`: *This is the root node of the configuration; everything following it belongs to the network stack.*
+* `version: 2`: *This specifies the Netplan YAML format version; version 2 is the standard for modern Ubuntu releases.*
+* `renderer: networkd:` *This tells Ubuntu to use systemd-networkd as the backend engine to manage the interfaces. This is preferred for servers because it is lightweight and doesn't require a GUI.*
+* `ethernets:`: *This section begins the definition of the physical or virtual network interfaces.*
+* `enp0s8:`: *This is the name of my first virtual network card, which maps directly to Adapter 1 (NAT) in the VirtualBox settings.*
+* `enp0s9:`: *This is the name of my second virtual network card, mapping to Adapter 2 (Host-only Network) connected to the vboxnet0 virtual switch.*
+* `dhcp4:`: *true: This tells the server to automatically request an IPv4 address from a DHCP server. For enp0s8, this provides internet access (10.0.2.x), and for enp0s9, it provides the private lab connection (192.168.56.x).*
+
+I used `sudo netplan apply` in order to apply the configurations.
+I then used `ip a` in order to confirm that the interfaces are up and have assigned addresses.
+
+*Ubuntu-Server-03:*
+```
+lo: inet 127.0.0.1/8
+enp0s8: inet 10.0.2.15/25 (this is for NAT)
+enp0s9: inet 192.168.56.3/24 (this is for private connections)
+```
+
+*Ubuntu-Server-02:*
+```
+lo: inet 127.0.0.1/8
+enp0s8: inet 10.0.2.15/24 (this is for NAT)
+enp0s9: inet 192.168.56.3/24 (this is for private connections)
+```
+
+I used `ping` command on my MacOS terminal to send some packets to the servers to confirm that everythinf is working correctly.
+```
+--- 192.168.56.2 ping statistics ---
+10 packets transmitted, 10 packets received, 0.0% packet loss
+round-trip min/avg/max/stddev = 0.409/0.769/2.094/0.507 ms
+
+--- 192.168.56.3 ping statistics ---
+8 packets transmitted, 8 packets received, 0.0% packet loss
+round-trip min/avg/max/stddev = 0.359/0.501/0.854/0.142 ms
+```

@@ -1,9 +1,9 @@
 *[Date: 2026-01-03]*
-# My homelabbing project
+# Experimental setup - VM on top of OS
 
 To get started with my homelab, I plan to set up a two-node environment: one virtual node and one physical node using an old laptop.
 
-This phase is purely experimental and I don't plan on maintaining this setup longterm. I just want to test out different services.
+This phase is purely experimental and I don't plan on maintaining this setup longterm.
 
 I will be using VirtualBox for virtualization on Macbook and a dual boot installation on the ASUS laptop since I want to keep the old Windows that is already installed on it.
 
@@ -31,7 +31,7 @@ ASUS old laptop specs:
 
 ## 💻 Node 01: Virtual (Macbook)
 - Host: MacBook Pro / VirtualBox
-- Role: Ephemeral services & testing
+- Role: Experimenting & testing
 - Networking: Host-Only + NAT
 - Observations:
     - since I can't keep this node on permanently, which would result to slow performance on my macbook (which is my base machine), this node is used only for experimental purposes only
@@ -137,4 +137,65 @@ round-trip min/avg/max/stddev = 0.409/0.769/2.094/0.507 ms
 --- 192.168.56.3 ping statistics ---
 8 packets transmitted, 8 packets received, 0.0% packet loss
 round-trip min/avg/max/stddev = 0.359/0.501/0.854/0.142 ms
+```
+
+*[Date: 2026-02-20]*
+## 💻 Node 02: ASUS laptop
+**Installing Debian 13 on ASUS laptop**
+- Downloaded Debian 13 ISO file
+- Created Debian 13 bootable USB medium
+
+*[Date: 2026-02-21]*
+- Installing Debian 13
+- Chose LVM instead of standard partitioning for more flexible resizing; split SSD/HDD using LVM to maximize OS performance and data access
+[How LVM works](https://www.youtube.com/watch?v=dMHFArkANP8)
+Physical disks:
+- SSD (240.1 GB): Kingston SA400S3 (sdb) for the system
+- HDD (750.2 GB): ST750LM022 HN-M7 (sda) for storage
+Boot partition: 510.7 MB EFI System Partition (ESP) on the SSD (booting from SSD ensures fast access to system files)
+LVM Configuration:
+- `vg_system` (SSD) contains `lv_root` (50 GB at `/` for OS) and `lv_swap` (4GB for swap memory)
+- `vg_data` (HDD): contains `lv_storage` (750.2GB at `/srv` where data used by server services is stored)
+<br>
+- Turining the laptop into a headless server so it doesn't go on sleep when the lid is closed: had to modify power consumption settings in the laptop BIOS and also ran the following command to basically take the unit file for these services and replace them with a symbolic link to `/dev/null` (the OS won't even know how to respond to sleep, suspend or hibernate since they are "set to null"):
+```
+sudo systemctl mask sleep.target suspend.target hibernate.target
+```
+- Used `ip a` to find IP address
+- Successful ping from personal Macbook to Debian server
+```
+-> % ping 192.168.1.197   
+
+PING 192.168.1.197 (192.168.1.197): 56 data bytes
+64 bytes from 192.168.1.197: icmp_seq=0 ttl=64 time=6.531 ms
+64 bytes from 192.168.1.197: icmp_seq=1 ttl=64 time=37.524 ms
+64 bytes from 192.168.1.197: icmp_seq=2 ttl=64 time=80.208 ms
+^C
+--- 192.168.1.197 ping statistics ---
+3 packets transmitted, 3 packets received, 0.0% packet loss
+round-trip min/avg/max/stddev = 6.531/41.421/80.208/30.204 ms
+```
+
+[How Secure Shell Works](https://www.youtube.com/watch?v=ORcvSkgdA58)
+- Set up SSH: `ssh luca@192.168.1.197`
+- Creating a secure key pair:
+```
+ssh-keygen
+ssh-copy-id luca@192.168.1.197
+```
+
+*[Date: 2026-02-22]*
+**Setting up the [Firewall](https://www.youtube.com/watch?v=kDEX1HXybrU)**
+- Installed UFW
+- Allowing SSH connections through the firewall (opened port 22) `sudo ufw allow ssh`
+- Turning firewall on `sudo ufw enable`
+- Current firewall status:
+```
+root@debian-eos:/home/luca# sudo ufw status
+Status: active
+
+To                         Action      From
+--                         ------      ----
+22/tcp                     ALLOW       Anywhere                  
+22/tcp (v6)                ALLOW       Anywhere (v6)  
 ```

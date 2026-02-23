@@ -109,3 +109,47 @@ To                         Action      From
 22/tcp                     ALLOW       Anywhere                  
 22/tcp (v6)                ALLOW       Anywhere (v6)
 ```
+
+**Date: 2026-02-23**
+### Setting up static IP address
+- Instead of using `arp -a` on my laptop everytime to find the server, I decided to assign a static IP address to the server by modifying the IP of the network interface in the Debian network configuration in `/etc/network/interfaces`; before, DHCP was used which would assign a different IP every time
+
+### Installing Docker
+- Installed Docker using the guide on their website nad ran hello-world image `sudo docker run hello-world`
+- After running `sudo systemctl status docker`
+```bash
+● docker.service - Docker Application Container Engine
+     Loaded: loaded (/usr/lib/systemd/system/docker.service; enabled; preset: enabled)
+     Active: active (running) since Mon 2026-02-23 15:11:28 EET; 13s ago
+ Invocation: 9cdb1111ddc741adbb396528e91cc1b9
+TriggeredBy: ● docker.socket
+       Docs: https://docs.docker.com
+   Main PID: 1580 (dockerd)
+      Tasks: 10
+     Memory: 28.4M (peak: 30.2M)
+        CPU: 546ms
+     CGroup: /system.slice/docker.service
+             └─1580 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+
+Feb 23 15:11:27 debian-eos dockerd[1580]: time="2026-02-23T15:11:27.727268945+02:00" level=info msg="Restoring containe>
+Feb 23 15:11:27 debian-eos dockerd[1580]: time="2026-02-23T15:11:27.783249780+02:00" level=info msg="Deleting nftables >
+Feb 23 15:11:27 debian-eos dockerd[1580]: time="2026-02-23T15:11:27.807163428+02:00" level=info msg="Deleting nftables >
+Feb 23 15:11:28 debian-eos dockerd[1580]: time="2026-02-23T15:11:28.368189301+02:00" level=info msg="Loading containers>
+Feb 23 15:11:28 debian-eos dockerd[1580]: time="2026-02-23T15:11:28.380663396+02:00" level=info msg="Docker daemon" com>
+Feb 23 15:11:28 debian-eos dockerd[1580]: time="2026-02-23T15:11:28.380824638+02:00" level=info msg="Initializing build>
+Feb 23 15:11:28 debian-eos dockerd[1580]: time="2026-02-23T15:11:28.400544066+02:00" level=info msg="Completed buildkit>
+Feb 23 15:11:28 debian-eos dockerd[1580]: time="2026-02-23T15:11:28.407096319+02:00" level=info msg="Daemon has complet>
+Feb 23 15:11:28 debian-eos dockerd[1580]: time="2026-02-23T15:11:28.407231071+02:00" level=info msg="API listen on /run>
+Feb 23 15:11:28 debian-eos systemd[1]: Started docker.service - Docker Application Container Engine.
+```
+- Found on [Reddit](https://www.reddit.com/r/selfhosted/comments/15f7ju5/docker_and_ufw_firewall/) that Docker bypasses UFW by default; it modifies iptables directly, no matter what rule is set through UFW
+- Installed ad configured `ufw-docker` to intercept Docker's traffic and force it to respect UFW rules (https://github.com/chaifeng/ufw-docker)
+- For future use:
+```bash
+# Allow a container port:
+sudo ufw-docker allow [container_name] [port]
+# Allow from specific IP:
+sudo ufw-docker allow [container_name] [port]/tcp [IP_address]
+# Check firewall status:
+sudo ufw-docker status
+```

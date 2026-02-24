@@ -153,3 +153,19 @@ sudo ufw-docker allow [container_name] [port]/tcp [IP_address]
 # Check firewall status:
 sudo ufw-docker status
 ```
+
+**Date: 2026-02-24**
+### Installing Tailscale
+- Found this solution to be able to access my server remotely, outside of my local network
+https://www.youtube.com/watch?v=unzPvCe9Y8Q
+- In the future I'll buy a router to create my own VPN so this is just a temporary solution
+
+### Getting started with docker
+- Created a Dockerfile to build an example image from Docker website
+- Started the container and saw the running app
+- Learned how to update and rebuild an image, as well as stop and remove a container
+- Learned how to push images
+- Learned how to persist data using volume mounts and bind mounts
+- Learned a little bit about container networking and service discovery using DNS
+- Learned to use Docker Compose
+- Learned about Docker Compose

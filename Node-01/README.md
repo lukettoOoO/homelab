@@ -385,4 +385,20 @@ https://hub.docker.com/r/jc21/nginx-proxy-manager
 - Bought a public domain: olympus-luca.online
 - Set it up on Cloudflare with DNS records and changed the current nameservers with Cloudflare nameservers on the domain proivder website
 - Generated Cloudflare API token
+- Now the domain is being managed completely on Cloudflare
+- Creating Let's Encrypt certificte on NPM to remove "Not secure" warning
+- Rather than opening my home router ports to the public internet, I opted for a high-security configuration that points my public domain (olympus-luca.online) directly to my local server IP (192.168.1.200)
+- In Cloudflare, I configured a CNAME wildcard (*) record, ensuring that any subdomain I create—such as nc. for Nextcloud or dash. for my dashboard—automatically routes to my Debian server without needing individual DNS entries for every new service
+- To obtain a valid SSL certificate without public port exposure, I utilized the DNS-01 Challenge; by providing NPM with my Cloudflare API token, it successfully "shook hands" with Cloudflare to prove domain ownership behind the scenes, granting me a professional Wildcard SSL Certificate (*.olympus-luca.online)
+- Configured AIO Nextcloud and main Nextcloud domain using NPM along with other domains for my homelab (Netdata and dashboard)
+```
+Proxy Host Configurations:
+1. nc.olympus-luca.online -> http://192.168.1.200:11000 (Main Nextcloud Instance)
+2. nc-aio.olympus-luca.online -> https://192.168.1.200:8080 (AIO Mastercontainer Setup)
+3. nd.olympus-luca.online -> http://192.168.1.200:19999 (Netdata Console)
+4. olympus-luca.online -> http://192.168.1.200:8000 (Root Domain / Main Site)
+```
+- Nextcloud is now up and running
+- Set up admin account with email and password
+
 

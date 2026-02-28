@@ -169,3 +169,220 @@ https://www.youtube.com/watch?v=unzPvCe9Y8Q
 - Learned a little bit about container networking and service discovery using DNS
 - Learned to use Docker Compose
 - Learned about Docker Compose
+
+**Date: 2026-02-28**
+
+### Relocating Docker volumes, security imptovements and setting up Netdata
+- Docker creates all its volumes on the SSD (50GB) but I want it to use the HDD (750GB) as storage
+```bash
+docker ps
+sudo docker ps
+sudo docker stop 932c8f8d3020
+sudo docker stop 8cdcb8b40304
+docker ps
+sudo docker ps
+sudo systemctl stop docker
+sudo systemctl stop docker.socket
+cd srv
+ls
+cd docker/
+sudo mkdir docker-data
+sudo rsync -aP /var/lib/docker /srv/docker-data/
+sudo apt update
+sudo apt install rsync
+rsync --version
+sudo rsync -aP /var/lib/docker /srv/docker-data/
+sudo nano /etc/docker/daemon.json
+```
+- Inside this `.json` file
+````json
+{
+  "data-root": "/srv/docker-data"
+}
+````
+```bash
+sudo systemctl start docker
+sudo docker info | grep "Docker Root Dir"
+sudo rm -rf /var/lib/docker
+```
+
+**Installing automatic security updates**
+- This will automatically install security upgrades for all installed apt packages once a day
+```bash
+apt install unattended-upgrades
+dpkg-reconfigure unattended-upgrades
+```
+
+**Checking open ports with running programs**
+- Find the services using netstat
+```bash
+netstat -tulpen
+```
+- Stop and disable unwanted services
+```bash
+systemctl stop [SERVICENAME]
+systemctl disable [SERVICENAME]
+```
+- Solutions found at: https://www.linux.org/threads/the-ultimate-guide-to-reasonable-security-for-your-debian-ubuntu-linux-server-for-new-linux-admins.49199/
+
+**Installing Netdata**
+https://github.com/netdata/netdata
+- Locally stored server metrics
+- Free and open-source
+- Uses machine learning to detect anomalies
+- I will intaall Netdata directly on my system and not run a Docker container for it since I want it to fully access the metrics of my system and not the virtual environment where it runs in Docker
+```bash
+wget -O /tmp/netdata-kickstart.sh https://get.netdata.cloud/kickstart.sh && sh /tmp/netdata-kickstart.sh --nightly-channel
+systemctl status netdata
+sudo systemctl start netdata
+sudo systemctl enable netdata
+sudo ufw allow 19999/tcp
+sudo ufw status
+```
+### Installing Nextcloud
+- I want a service that helps with system backups but also to help me store my own files in a local cloud storage
+- The scope is to be also used by my family
+- I will use Nextcloud AIO
+- `.yml` file for docker compose
+```yml
+name: nextcloud-aio
+services:
+  nextcloud-aio-mastercontainer:
+    image: ghcr.io/nextcloud-releases/all-in-one:latest
+    init: true # This setting makes sure that signals from main process inside the container are correctly forwarded to children. See https://docs.docker.com/reference/compose-file/services/#init
+    restart: always
+    container_name: nextcloud-aio-mastercontainer
+    volumes:
+      - nextcloud_aio_mastercontainer:/mnt/docker-aio-config
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    network_mode: bridge
+    # networks: ["nextcloud-aio"]
+    ports:
+      - 80:80
+      - 8080:8080
+      - 8443:8443
+    environment:
+      NEXTCLOUD_DATADIR: /srv/docker/nextcloud-aio/data # Allows to set the host directory for Nextcloud's datadir. ⚠️⚠️⚠️ Warning: do not set or adjust this value after the initial Nextcloud installation is done! See https://github.com/nextcloud/all-in-one#how-to-change-the-default-location-of-nextclouds-datadir
+      APACHE_PORT: 11000
+
+volumes:
+  nextcloud_aio_mastercontainer:
+    name: nextcloud_aio_mastercontainer # This line is not allowed to be changed as otherwise the built-in backup solution will not work
+```
+- In the future I will be using a custom domain, that's why I've set `APACHE_PORT: 11000`
+- I set up the following directory structure:
+```
+ nextcloud
+    ├── docker-compose.yml
+    └── ncdata
+```
+- Using `ncdata` for host directory where all files uploaded to NextCloud will be stored
+- Running `docker-compose up -d` to start everything up
+
+### Setting up NGINX
+https://www.youtube.com/watch?v=9t9Mp0BGnyI&t=791s
+- For starters, I want to host a simple html that displays "Hello world!"
+- Creating directory structure:
+```bash
+sudo mkdir -p /srv/docker/nginx-tutorial/mysite
+cd /srv/docker/nginx-tutorial
+sudo touch nginx.conf docker-compose.yml
+```
+- Setting up `docker-compose.yml` file to map port 8000 and mount the local files into the container
+```YAML
+name: nginx-tutorial
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx-tutorial
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./mysite:/usr/share/nginx/html
+```
+
+- Added a basic configuration to `nginx.conf`
+```Nginx
+events {}
+
+http {
+    include       mime.types;
+
+    server {
+        listen       8000;
+        server_name  localhost;
+
+        location / {
+            root   /usr/share/nginx/html;
+            index  index.html index.htm;
+        }
+    }
+}
+```
+- Created a test `index.html` inside the `mysite` folder:
+```HTML
+<h1>Hello World!</h1>
+```
+- Started the container and successfully accessed the test page from my personal Macbook browser by navigating to `http://192.168.1.197:8000`
+
+**Setting up a simple homelab dasboard page with NGINX**
+- Decided to create a global homelab dashboard to act as a hub for this node and future nodes that will be added
+- For now, its main purpose is to access the main services provided by the servers
+- In the future, for easier access, I plan on using PiHole to create a custom domain name for this website
+- Directory structure:
+```bash
+dashboard
+├── docker-compose.yml
+├── html
+│   └── index.html
+└── nginx.conf
+
+2 directories, 3 files
+```
+- `docker-compose.yml`:
+```yml
+name: olympus-dashboard
+services:
+  web:
+    image: nginx:latest
+    container_name: homelab-dashboard
+    restart: always
+    ports:
+      - "8000:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./html:/usr/share/nginx/html:ro
+```
+- `nginx.conf`:
+```Nginx
+http {
+
+    include mime.types;
+
+    server {
+        listen 80;
+        root /usr/share/nginx/html;
+    }
+}
+
+events {}
+```
+- Built a simple HTML page (`html/index.html`) with direct links to the services running on Eos (Netdata on port 19999, Nextcloud on port 8080, this website on port 8000)
+- The port was blocked by default so I had to explicitly allow the container's traffic:
+```bash
+sudo ufw-docker allow homelab-dashboard 80
+```
+
+
+**Setting up NGINX for Nextcloud**
+- To serve Nextcloud under a custom domain
+- Nextcloud AIO's Apache server is tucked away on a port; users shouldn't have to type that port at the end of my URL, so NGINX listens on the standard port `443` (HTTPS) and silently passes that traffic to Nextcloud in the background
+- By default, web servers block large uploads (often at 1MB); by using NGINX I will be able to send a 10GB file through the server, for example
+- NGINX can help with using clean domain names (ex. `cloud.example.com`) to reach multiple services using only one open firewall port (`443`)
+- I will set up NGINX proxy manager GUI as a new Docker continer
+https://hub.docker.com/r/jc21/nginx-proxy-manager
+- Bought a public domain: olympus-luca.online
+- Set it up on Cloudflare with DNS records and changed the current nameservers with Cloudflare nameservers on the domain proivder website
+- Generated Cloudflare API token
+

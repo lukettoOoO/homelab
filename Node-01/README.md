@@ -249,31 +249,28 @@ name: nextcloud-aio
 services:
   nextcloud-aio-mastercontainer:
     image: ghcr.io/nextcloud-releases/all-in-one:latest
-    init: true # This setting makes sure that signals from main process inside the container are correctly forwarded to children. See https://docs.docker.com/reference/compose-file/services/#init
+    init: true
     restart: always
     container_name: nextcloud-aio-mastercontainer
     volumes:
       - nextcloud_aio_mastercontainer:/mnt/docker-aio-config
       - /var/run/docker.sock:/var/run/docker.sock:ro
     network_mode: bridge
-    # networks: ["nextcloud-aio"]
     ports:
-      - 80:80
       - 8080:8080
-      - 8443:8443
     environment:
-      NEXTCLOUD_DATADIR: /srv/docker/nextcloud-aio/data # Allows to set the host directory for Nextcloud's datadir. ⚠️⚠️⚠️ Warning: do not set or adjust this value after the initial Nextcloud installation is done! See https://github.com/nextcloud/all-in-one#how-to-change-the-default-location-of-nextclouds-datadir
+      NEXTCLOUD_DATADIR: /srv/docker/nextcloud/ncdata
       APACHE_PORT: 11000
 
 volumes:
   nextcloud_aio_mastercontainer:
-    name: nextcloud_aio_mastercontainer # This line is not allowed to be changed as otherwise the built-in backup solution will not work
+    name: nextcloud_aio_mastercontainer
 ```
 - In the future I will be using a custom domain, that's why I've set `APACHE_PORT: 11000`
 - I set up the following directory structure:
 ```
  nextcloud
-    ├── docker-compose.yml
+    ├── compose.yml
     └── ncdata
 ```
 - Using `ncdata` for host directory where all files uploaded to NextCloud will be stored
@@ -401,4 +398,5 @@ Proxy Host Configurations:
 - Nextcloud is now up and running
 - Set up admin account with email and password
 
-
+**Date: 2026-03-01**
+- Configured Nextcloud group for family and made user accounts for my parents and set upload limits

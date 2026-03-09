@@ -401,6 +401,6 @@ Proxy Host Configurations:
 **Date: 2026-03-01**
 - Configured Nextcloud group for family and made user accounts for my parents and set upload limits
 
-**DateȘ 2026-03-05**
+**Date: 2026-03-05**
  - Configured VS Code Remote - SSH to develop directly on the Debian server from my MacBook
  

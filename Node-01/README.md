@@ -404,3 +404,12 @@ Proxy Host Configurations:
 **Date: 2026-03-05**
  - Configured VS Code Remote - SSH to develop directly on the Debian server from my MacBook
  
+ **Date: 2026-03-12**
+ - Successfully test system reboot
+ - Doing a security check-up:
+ 1. Checking for open ports using `sudo ss -tulpen`
+ 2. Verifying Firewall and Docker rules using
+ ```
+sudo ufw status verbose
+sudo ufw-docker status
+ ```

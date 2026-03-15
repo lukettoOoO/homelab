@@ -1,4 +1,4 @@
-### Ethernet LAN Switching
+### Ethernet LAN Switching (Part 1)
 
 #### Local Area Networks:
 - Network contained in a small area

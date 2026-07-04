@@ -413,3 +413,65 @@ Proxy Host Configurations:
 sudo ufw status verbose
 sudo ufw-docker status
  ```
+
+**Date: 2026-07-04**
+
+I will upgrade this server node with a new thrifted hard drive which contains `465.8G`, for bigger cloud storage for Nextcloud.
+
+- I'm starting by running the `lsblk` command to identify the new hard drive along with my other volumes:
+```bash
+luca@debian-eos:~$ lsblk
+NAME                   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+sda                      8:0    0 223.6G  0 disk 
+├─sda1                   8:1    0   487M  0 part /boot/efi
+└─sda2                   8:2    0 223.1G  0 part 
+  ├─vg_system-lv_root  254:0    0  46.6G  0 lvm  /
+  └─vg_system-lv_swap  254:1    0   3.7G  0 lvm  [SWAP]
+sdb                      8:16   0 698.6G  0 disk 
+└─sdb1                   8:17   0 698.6G  0 part 
+  └─vg_data-lv_storage 254:2    0 698.6G  0 lvm  /srv
+sdc                      8:32   0 465.8G  0 disk 
+├─sdc1                   8:33   0   100M  0 part 
+├─sdc2                   8:34   0  98.3G  0 part 
+├─sdc3                   8:35   0  25.1G  0 part 
+├─sdc4                   8:36   0     1K  0 part 
+└─sdc5                   8:37   0 342.3G  0 part /mnt/temp_check
+```
+- Wiping the whole metadata of the hard drive:
+```bash
+# luca @ debian-eos in /dev [20:22:36] 
+$ sudo wipefs -a /dev/sdc
+/dev/sdc: 2 bytes were erased at offset 0x000001fe (dos): 55 aa
+/dev/sdc: calling ioctl to re-read partition table: Success
+```
+- Reconfiguring LVM for storage extension with the `sdc` hard drive:
+```bash
+# luca @ debian-eos in /dev [20:22:51] 
+$ sudo pvcreate /dev/sdc
+  WARNING: Ignoring queue/optimal_io_size = 33553920 for device /dev/sdc (not divisible by 4KiB).
+  Physical volume "/dev/sdc" successfully created.
+```
+- Extending the `vg_data` volume group, taking the new 465 GB and adding adding them to the 750 GB group:
+```bash
+sudo vgextend vg_data /dev/sdc
+```
+- Extending the `lv_storage` virtual container, occupying the whole free space `+100%FREE` which was just added to the volume group; this is the phisically mounted volume in `/srv`:
+```bash
+$ sudo lvextend -l +100%FREE /dev/vg_data/lv_storage
+  Size of logical volume vg_data/lv_storage changed from 698.63 GiB (178850 extents) to <1.14 TiB (298084 extents).
+  Logical volume vg_data/lv_storage successfully resized.
+```
+- Now that the LVM has been extended, I will extend the filesystem (ext4) to use the new allocated space:
+```bash
+$ sudo resize2fs /dev/vg_data/lv_storage
+resize2fs 1.47.2 (1-Jan-2025)
+Filesystem at /dev/vg_data/lv_storage is mounted on /srv; on-line resizing required
+old_desc_blocks = 88, new_desc_blocks = 146
+The filesystem on /dev/vg_data/lv_storage is now 305238016 (4k) blocks long.
+```
+- The storage has been successfully added:
+```bash
+$ df -h /srv
+Filesystem                      Size  Used Avail Use% Mounted on
+/dev/mapper/vg_data-lv_storage  1.2T  4.5G  1.1T   1% /srv
+```

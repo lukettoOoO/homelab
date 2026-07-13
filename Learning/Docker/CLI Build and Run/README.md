@@ -19,6 +19,17 @@ sudo docker run -d -p 8080:80 web-app:v1
 `-d` (detached mode) - runs the container in the background (asynchronously) and frees the host terminal; without `-d` the logs of the app will block the current terminal and closing of the terminal will stop the container
 `-p 8080:80` (port publishing/forwarding) - opens up the container's network to the exterior (`host_port:container_port`); in this case, any traffic that is sent to port `8080` of the host will be automatically redirected to port `80` inside the isolated container
 `web-app:v1` - the built image that will be instantiated
+`--name` - set the name of the container
+
+## `docker pull`
+- Pulls the image from the repository to local environment
+
+## `docker images`
+- Displays all the images that exist locally
+
+## `docker start`
+- Can be used after `docker stop` to start the container again
+
 
 ## Resource management
 - Docker uses two fundamental linux kernel mechanisms: namespaces (which isolate what a process can access/see) and Cgroups/Control groups (which limit and isolate what a process can consume)

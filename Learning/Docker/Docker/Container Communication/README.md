@@ -1,4 +1,4 @@
-# Docker Communication
+# Container Communication
 
 ## The Default Bridge
 

@@ -1,0 +1,20 @@
+#sudo docker run -d \
+#  --name db-homelab \
+#  -p 5432:5432 \
+#  -e POSTGRES_USER=luca \
+#  -e POSTGRES_PASSWORD=supersecurepass \
+#  -e POSTGRES_DB=homelab_db \
+#  --restart always \
+#  postgres:16-alpine
+
+services:
+  db-homelab:
+    image: postgres:16-alpine
+    container_name: db-homelab
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: luca
+      POSTGRES_PASSWORD: supersecurepass
+      POSTGRES_DB: homelab_db
+    restart: always

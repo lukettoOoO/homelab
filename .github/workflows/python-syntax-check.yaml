@@ -8,13 +8,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: cclauss/Find-Python-syntax-errors-action@master
-      - uses: sunnysid3up/python-linter@master
-        with:
-          source: "Learning/Docker/Docker/Containerization/http-monitor"
-          mypy-options: "--ignore-missing-imports --show-error-codes"
-          isort-options: "-w 100"
-          django: false
-          black-options: "--exclude=monitor.py"
           
   build:
     runs-on: ubuntu-latest

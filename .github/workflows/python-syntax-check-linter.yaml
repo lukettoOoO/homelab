@@ -20,6 +20,6 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - run: cd Learning/Docker/Docker/Containerization/http-monitor
-      - run: docker build .
+      - run: docker build dockerfile
       
     

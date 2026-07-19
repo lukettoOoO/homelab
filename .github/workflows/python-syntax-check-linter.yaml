@@ -1,0 +1,24 @@
+name: python-syntax-check-linter
+
+on: [push]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: cclauss/Find-Python-syntax-errors-action@master
+      - uses: sunnysid3up/python-linter@master
+        with:
+          source: "src"
+          mypy-options: "--ignore-missing-imports --show-error-codes"
+          pylint-options: "--rcfile=setup.cfg"
+          isort-options: "-w 100"
+          django: true
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: cd Learning/Docker/Docker/Containerization/http-monitor
+      - run: docker build .
+      
+    

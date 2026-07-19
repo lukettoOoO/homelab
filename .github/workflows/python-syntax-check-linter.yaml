@@ -6,20 +6,20 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
       - uses: cclauss/Find-Python-syntax-errors-action@master
       - uses: sunnysid3up/python-linter@master
         with:
-          source: "src"
+          source: "Learning/Docker/Docker/Containerization/http-monitor"
           mypy-options: "--ignore-missing-imports --show-error-codes"
-          pylint-options: "--rcfile=setup.cfg"
           isort-options: "-w 100"
-          django: true
+          django: false
+          
   build:
     runs-on: ubuntu-latest
+    needs: lint
     steps:
-      - uses: actions/checkout@v6
-      - run: cd Learning/Docker/Docker/Containerization/http-monitor
-      - run: docker build dockerfile
+      - uses: actions/checkout@v4
+      - run: docker build -t monitor-app:latest -f Learning/Docker/Docker/Containerization/http-monitor/dockerfile Learning/Docker/Docker/Containerization/http-monitor
       
     

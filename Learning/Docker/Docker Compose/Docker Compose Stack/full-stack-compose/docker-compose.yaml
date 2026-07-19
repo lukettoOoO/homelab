@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: homelab-db
+    environment:
+      POSTGRES_USER: luca
+      POSTGRES_PASSWORD: supersecurepass
+      POSTGRES_DB: cloud_db
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - back-tier
+    restart: always
+
+  web-app:
+    image: python:3-slim
+    container_name: homelab-app
+    command: python -m http.server 5000
+    environment:
+      DATABASE_URL: postgres://luca:supersecurepass@db:5432/cloud_db
+      PYTHONUNBUFFERED: 1
+    depends_on:
+      - db
+    networks:
+      - front-tier
+      - back-tier
+    restart: always
+
+  proxy:
+    image: nginx:alpine
+    container_name: homelab-proxy
+    ports:
+      - "8095:80"
+    networks:
+      - front-tier
+    restart: always
+
+volumes:
+  db-data:
+
+networks:
+  front-tier:
+    driver: bridge
+  back-tier:
+    driver: bridge

@@ -80,3 +80,16 @@ kubectl apply -f https://k8s.io/examples/pods/simple-pod.yaml
     - *Pods most frequently wrap a single container, but they can encapsulate multiple containers that need to collaborate closely and share resources (like a web server and a file-syncing container).*
     - *Init Containers: These specialized containers run sequentially and must complete their execution before the main application containers are allowed to start.*
     - *Sidecar Containers: Native support allows init containers configured with a restartPolicy: Always to act as long-running sidecars, which start up before the main application and remain active for the entire lifetime of the Pod to provide auxiliary services (e.g., service meshes or logging).*
+
+| Category / Element | Syntax / Field / Command | Description / Role |
+| :--- | :--- | :--- |
+| **Creation Command** | `kubectl apply -f <file-path-or-url>` | Creates or updates a Pod (or resource) from a manifest file. |
+| **Simple Pod Manifest** | `apiVersion: v1`<br>`kind: Pod`<br>`metadata:`<br>`  name: nginx`<br>`spec:`<br>`  containers:`<br>`  - name: nginx`<br>`    image: nginx:1.14.2`<br>`    ports:`<br>`    - containerPort: 80` | The basic structure to define a Pod running a single container (Nginx on port 80). |
+| **Pod OS Constraint** | `spec.os.name` | Specifies the operating system required by the containers (`windows` or `linux`). |
+| **Coordinated Scheduling** | `spec.schedulingGroup` | *(Alpha in v1.35)* Links a Pod to a `PodGroup` to enable simultaneous, group-level scheduling decisions. |
+| **Pod Security Context** | `spec:`<br>`  securityContext:`<br>`    runAsUser: 1000`<br>`    runAsGroup: 3000`<br>`    fsGroup: 2000` | Defines basic security constraints at the Pod level (User ID, Group ID, and filesystem group). |
+| **Sidecar Containers** | `restartPolicy: Always` (inside `initContainers`) | *(Stable in v1.33)* Keeps an init container running for the entire lifetime of the Pod, treating it as a sidecar. |
+| **Mutable Fields** | `image`, `activeDeadlineSeconds`, `terminationGracePeriodSeconds`, `tolerations` | The only fields in `spec` that can be updated in-place via `patch` or `replace` on a running Pod. |
+| **Subresource Updates** | `resize`, `ephemeralContainers`, `status`, `binding` | Special API targets used to update specific Pod fields that bypass regular update restrictions. |
+| **Generation Tracking** | `metadata.generation`, `status.observedGeneration` | Fields used to track and sync the desired state configuration version with the Kubelet's actual state. |
+

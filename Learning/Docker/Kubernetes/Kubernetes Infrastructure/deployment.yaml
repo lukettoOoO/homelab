@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: monitor-deployment
+  labels:
+    app: http-monitor
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: http-monitor
+  template:
+    metadata:
+      labels:
+        app: http-monitor
+    spec:
+      containers:
+      - name: network-monitor
+        image: python:3-slim
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            pip install -q requests
+            python -c '
+            import time, requests
+            while True:
+                try:
+                    r = requests.get("https://olympus-luca.online", timeout=5)
+                    print(f"K8s Check successful: HTTP {r.status_code}", flush=True)
+                except Exception as e:
+                    print(f"Alert! K8s failed: {e}", flush=True)
+                time.sleep(5)
+            '

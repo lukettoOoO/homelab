@@ -42,5 +42,36 @@ $ kubectl get nodes
 NAME       STATUS   ROLES           AGE   VERSION
 minikube   Ready    control-plane   47m   v1.35.1
 ```
+Minikube quick start: https://minikube.sigs.k8s.io/docs/start/?arch=%2Fmacos%2Fx86-64%2Fstable%2Fbinary+download#Service
 
-
+| Category | Command | Description |
+| :--- | :--- | :--- |
+| **Autocomplete & Global** | `source <(kubectl completion zsh)` | Sets up autocomplete in the current Zsh shell. |
+| | `kubectl -A` | Shorthand flag to run a command across all namespaces. |
+| **Context & Configuration** | `kubectl config get-contexts` | Displays a list of all available contexts. |
+| | `kubectl config current-context` | Displays the current active context. |
+| | `kubectl config use-context <name>` | Sets the default context to the specified cluster context. |
+| | `kubectl config set-context --current --namespace=<ns>` | Permanently saves a namespace for subsequent commands in the active context. |
+| **Creating & Applying** | `kubectl apply -f ./manifest.yaml` | Creates or updates resource(s) from a local YAML file. |
+| | `kubectl create deployment nginx --image=nginx` | Starts a single instance of an Nginx deployment. |
+| | `kubectl explain pods` | Retrieves interactive documentation for Pod manifest schemas. |
+| **Viewing Resources** | `kubectl get pods -o wide` | Lists all Pods in the current namespace with detailed info (like Node and IP). |
+| | `kubectl describe pods <pod-name>` | Shows verbose, detailed status and events of a specific Pod. |
+| | `kubectl get pods --field-selector=status.phase=Running` | Lists only the Pods that are currently in a running phase. |
+| | `kubectl get nodes -o custom-columns='NAME:.metadata.name,STATUS:.status.conditions[?(@.type=="Ready")].status'` | Lists nodes with their custom readiness status columns. |
+| **Updating & Rollouts** | `kubectl set image deployment/frontend www=image:v2` | Performs a rolling update to update the container image of a deployment. |
+| | `kubectl rollout history deployment/frontend` | Checks the revision deployment history. |
+| | `kubectl rollout undo deployment/frontend` | Rolls back the deployment to its previous revision. |
+| | `kubectl label pods <pod-name> new-label=value` | Adds a new label to a specific Pod. |
+| **Patching & Scaling** | `kubectl scale --replicas=3 deployment/mysql` | Scales the specified deployment's replica count to 3. |
+| | `kubectl patch node <node-name> -p '{"spec":{"unschedulable":true}}'` | Partially updates a node's specification to make it unschedulable. |
+| **Deleting Resources** | `kubectl delete pod <pod-name> --now` | Deletes a Pod immediately with no grace period. |
+| | `kubectl delete pods,services -l name=myLabel` | Deletes all Pods and Services matching a specific label. |
+| **Interacting with Pods** | `kubectl logs -f <pod-name>` | Streams the stdout logs of a running Pod. |
+| | `kubectl run -i --tty busybox --image=busybox -- sh` | Spawns and attaches to an interactive terminal shell inside a temporary Pod. |
+| | `kubectl exec -it <pod-name> -- /bin/sh` | Opens an interactive shell session inside an already running Pod container. |
+| | `kubectl port-forward <pod-name> 5000:6000` | Forwards local port 5000 to port 6000 on the specified target Pod. |
+| | `kubectl top pod` | Shows CPU and memory metrics for all Pods in the namespace. |
+| **Node Management** | `kubectl drain <node-name>` | Evicts and drains all workloads from a node safely for maintenance. |
+| | `kubectl uncordon <node-name>` | Marks a node back as schedulable. |
+| **API Exploration** | `kubectl api-resources` | Lists all supported API resource types along with their shortnames and groups. |

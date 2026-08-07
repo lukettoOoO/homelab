@@ -112,3 +112,26 @@ echo "nameserver 1.1.1.1" > /etc/resolv.conf
 - Since Proxmox uses high-performance virtualized disk controllers (VirtIO), the standard Windows Server installer does not include these drivers out of the box. By pointing to the `viostor/2k22/amd64` folder on the secondary ISO (`virtio-win.iso`), the operating system is instructed on how to communicate with the virtual hard disk created on the Mini PC's SSD.
 - The Windows Server 2022 is now installed and is accessible through the proxmox web interface console.
 
+**Date: 2026-08-07**
+### Windows Server 2022 Configuration
+`ipconfig` - command used to check network configuration on Windows; with `/all` option to show all network information.
+- Fixed missing network adapter in Windows Server VM (`ipconfig` showed no interfaces)
+- Installed the missing VirtIO network driver by right-clicking `netkvm.inf` in `D:\NetKVM\2k22\amd64\` and selecting Install
+- Verified network connectivity was restored
+- Setting IP address from right-clicking *This PC*, clicking *Properties*, *Ethernet settings*, *Network and Sharing Center*, *Ethernet*, *Properties*, *Internet Protocol Version 4 (TCP/IPv4)*, *Properties* and setting the IP address, subnet mask and defualt gateway.
+- The resulting network configuration can be visualised by running `ipconfig` in the command prompt:
+```text
+Connection-specific DNS Suffix  . : 
+IPv6 Address. . . . . . . . . . . : 2a02:2f08:8c0b:cf00:5981:7c5c:69a:9e5f
+Link-local IPv6 Address . . . . . : fe80::5981:7c5c:69a:9e5f%6
+IPv4 Address. . . . . . . . . . . : 192.168.1.210
+Subnet Mask . . . . . . . . . . . : 255.255.255.0
+Default Gateway . . . . . . . . . : fe80::5ea6:e6ff:fee6:3d94%6
+                                    192.168.1.1
+```
+#### Setting up Remote Desktop
+- Enabling RDP from *System Properties* -> *Remote* -> *Allow remote connections to this computer* -> *Uncheck "Allow connections only from computers running Remote Desktop with Network Level Authentication"* -> *OK*
+- Downloaded Windows App from App Store on my personal Mac to test RDP connection
+- Successful connection to RDP on IP `192.168.1.210`
+
+

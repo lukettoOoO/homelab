@@ -475,3 +475,35 @@ $ df -h /srv
 Filesystem                      Size  Used Avail Use% Mounted on
 /dev/mapper/vg_data-lv_storage  1.2T  4.5G  1.1T   1% /srv
 ```
+
+**[Date: 2026-08-18]**
+
+**Resolving Emergency Mode & Multi-Disk LVM Boot Failure:**
+-	After keeping the homelab nodes powered off for several days, neither SSH nor Tailscale connections were reachable.
+-	Ping requests to `192.168.1.200` succeeded, but SSH attempts returned `Connection refused`.
+-	The router's DHCP server had temporarily assigned the static IP addresses (`192.168.1.200` and `192.168.1.201`) to IoT devices (a security camera perhaps) in the local network during downtime.
+-	Upon physical inspection, Node 01 (Debian Eos) was halted at boot in Emergency Mode due to a failed dependency on `/srv `(`dev-mapper-vg_data\x2dlv_storage.device`).
+- The logical volume `lv_storage` spans across two physical drives (`sdb` and `sdc` in `vg_data`).
+- On cold boot, the internal 750GB SATA HDD failed to initialize in time on the bus, and the secondary drive was temporarily disconnected.
+- Because a physical volume (PV) was missing from `vg_data`, LVM refused to activate the volume group partially, causing `/srv` to fail mounting and halting the boot sequence.
+- I reconnected the external disk to ensure both physical volumes were attached.
+- Authenticated into the maintenance root shell on the server console.
+- Forced the SCSI/SATA subsystem to rescan all controller channels:
+```bash
+for host in /sys/class/scsi_host/host*/scan; do echo "- - -" > "$host"; done
+```
+  *•	`/sys/class/scsi_host/host*/scan`: The /sys (sysfs) virtual filesystem exposes direct kernel interfaces for hardware drivers. Every SATA controller port, AHCI channel, or USB-to-SATA bridge registers a SCSI host directory (host0, host1, host2, etc.) containing a virtual file named scan.*
+  •	*for host in ...; do ... done: A standard shell loop that iterates through every controller channel discovered on the motherboard.*
+  •	*echo "- - -" > "$host": Writing three wildcards separated by spaces is the official kernel syntax to request a full bus scan:*
+  •	*1st - (Channel): Scan all channels/buses on the controller.*
+  •	*2nd - (Target ID): Scan all device IDs.*
+  •	*3rd - (LUN): Scan all Logical Unit Numbers.*
+- Verified that all three block devices were recognized via `lsblk` (sda 223.6G, sdb 465.8G, sdc 698.6G).
+- Reactivated all LVM volume groups and mounted the missing targets:
+```bash
+vgscan
+vgchange -ay
+mount -a
+exit
+```
+- The system resumed its regular multi-user boot target; network interfaces, SSH daemon, Tailscale, and Docker services initialized successfully.

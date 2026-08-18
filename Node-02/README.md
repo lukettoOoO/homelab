@@ -134,4 +134,17 @@ Default Gateway . . . . . . . . . : fe80::5ea6:e6ff:fee6:3d94%6
 - Downloaded Windows App from App Store on my personal Mac to test RDP connection
 - Successful connection to RDP on IP `192.168.1.210`
 
+**Date: 2026-08-18**
 
+### Homelab Network Conflict Resolution & Automatic Boot Orchestration
+
+- Resolved a temporary IP collision where an IoT network device intercepted `192.168.1.201` during extended downtime.
+- Configured HP EliteDesk BIOS power options to `Power On` automatically after AC power loss.
+
+**Implementing Node 01 Direct-Link Wake-on-LAN Orchestration:**
+- Attached a secondary USB-to-Gigabit Ethernet adapter to the HP Mini PC, creating a dedicated direct link to Node 01's internal LAN port.
+- Identified the USB interface as `enxc84d4428bc43` using `ip -br link`.
+- Installed network wake utilities on Proxmox:
+```bash
+apt update && apt install -y etherwake wakeonlan
+```

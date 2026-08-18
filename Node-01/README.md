@@ -507,3 +507,20 @@ mount -a
 exit
 ```
 - The system resumed its regular multi-user boot target; network interfaces, SSH daemon, Tailscale, and Docker services initialized successfully.
+
+**Configuring Automatic Power Recovery via Direct-Link Wake-on-LAN (WoL):**
+- Since the laptop lacks an operational battery and does not feature native AC Power Loss recovery in its ASUS BIOS, power outages leave the machine in a cold powered-off state.
+- Enabled `Launch PXE OpROM policy` in the BIOS (Aptio Setup Utility) to keep the integrated Realtek NIC energized during sleep and soft-off states.
+- Configured the physical Ethernet interface to accept Magic Packets permanently across reboots:
+```bash
+sudo apt update && sudo apt install -y ethtool
+sudo ethtool -s enp2s0f1 wol g
+```
+- Appended the persistence rule to `/etc/network/interfaces`:
+```text
+allow-hotplug eth0
+iface eth0 inet manual
+    ethernet-wol g
+```
+- Identified a boot failure risk: the current external 3.5" drive enclosure (Inateck FE3002) uses a momentary electronic push-button circuit, causing the disk to remain powered down after power interruptions.
+- Selected an *Axagon EE35-XA3* aluminum USB 3.0 enclosure with a dedicated mechanical 2-position rocker switch (`I / O`). Leaving the hardware switch in the `I (ON)` position guarantees automatic drive spin-up directly on power restoration.

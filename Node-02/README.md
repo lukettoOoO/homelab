@@ -148,3 +148,37 @@ Default Gateway . . . . . . . . . : fe80::5ea6:e6ff:fee6:3d94%6
 ```bash
 apt update && apt install -y etherwake wakeonlan
 ```
+
+**Date 2026-08-21**
+
+### ARP Conflict Remediation, Gateway Hard Reset and Dual-Node Recovery
+
+- Investigated recurring connection drops to Node 02 (`192.168.1.201` Proxmox VE & `192.168.1.210` Windows Server 2022 VM).
+- During outage windows, pinging `192.168.1.201` from my personal laptop resulted in abnormal round-trip latencies fluctuating between 80 ms and 170 ms:
+```bash
+luca@MacBook-Air---Luca [13:22:58] [~] 
+-> % ping 192.168.1.201
+PING 192.168.1.201 (192.168.1.201): 56 data bytes
+64 bytes from 192.168.1.201: icmp_seq=0 ttl=64 time=151.695 ms
+64 bytes from 192.168.1.201: icmp_seq=1 ttl=64 time=80.695 ms
+64 bytes from 192.168.1.201: icmp_seq=2 ttl=64 time=126.559 ms
+64 bytes from 192.168.1.201: icmp_seq=3 ttl=64 time=171.863 ms
+^C
+--- 192.168.1.201 ping statistics ---
+4 packets transmitted, 4 packets received, 0.0% packet loss
+round-trip min/avg/max/stddev = 80.695/132.703/171.863/34.047 ms
+```
+- Inspected the local ARP table and decoded the MAC address associated with the IP collision (`30:FF:F6:8F:39:C8` registered to *HangZhou KuoHeng Technology Co., Ltd*).
+- A Wi-Fi IoT module (Tuya/smart switch chip - my dad's security camera for the garden) dynamically leased `192.168.1.201` via DHCP, causing severe Layer 2 ARP poisoning and dropping inbound TCP sessions to Proxmox Web UI (`:8006`) and RDP (`:3389`). This definitely an issue when homelabbing without my own router, so I plan on buying a router along with a switch soon.
+
+**Router Factory Reset & DHCP Subnet Segmentation:**
+- Attempted to access the gateway admin interface at `192.168.1.1` (TP-Link Archer AX1500 Wi-Fi 6 Router); admin credentials failed after 8 attempts as I didn't remember the credentials.
+- Executed a physical hard reset by holding the rear Reset button for 10 seconds until all status LEDs cycled.
+- Re-authenticated to the factory Wi-Fi SSID from macOS, accessed 192.168.1.1, configured a new admin password, and applied static subnet boundaries:
+    - LAN Gateway: `192.168.1.1 /24`
+    - DHCP Dynamic Range: `192.168.1.128` - `192.168.1.199`
+    - Static Allocation Zone: Reserved IP blocks `< .128` and `> .199` for infrastructure servers (`.200` for Node 01 Eos, `.201` for Node 02 Proxmox, `.210` for Windows Server VM) to prevent any future DHCP IP collisions.
+- Flushed the local macOS ARP cache to drop invalid Layer 2 hardware mappings:
+```bash
+sudo arp -d 192.168.1.201
+```

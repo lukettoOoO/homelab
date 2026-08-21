@@ -524,3 +524,30 @@ iface eth0 inet manual
 ```
 - Identified a boot failure risk: the current external 3.5" drive enclosure (Inateck FE3002) uses a momentary electronic push-button circuit, causing the disk to remain powered down after power interruptions.
 - Selected an *Axagon EE35-XA3* aluminum USB 3.0 enclosure with a dedicated mechanical 2-position rocker switch (`I / O`). Leaving the hardware switch in the `I (ON)` position guarantees automatic drive spin-up directly on power restoration.
+
+**[Date: 2026-08-21]**
+- Following a router reconfiguration, Node 01 (`192.168.1.200`) remained unreachable over ping and SSH (`100% packet loss`).
+- Node 01's Atheros wireless interface (`wlp3s0`) is statically configured inside `/etc/network/interfaces` using Debian's native ifupdown toolchain rather than NetworkManager. Because `wpa-ssid` and `wpa-psk` were hardcoded, the interface dropped after the router's SSID/password reset and entered an unmanaged state.
+- Updated /etc/network/interfaces on Node 01 with the active network credentials:
+```
+# The primary network interface
+allow-hotplug wlp3s0
+iface wlp3s0 inet static
+	address 192.168.1.200
+	netmask 255.255.255.0
+	gateway 192.168.1.1
+	dns-nameservers 8.8.8.8 1.1.1.1
+	wpa-ssid <WIFI_SSID>
+	wpa-psk  <WIFI_PASSWORD>
+```
+- Cycled the physical wireless interface to apply credentials and renew the link state:
+```bash
+sudo ifdown wlp3s0
+sudo ifup wlp3s0
+```
+- Verified interface status and default gateway routing:
+```bash
+ip addr show wlp3s0
+ping -c 3 1.1.1.1
+```
+- Verified connectivity and confirmed all nodes are online and stable on their dedicated static IPs across the network topology.

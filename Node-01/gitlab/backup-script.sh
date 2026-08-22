@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 set -e
 
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+CONFIG_FILE="${BACKUP_CONFIG_FILE:-${SCRIPT_DIR}/backup.env}"
+if [[ -f "$CONFIG_FILE" ]]; then
+  source "$CONFIG_FILE"
+fi
+
 GITHUB_USER="lukettoOoO"
 GITLAB_URL="https://gitlab.olympus-luca.online"
 BACKUP_DIR="/srv/docker/gitlab-backup/repos"

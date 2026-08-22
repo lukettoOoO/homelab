@@ -1,0 +1,38 @@
+name: gitlab-server
+
+services:
+  gitlab:
+    image: gitlab/gitlab-ce:latest
+    container_name: gitlab
+    restart: always
+    hostname: gitlab.olympus-luca.online
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        # external url handled behind nginx proxy manager (reverse proxy)
+        external_url 'https://gitlab.olympus-luca.online' # public url where gitlab will be accessed
+        nginx['listen_port'] = 80 # container listens on port 80 internally
+        nginx['listen_https'] = false # disables https in internal nginx (handled by reverse proxy) 
+        nginx['proxy_set_headers'] = { # lets gitlab know that it is behind a reverse proxy
+          "X-Forwarded-Proto" => "https",
+          "X-Forwarded-Ssl" => "on"
+        }
+
+        # ssh configuration (mapped to host port 2222)
+        gitlab_rails['gitlab_shell_ssh_port'] = 2222
+
+        # low memory optimization
+        puma['worker_processes'] = 2 # 2 web workers
+        puma['min_threads'] = 1 # limit threading
+        puma['max_threads'] = 2 # limit threading
+        sidekiq['concurrency'] = 5 # liit background job workers
+        postgresql['shared_buffers'] = "256MB" # reduce database memory
+        postgresql['max_worker_processes'] = 2
+        prometheus_monitoring['enable'] = false # disable metrics collection
+    ports:
+      - "8085:80" # web ui passed to nginx proxy manager (maps container port 80 to host port 8085)
+      - "2222:22" # git ssh clone port (maps container port 22 to host port 2222)
+    volumes:
+      - /srv/docker/gitlab/config:/etc/gitlab
+      - /srv/docker/gitlab/logs:/var/log/gitlab
+      - /srv/docker/gitlab/data:/var/opt/gitlab
+    shm_size: '256m' # shared memory limit

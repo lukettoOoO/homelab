@@ -551,3 +551,63 @@ ip addr show wlp3s0
 ping -c 3 1.1.1.1
 ```
 - Verified connectivity and confirmed all nodes are online and stable on their dedicated static IPs across the network topology.
+
+**[Date: 2026-08-22]**
+### Deploying GitLab CE on Node 01 (Eos) & Automating GitHub Repositories Backup
+
+- I wanted to self-host an independent Git repository platform using GitLab CE on Node 01 and automate full backup mirrors of my entire GitHub account (public, private, all branches, tags, and commits).
+- **Setting Up Storage Directories:**
+- Created dedicated persistent directories on the HDD storage partition (`vg_data` mounted at `/srv`):
+```bash
+sudo mkdir -p /srv/docker/gitlab/{config,logs,data}
+cd /srv/docker/gitlab
+```
+- Since GitLab CE is known to consume substantial memory (typically 4GB-8GB+) and Node 01 only has 8GB of RAM with Nextcloud and Netdata active, I applied aggressive resource constraints in compose.yml to prevent OOM kills on the Haswell dual-core i3 CPU:
+  - Configured Puma to run only 2 workers with 1-2 threads max.
+  - Limited Sidekiq background processing concurrency to 5.
+  - Reduced PostgreSQL shared memory buffers to 256MB and worker processes to 2.
+  - Disabled Prometheus embedded monitoring.
+  - Remapped Git SSH container port 22 to host port 2222 to prevent conflicts with the host system's SSH daemon on port 22.
+  ```yaml
+      puma['worker_processes'] = 2 # 2 web workers
+      puma['min_threads'] = 1 # limit threading
+      puma['max_threads'] = 2 # limit threading
+      sidekiq['concurrency'] = 5 # liit background job workers
+      postgresql['shared_buffers'] = "256MB" # reduce database memory
+      postgresql['max_worker_processes'] = 2
+      prometheus_monitoring['enable'] = false # disable metrics collection
+  ports:
+    - "8085:80" # web ui passed to nginx proxy manager (maps container port 80 to host port 8085)
+    - "2222:22" # git ssh clone port (maps container port 22 to host port 2222)
+  ```
+- View the full Docker Compose file [here](gitlab/compose.yaml).
+- Running `sudo docker compose up -d` to spin up the container.
+- Retrieved the initial administrator password:
+```bash
+sudo cat /srv/docker/gitlab/config/initial_root_password | grep "Password:"
+```
+- **Configuring Firewall & Reverse Proxy:**
+  - Allowed Git SSH through host firewall: `sudo ufw allow 2222/tcp comment "GitLab Git SSH"`
+  - Allowed Docker internal traffic for GitLab Web UI: `sudo ufw-docker allow gitlab 80`
+  - In Nginx Proxy Manager (NPM), added a new Proxy Host:
+    ```
+    Domain: gitlab.olympus-luca.online
+    Scheme: http
+    Forward Hostname / IP: 192.168.1.200
+    Forward Port: 8085
+    ```
+  - Enabled Websockets Support, Force SSL with the Wildcard certificate (`*.olympus-luca.online`), and added `client_max_body_size 500M`; under the Advanced tab for large Git pushes.
+- **Automating Complete GitHub Repositories Backup:**
+  - Created a dedicated sync script at /srv/docker/github-backup/backup-github.sh that fetches all repositories using a GitHub Fine-Grained Personal Access Token, mirrors them locally to /srv/docker/gitlab-backup/repos/, checks the local GitLab REST API via a Personal Access Token to create any missing private repositories under the root user, and pushes the complete mirrors (git push --mirror).
+  - View the script [here](gitlab/backup-script.sh)
+  - Made script executable and tested manually:
+  ```bash
+  sudo chmod +x /srv/docker/github-backup/backup-github.sh
+  sudo /srv/docker/github-backup/backup-github.sh
+  ```
+  - All repos cloned and pushed to local GitLab without issue.
+  - Configured Daily Automated Cron Job:
+    - Added root crontab entry via `sudo crontab -e` to trigger automatic backup execution nightly at 02:00:
+    ```cron
+    0 2 * * * /srv/docker/github-backup/backup-github.sh >> /var/log/github-backup.log 2>&1
+    ```

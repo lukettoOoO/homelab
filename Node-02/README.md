@@ -182,3 +182,23 @@ round-trip min/avg/max/stddev = 80.695/132.703/171.863/34.047 ms
 ```bash
 sudo arp -d 192.168.1.201
 ```
+
+**Date: 2026-08-22**
+
+### Setting up OpenSSH Server on Windows Server 2022 (Dionysus)
+
+- Instead of relying solely on RDP to manage the Windows Server 2022 VM (`192.168.1.210`), I wanted lightweight CLI access over SSH directly from my MacBook Terminal.
+- **Configuring OpenSSH Server via PowerShell:**
+    - Installed the native OpenSSH Server capability on Windows Server, enabled the background service to start automatically on system boot, and ensured the inbound firewall rule on port 22 was active:
+    ```powershell
+    Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
+    Start-Service sshd
+    Set-Service -Name sshd -StartupType 'Automatic'
+    New-NetFirewallRule -Name 'OpenSSH-Server-In-TCP' -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
+    ```
+    - Testing Remote SSH Connection (on macOS):
+    ```bash
+    ssh Administrator@192.168.1.210
+    ```
+- Verified and accepted the ED25519 host key fingerprint (SHA256:Cy2YfDUeJO3nDP8k6Ag6YcYpo/pf41sE1U0UeoPg878), authenticated with the Administrator password, and gained an interactive remote Windows command line session directly from my MacBook terminal.
+

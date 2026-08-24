@@ -89,6 +89,8 @@ oc new-project myapp
 * `oc cluster-info`: Displays control plane endpoints and core service URLs (`oc cluster-info dump` extracts detailed diagnostic state).
 * `oc api-versions`: Lists all supported API group versions on the server (e.g., `apps/v1`, `admissionregistration.k8s.io/v1`).
 * `oc api-resources`: Lists all supported API resource types, shortnames, API groups, namespaced status, and kinds.
+  - A **namespaced** resource means that it is tied to a specific namespace (project).
+  - A **cluster-scoped** resource is not tied to any namespace. For example, nodes are cluster-scoped.
   ```bash
   # Filter namespaced resources in apps group sorted by name
   oc api-resources --namespaced=true --api-group apps --sort-by name
@@ -152,6 +154,33 @@ Every Kubernetes and OpenShift resource manifest consists of structured YAML or 
 #### 2. OpenShift-Specific Extensions
 * **Build (`build`)**: Execution instance of a container image compilation process.
 * **BuildConfig (`bc`)**: Defines build triggers, strategies (S2I, Docker, Pipeline), source Git URL, and target registry output image.
+  - The BuildConfig references a builder ImageStream and outputs a build image into an ImageStream. Example:
+    ```yaml
+    apiVersion: v1
+    kind: BuildConfig
+    metadata:
+      name: wildfly-build
+    spec:
+      source:
+        git:
+          uri: https://github.com/openshift/openshift-examples.git
+          ref: master
+        type: Git
+      strategy:
+        sourceStrategy:
+          from:
+            kind: ImageStreamTag
+            name: java:openjdk-11
+      output:
+        to:
+          kind: ImageStreamTag
+          name: wildfly-build
+    ```
+    - This outputs a build pod which is used to build the image. After the build process is completed, a build image is pushed to the ImageStream (app) and the build pod is deleted. The deployment takes over the app ImageStream.
+    - The deployment creates pods as output.
+    - Service is also created along with the pods.
+    - Route is also created along with the pods.
+    ![Build Process](build_process.png)
 * **Route (`route`)**: Ingress configuration exposing an internal `Service` to external traffic using an HAProxy router hostname.
 * **ImageStream (`is`)**: Abstraction tracking container image tags and automated deployment updates.
 
@@ -224,3 +253,202 @@ To assess the operational health of an OpenShift cluster using CLI tools:
    ```bash
    oc status -n <project_name>
    ```
+
+---
+
+## Monitoring Application Health (Health Probes)
+
+In Kubernetes and OpenShift, the container engine only monitors the health of the primary container process (PID 1). If an application deadlocks, runs out of database connections, or is in the middle of a lengthy startup sequence, the process itself may still appear alive to the OS even though the application is unable to serve user traffic.
+
+To solve this, OpenShift uses **Health Probes** (configured in the Pod/Deployment specification and executed periodically by the `kubelet` on each node) to monitor the true internal state of applications.
+
+```mermaid
+flowchart TD
+    subgraph ProbeTypes ["Probe Types & Lifecycle"]
+        Startup["1. Startup Probe\n(Has initialization finished?)"]
+        Ready["2. Readiness Probe\n(Can app receive traffic?)"]
+        Live["3. Liveness Probe\n(Is app deadlocked/broken?)"]
+    end
+
+    subgraph ActionsOnFailure ["Automated Actions on Failure"]
+        Hold["Wait / Delay other probes\n(Kills pod if failureThreshold exceeded)"]
+        RemoveEP["Remove Pod from Service Endpoints\n(Traffic is not routed to this pod)"]
+        RestartPod["Restart Container\n(Kills and recreates container via restartPolicy)"]
+    end
+
+    Startup -->|"Fails (Exceeds Threshold)"| Hold
+    Startup -->|"Passes"| Ready & Live
+
+    Ready -->|"Passes"| RouteTraffic["Traffic Routed to Pod via Service/Route"]
+    Ready -->|"Fails"| RemoveEP
+
+    Live -->|"Passes"| KeepRunning["Container Continues Running"]
+    Live -->|"Fails"| RestartPod
+```
+
+---
+
+### The Three Probe Types
+
+| Probe Type | Purpose | Behavior on Failure | Typical Use Case |
+| :--- | :--- | :--- | :--- |
+| **Startup Probe** | Checks if a slow-starting application has finished bootstrapping. | Kills container and restarts pod after `failureThreshold` is exceeded. Disables Liveness and Readiness until it succeeds. | Legacy applications, large Java JVM / Spring Boot / WildFly apps with heavy initialization. |
+| **Readiness Probe** | Checks if the container is currently ready to accept incoming client requests. | Removes the pod IP from the `Endpoints` list of associated `Service` objects. **Does not restart** the container. | App is warming up caches, reloading large config files, or temporarily overwhelmed with work. |
+| **Liveness Probe** | Checks if the container is running and healthy. | **Restarts the container** according to the pod's `restartPolicy`. | Detecting fatal application deadlocks, memory leaks, or unrecoverable thread crashes. |
+
+---
+
+### Probe Check Mechanisms
+
+OpenShift supports three distinct mechanisms to test application health:
+
+1. **HTTP GET (`httpGet`)**:
+   - The kubelet performs an HTTP GET request to the specified container port and path (e.g., `/healthz`, `/ready`, `/actuator/health`).
+   - Responses with HTTP status codes $\ge 200$ and $< 400$ indicate **success**.
+   - Any other status code ($\ge 400$) or connection timeout indicates **failure**.
+
+2. **TCP Socket (`tcpSocket`)**:
+   - The kubelet attempts to establish a TCP connection on a specified container port.
+   - If the socket can be opened successfully, the probe succeeds.
+   - Useful for non-HTTP workloads (e.g., databases like MySQL/PostgreSQL, Redis caches, message brokers).
+
+3. **Container Command Execution (`exec`)**:
+   - The kubelet executes a command inside the container namespace (e.g., running a diagnostic script or checking a lockfile).
+   - An exit status code of `0` indicates **success**.
+   - Non-zero exit codes indicate **failure**.
+
+---
+
+### Key Probe Timing & Threshold Parameters
+
+- **`initialDelaySeconds`**: Number of seconds to wait after the container has started before initiating probe checks (default: `0`).
+- **`periodSeconds`**: Frequency (in seconds) at which the probe is executed (default: `10s`, minimum: `1s`).
+- **`timeoutSeconds`**: Number of seconds before the probe call times out and is marked as failed (default: `1s`).
+- **`successThreshold`**: Minimum consecutive successful probe runs required to mark the probe as passed after a failure (default: `1`).
+- **`failureThreshold`**: Number of consecutive failures before OpenShift takes action (restart or remove from endpoints) (default: `3`).
+
+---
+
+### Pod Manifest Example with All Probe Types
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app
+  namespace: my-project
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web-app
+  template:
+    metadata:
+      labels:
+        app: web-app
+    spec:
+      containers:
+        - name: web-app
+          image: quay.io/example/web-app:v1
+          ports:
+            - containerPort: 8080
+          # 1. Startup Probe: Allows up to 5 minutes (30 * 10s) for initial boot
+          startupProbe:
+            httpGet:
+              path: /healthz/startup
+              port: 8080
+            failureThreshold: 30
+            periodSeconds: 10
+
+          # 2. Readiness Probe: Checks if app is ready to serve traffic
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 3
+
+          # 3. Liveness Probe: Restarts container if deadlocked
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+```
+
+---
+
+### Step-by-Step CLI Implementation (`oc`)
+
+#### 1. Add or Update Probes on Existing Deployments
+```bash
+# Add an HTTP GET Readiness Probe
+oc set probe deployment/web-app --readiness \
+  --get-url=http://:8080/ready \
+  --initial-delay-seconds=10 \
+  --timeout-seconds=2 \
+  --period-seconds=5
+
+# Add an HTTP GET Liveness Probe
+oc set probe deployment/web-app --liveness \
+  --get-url=http://:8080/healthz \
+  --initial-delay-seconds=15 \
+  --timeout-seconds=2 \
+  --period-seconds=10
+
+# Add a TCP Socket Probe (e.g. for database or cache)
+oc set probe deployment/database --readiness \
+  --open-tcp=3306 \
+  --initial-delay-seconds=5
+
+# Add an Exec Command Probe (running health check script)
+oc set probe deployment/web-app --liveness \
+  --initial-delay-seconds=20 \
+  -- /bin/sh -c "cat /tmp/healthy"
+
+# Remove a probe from a deployment
+oc set probe deployment/web-app --readiness --remove
+```
+
+#### 2. Inspecting and Diagnosing Probe Failures
+```bash
+# Inspect configured probes in deployment spec
+oc describe deployment/web-app | grep -A 5 -E "(Liveness|Readiness|Startup)"
+
+# Inspect pod lifecycle events (shows probe failure warnings)
+oc describe pod <pod-name> -n my-project
+
+# Check real-time endpoints backing a Service
+oc get endpoints web-app -n my-project
+```
+
+---
+
+### OpenShift Web Console Workflow
+
+1. **Accessing Health Checks**:
+   - Switch to the **Developer** perspective in the OpenShift Web Console.
+   - Navigate to **Topology** and click on the desired application deployment ring.
+   - In the side panel, click **Actions** -> **Add Health Checks** (or **Edit Health Checks** if probes already exist).
+
+2. **Configuring Health Checks in UI**:
+   - **Add Readiness Probe**:
+     - Select probe type: **HTTP GET**, **Container Command (Exec)**, or **TCP Socket**.
+     - Set path (e.g., `/ready`), port (e.g., `8080`), initial delay, timeout, and failure threshold.
+   - **Add Liveness Probe**:
+     - Set path (e.g., `/healthz`), port, and thresholds.
+   - **Add Startup Probe**:
+     - Useful if the application takes longer to initialize than standard liveness parameters allow.
+   - Click **Add** / **Save**.
+
+3. **Verifying Health in Web Console**:
+   - The **Topology** view displays visual indicator badges on the pod ring:
+     - Clear/Dark Blue: Pod is running and ready.
+     - Light/Dashed Ring: Pod is starting or failing readiness (not receiving traffic).
+     - Red/CrashLoop: Pod failed liveness checks and is repeatedly restarting.
+

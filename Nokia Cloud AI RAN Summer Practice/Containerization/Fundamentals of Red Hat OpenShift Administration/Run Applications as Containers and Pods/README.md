@@ -314,3 +314,40 @@ In a secondary local terminal window, connect via local client tools:
 ```bash
 mysql -u redhat -p -h 127.0.0.1 -P 3306
 ```
+
+## 4. Deploying Applications from a Containerfile
+- Ensure your Git repository contains your source code and a `Containerfile` (or `Dockerfile`) at the root:
+```dockerfile
+# Example: Simple Node.js Containerfile
+FROM registry.access.redhat.com/ubi9/nodejs-18:latest
+WORKDIR /opt/app-root/src
+COPY package*.json ./
+RUN npm install
+COPY . .
+EXPOSE 8080
+CMD ["npm", "start"]
+```
+- Point OpenShift to your Git repository using `oc new-app`. OpenShift detects the `Containerfile` automatically:
+```bash
+# Create a new project/namespace
+oc new-project my-app-demo
+
+# Build and deploy from the Git repository containing the Containerfile
+oc new-app https://github.com/your-username/your-repo.git --name=my-app
+```
+- OpenShift automatically creates a `BuildConfig`, starts an in-cluster build, and pushes the resulting image to the internal image registry:
+```bash
+# Stream the build logs in real-time
+oc logs -f bc/my-app
+
+# Check deployment rollout status
+oc rollout status deployment/my-app
+```
+- Create an OpenShift Route to generate a publicly accessible URL:
+```bash
+# Create a route
+oc expose svc/my-app
+
+# Retrieve the public URL
+oc get route my-app
+```

@@ -11,7 +11,8 @@
 
 ### Kubernetes Overview & Architecture
 Kubernetes is an open-source orchestration platform that automates deployment, scaling, and operational management of containerized workloads across multi-node clusters.
-
+- The purpose of the deployment of containers is to ensure the availability of the application. It specifies the image, the number of replicas, the resources, etc. But the deployment controller constantly checks the actual state of the cluster and compares it to the desired state. If there is a mismatch, it will try to reconcile the cluster state to match the desired state.
+- The deployment makes use of an image stream which can be defined by the user or can be an upstream image. It tracks different versions of the same image and can be used to deploy a specific version of the image.
 ```
                             ┌─────────────────────────────────────────┐
                             │          Control Plane Nodes            │

@@ -1,5 +1,18 @@
 # DNS Delpoyment on Rocky Linux
 
+0. (Optional) Reset any previous BIND installation/configuration
+```bash
+sudo systemctl stop named
+sudo systemctl disable named
+sudo dnf remove -y bind bind-utils bind-dnssec-utils
+sudo rm -f /etc/named.conf
+sudo rm -f /var/named/<DOMAIN_NAME>.zone
+sudo firewall-cmd --remove-service=dns --permanent
+sudo firewall-cmd --reload
+```
+- This stops and disables the service, removes the packages, deletes any previous zone/config files, and closes the firewall port opened previously.
+- Skip this step on a clean install where BIND was never configured before.
+
 1. Installing BIND9 `named`:
 ```bash
 sudo dnf install -y bind bind-utils

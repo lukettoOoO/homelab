@@ -1,0 +1,33 @@
+$TTL 86400 ; any record in this file will be kept for 24 hours
+@   IN  SOA ns1.olympus-luca.online. admin.olympus-luca.online. ( ; dns server name along with admin email address
+        2026082501 ; serial (version of the zone - increment this number for notifying other servers that the file has changed)
+        3600       ; refresh (1h) - how often should a secondary servers check for updates in the zone
+        1800       ; retry (30m) - how much time should the secondary servers retry connection if it has failed
+        604800     ; expire (1w) - if the secondary servers fail to connect in this much time, they should consider this data expired
+        86400 )    ; minimum TTL ; for negative responses
+
+; records:
+; dns server (this rocky linux instance) 
+@       IN  NS  ns1.olympus-luca.online.
+ns1     IN  A   192.168.1.155
+
+; debian 13 node
+eos     IN  A   192.168.1.200
+
+; main domain (olympus-luca.online)
+@       IN  A   192.168.1.200
+
+; services run through nginx proxy manager on debian
+nc      IN  A   192.168.1.200    ; nextcloud
+nc-aio  IN  A   192.168.1.200    ; nextcloud aio mastercontainer
+nd      IN  A   192.168.1.200    ; netdata console
+gitlab  IN  A   192.168.1.200    ; gitlab
+
+; wildcard: any subdomain *.olympus-luca.online
+*       IN  A   192.168.1.200
+
+; the ip 192.168.1.200 is used because all the incoming traffic on the server goes through nginx proxy manager which is accessed through this address
+; @ - current domain
+; IN - internet
+; SOA - start of authority (who owns the domain)
+; NS - nameserver

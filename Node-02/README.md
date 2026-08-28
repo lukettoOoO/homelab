@@ -202,3 +202,21 @@ sudo arp -d 192.168.1.201
     ```
 - Verified and accepted the ED25519 host key fingerprint (SHA256:Cy2YfDUeJO3nDP8k6Ag6YcYpo/pf41sE1U0UeoPg878), authenticated with the Administrator password, and gained an interactive remote Windows command line session directly from my MacBook terminal.
 
+**[Date: 27-08-2026]**
+
+### Migrating Node 02
+
+- **See network setup here:** [setup](../Networking/README.md)
+
+- Since this node still uses the old network settings, I can access the node through the browser Proxmox interface: *proxmox -> Network -> `vmbr0`*:
+    - **IPv4:** `10.0.0.20/24`
+    - **Gateway (IPv4):** `10.0.0.1`
+- Applied the configuration
+
+#### Migrating Windows Server 2022 VM to the new network
+
+- I used the following commands in `powershell` to update the IP address and the DNS settings:
+```powershell
+Get-NetAdapter | New-NetIPAddress -IPAddress 10.0.0.30 -PrefixLength 24 -DefaultGateway 10.0.0.1
+Set-DnsClientServerAddress -InterfaceAlias "Ethernet" -ServerAddresses ("10.0.0.1","1.1.1.1")
+```

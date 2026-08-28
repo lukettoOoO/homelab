@@ -611,3 +611,296 @@ sudo cat /srv/docker/gitlab/config/initial_root_password | grep "Password:"
     ```cron
     0 2 * * * /srv/docker/github-backup/backup-github.sh >> /var/log/github-backup.log 2>&1
     ```
+
+**[Date: 27-08-2026]**
+
+### Migrating Node 01 to Gigabit Ethernet
+
+- **See network setup here:** [setup](../Networking/README.md)
+
+- Configuring directly through the physical laptop terminal
+- Editing the `/etc/network/interfaces` file:
+```bash
+sudo nano /etc/network/interfaces
+```
+```
+auto lo
+iface lo inet loopback
+
+auto enp2s0f1
+iface enp2s0f1 inet static
+    address 10.0.0.10
+    netmask 255.255.255.0
+    gateway 10.0.0.1
+    dns-nameservers 10.0.0.1 1.1.1.1
+    ethernet-wol g
+```
+- Deleting any previous network settings and setting the interface to `up`
+```bash
+sudo ifdown wlp3s0 2>/dev/null
+sudo ifdown enp2s0f1 2>/dev/null && sudo ifup enp2s0f1
+sudo ip route del default 2>/dev/null
+sudo ip addr flush dev enp2s0f1
+
+sudo ifup enp2s0f1
+```
+- The connection has established successfully:
+```bash
+# luca @ debian-eos in ~ [18:57:49]
+$ ping 1.1.1.1
+PING 1.1.1.1 (1.1.1.1) 56(84) bytes of data.
+64 bytes from 1.1.1.1: icmp_seq=1 ttl=56 time=14.2 ms
+64 bytes from 1.1.1.1: icmp_seq=2 ttl=56 time=13.9 ms
+64 bytes from 1.1.1.1: icmp_seq=3 ttl=56 time=13.7 ms
+^C
+--- 1.1.1.1 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2003ms
+rtt min/avg/max/mdev = 13.693/13.937/14.247/0.230 ms
+```
+
+### Migrating Nginx Proxy Manager to new network
+
+- Editing each entry on the hosts web interface from `192.168.1.200` to `10.0.0.10`
+
+### Migrating Tailscale to new network settings and setting up Tailscale Subnet Router for network `10.0.0.0`
+
+- I wanted to access the entire homelab subnet (`10.0.0.0/24`) remotely without installing Tailscale individually on every device (MikroTik, TP-Link switch, Proxmox and Windows Server VM), so I configured Node 01 (`debian-eos`) to act as a dedicated **Tailscale Subnet Router**.
+
+**1. Enabling Kernel IP Forwarding:**
+- I enabled IP forwarding so the Linux kernel can route network packets between the `tailscale0` virtual interface and the physical Ethernet adapter (`enp2s0f1`):
+```bash
+echo 'net.ipv4.ip_forward = 1' | sudo tee /etc/sysctl.d/99-tailscale.conf
+echo 'net.ipv6.conf.all.forwarding = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
+sudo sysctl -p /etc/sysctl.d/99-tailscale.conf
+```
+
+**2. Adjusting UFW Forward Policy:**
+- By default, UFW drops routed transit packets, so I changed the forwarding policy to accept traffic and allowed connections on the Tailscale interface:
+```bash
+sudo sed -i 's/DEFAULT_FORWARD_POLICY="DROP"/DEFAULT_FORWARD_POLICY="ACCEPT"/' /etc/default/ufw
+sudo ufw allow in on tailscale0
+sudo ufw reload
+```
+
+**3. Advertising the Subnet Route:**
+- I re-authenticated and started Tailscale, advertising the new `10.0.0.0/24` subnet while resetting the previous parameters:
+```bash
+sudo tailscale up --advertise-routes=10.0.0.0/24 --accept-dns=false --reset
+```
+
+**4. Approving the Subnet Route in the Admin Console:**
+- I navigated to the [Tailscale Admin Console](https://login.tailscale.com/admin/machines).
+- Under the machine entry for **`debian-eos`**, I opened **Edit route settings...**.
+- I enabled the newly advertised route **`10.0.0.0/24`** and unchecked the deprecated `192.168.1.0/24` route.
+
+**5. Verifying Remote Subnet Routing:**
+- I tested connectivity from my MacBook using a cellular hotspot, with Tailscale enabled:
+```bash
+# Gateway (MikroTik)
+ping -c 2 10.0.0.1
+
+# Node 02 (Proxmox Dionysus)
+ping -c 2 10.0.0.20
+
+# Windows Server VM
+ssh Administrator@10.0.0.30
+```
+
+- I confirmed remote reachability for the homelab web interfaces, including RouterOS WebFig, Proxmox VE at `https://10.0.0.20:8006`, Nginx Proxy Manager and Windows RDP, over the Tailnet.
+
+- This setup allows me to securely access the entire `10.0.0.0/24` homelab network remotely through Node 01, without having to install Tailscale on every device.
+
+### Troubleshooting Tailscale Subnet Routing
+
+- The Debian node was not routing packets to the rest of the homelab because UFW was blocking the `FORWARD` chain. Allowing traffic into `tailscale0` only allowed traffic destined for Node 01 itself; it did not allow routed traffic to the other homelab devices.
+- I installed the package required to save the firewall rules across reboots:
+```bash
+sudo apt update
+sudo apt install -y iptables-persistent
+```
+- I connected to Node 01 remotely through Tailscale:
+```bash
+ssh luca@100.80.227.117
+```
+- I added rules to allow traffic to be forwarded between Tailscale and the wired interface, and enabled masquerading for the homelab subnet:
+```bash
+# Allow routed traffic in both directions through Tailscale
+sudo iptables -I FORWARD -i tailscale0 -j ACCEPT
+sudo iptables -I FORWARD -o tailscale0 -j ACCEPT
+
+# Masquerade Tailscale traffic when it leaves through the wired interface
+sudo iptables -t nat -I POSTROUTING -o enp2s0f1 -j MASQUERADE
+
+# Save the rules so they persist after a reboot
+sudo netfilter-persistent save
+```
+- On my MacBook, I checked whether Tailscale installed the route to the homelab subnet:
+```bash
+netstat -rn | grep 10.0.0
+```
+- I then tested access to the MikroTik gateway, Proxmox and Windows Server VM from an external network using a cellular hotspot:
+```bash
+ping -c 2 10.0.0.1
+ping -c 2 10.0.0.20
+ssh Administrator@10.0.0.30
+```
+- If the route did not appear on the MacBook, I restarted the Tailscale connection to reload the advertised routes.
+
+## Cloudflare Tunnel for Nextcloud access
+
+**Date: 2026-08-28**
+
+### Objective
+
+I configured external access to Nextcloud for my parents without opening ports on either router or contacting Digi. Only Nextcloud is published; other homelab services remain private.
+
+### Traffic flow
+
+```text
+Parents
+  -> https://nc.olympus-luca.online
+  -> Cloudflare
+  -> Cloudflare Tunnel
+  -> Node 01 (Debian Eos)
+  -> Nextcloud at 10.0.0.10:11000
+```
+
+The tunnel creates an outbound connection from Node 01 to Cloudflare. No inbound port-forwarding rules are required.
+
+### Cloudflare DNS
+
+The old public records pointing to private addresses were removed:
+
+```text
+olympus-luca.online -> 10.0.0.10
+*.olympus-luca.online -> olympus-luca.online
+```
+
+Only `nc.olympus-luca.online` is published through the tunnel. The MikroTik local DNS record was kept for local homelab access:
+
+```routeros
+/ip dns static
+add name=olympus-luca.online match-subdomain=yes address=10.0.0.10
+```
+
+### Tunnel creation
+
+The Cloudflare origin certificate was saved to the persistent host directory. Docker needed the host directory mounted at `/tmp` because the cloudflared image's `/home/nonroot` directory was not writable by the host user:
+
+```bash
+mkdir -p "$HOME/.cloudflared"
+
+docker run --rm -it \
+  --user "$(id -u):$(id -g)" \
+  --env HOME=/tmp \
+  -v "$HOME/.cloudflared:/tmp/.cloudflared" \
+  cloudflare/cloudflared:latest \
+  tunnel login
+```
+
+The tunnel was created successfully:
+
+```text
+Name: nextcloud-only
+ID:   e76021be-987c-4797-b788-1147f4fdd9d9
+```
+
+```bash
+docker run --rm -it \
+  --user "$(id -u):$(id -g)" \
+  --env HOME=/tmp \
+  -v "$HOME/.cloudflared:/tmp/.cloudflared" \
+  cloudflare/cloudflared:latest \
+  tunnel --origincert /tmp/.cloudflared/cert.pem \
+  create nextcloud-only
+```
+
+The DNS route was created with:
+
+```bash
+docker run --rm -it \
+  --user "$(id -u):$(id -g)" \
+  --env HOME=/tmp \
+  -v "$HOME/.cloudflared:/tmp/.cloudflared" \
+  cloudflare/cloudflared:latest \
+  tunnel --origincert /tmp/.cloudflared/cert.pem \
+  route dns nextcloud-only nc.olympus-luca.online
+```
+
+### Tunnel configuration
+
+The file `$HOME/.cloudflared/config.yml` contains only the Nextcloud route:
+
+```yaml
+tunnel: e76021be-987c-4797-b788-1147f4fdd9d9
+credentials-file: /etc/cloudflared/e76021be-987c-4797-b788-1147f4fdd9d9.json
+
+ingress:
+  - hostname: nc.olympus-luca.online
+    service: http://10.0.0.10:11000
+  - service: http_status:404
+```
+
+The final `http_status:404` rule rejects every hostname that is not explicitly configured.
+
+### Running and verifying the tunnel
+
+```bash
+docker run -d \
+  --name cloudflared-nextcloud \
+  --restart unless-stopped \
+  --network host \
+  --user "$(id -u):$(id -g)" \
+  --env HOME=/tmp \
+  -v "$HOME/.cloudflared:/etc/cloudflared:ro" \
+  cloudflare/cloudflared:latest \
+  tunnel --config /etc/cloudflared/config.yml run
+
+docker logs cloudflared-nextcloud
+```
+
+The logs confirmed `Starting tunnel` and multiple `Registered tunnel connection` messages. The UDP receive-buffer message was a performance warning and did not prevent the tunnel from working.
+
+### Nextcloud account security
+
+- The Registration app was not installed or enabled, so visitors cannot self-register.
+- Parent accounts are normal users, not administrators.
+- Individual storage quotas and unique passwords were configured for parent accounts.
+- TOTP two-factor authentication and backup codes were configured for the administrator and parent accounts.
+- Brute-force protection and auditing/logging remain enabled.
+- Public link sharing should remain disabled unless explicitly required.
+
+### Private services
+
+These services are not published through the tunnel:
+
+- Nginx Proxy Manager and the Nextcloud AIO administration panel
+- MikroTik WebFig and TP-Link switch management
+- Proxmox, SSH, Windows RDP, GitLab, and Netdata
+
+They remain accessible locally or through the existing Tailscale subnet router.
+
+### Credential protection
+
+The following files contain sensitive credentials and must remain private:
+
+```text
+$HOME/.cloudflared/cert.pem
+$HOME/.cloudflared/e76021be-987c-4797-b788-1147f4fdd9d9.json
+$HOME/.cloudflared/config.yml
+```
+
+Permissions were restricted with:
+
+```bash
+chmod 700 "$HOME/.cloudflared"
+chmod 600 "$HOME/.cloudflared/cert.pem"
+chmod 600 "$HOME/.cloudflared/"*.json
+chmod 600 "$HOME/.cloudflared/config.yml"
+```
+
+The container mounts the configuration directory read-only with `:ro` and restarts automatically after Node 01 reboots.
+
+### Final result
+
+Only `https://nc.olympus-luca.online` is publicly reachable. Anyone can see the Nextcloud login page, but only manually created users with valid credentials and two-factor authentication can access storage. No ports were opened on the home router or MikroTik.

@@ -904,3 +904,364 @@ The container mounts the configuration directory read-only with `:ro` and restar
 ### Final result
 
 Only `https://nc.olympus-luca.online` is publicly reachable. Anyone can see the Nextcloud login page, but only manually created users with valid credentials and two-factor authentication can access storage. No ports were opened on the home router or MikroTik.
+
+---
+
+## Multi-Disk LVM Filesystem Corruption Recovery & Docker Volume Reconstruction
+
+**Date: 2026-08-31**
+
+### Incident
+
+While reorganizing Docker storage directories inside `/srv`, an interrupted `mv` operation coincided with an instantaneous USB I/O drop on the external drive (`/dev/sdd` / `sdc`), which forms a spanned LVM Volume Group (`vg_data`) together with the internal SATA HDD (`/dev/sdb1`).
+
+Because ext4 lost communication with the physical blocks mid-transaction, directory pointers were unlinked from the root directory tree while the actual data blocks and inodes remained intact on the drive.
+
+Upon re-mounting, the system exhibited `Input/output error` symptoms, Docker failed to initialize its daemon, and `/srv/docker-data/volumes` appeared completely vanished. Inspecting `/srv/lost+found` revealed hundreds of disconnected orphan inodes prefixed with `#`, including www-data assets and database structures.
+
+### Filesystem Repair & Inode Reconnection via e2fsck
+
+Unmounted the degraded `/srv` filesystem to avoid further metadata corruption:
+
+```bash
+sudo systemctl stop docker
+sudo systemctl stop containerd
+sudo umount -l /srv
+```
+
+Ran a non-interactive filesystem consistency check across the entire logical volume with both physical disks online:
+
+```bash
+sudo e2fsck -fy /dev/vg_data/lv_storage
+```
+
+`e2fsck` detected the unlinked directory structures, fixed block bitmaps, and reconnected all orphaned directory inodes into `/srv/lost+found`:
+
+```
+/dev/vg_data/lv_storage: ***** FILE SYSTEM WAS MODIFIED *****
+/dev/vg_data/lv_storage: 722297/76316672 files (0.3% non-contiguous), 14877910/305238016 blocks
+```
+
+### Identifying and Restoring the Orphaned Docker Volumes
+
+Re-mounted `/srv` to inspect the recovered inodes:
+
+```bash
+sudo mount /dev/vg_data/lv_storage /srv
+```
+
+Located the primary Docker volumes directory by scanning for known database files and analyzing directory sizes:
+
+```bash
+sudo find /srv/lost+found -maxdepth 3 \( -name "config.php" -o -name "PG_VERSION" -o -name "_data" -o -name "metadata.db" \) 2>/dev/null
+
+sudo du -hd 1 /srv/lost+found/ 2>/dev/null | sort -h | tail -n 20
+```
+
+The search revealed that `#6816207` (8.4GB) was the entire intact `volumes/` directory containing all persistent application state:
+
+- `nextcloud_aio_nextcloud/_data`
+- `nextcloud_aio_database/_data` (PostgreSQL)
+- `nextcloud_aio_redis/_data`
+- `nextcloud_aio_mastercontainer/_data`
+- `compose-demo_redis-data/_data`
+- `full-stack-compose_db-data/_data`
+
+Restored the recovered folder directly back to its production location:
+
+```bash
+sudo mv /srv/lost+found/#6816207 /srv/docker-data/volumes
+
+sudo chmod 710 /srv/docker-data/volumes
+```
+
+### Docker Daemon Recovery & Socket Cleanup
+
+Re-verified that `/etc/docker/daemon.json` correctly points to the HDD storage path:
+
+```json
+{
+  "data-root": "/srv/docker-data"
+}
+```
+
+Cleaned up stale runtime sockets and reset crashed systemd units:
+
+```bash
+sudo rm -rf /run/docker /run/containerd /var/run/docker /var/run/containerd
+
+sudo systemctl reset-failed docker.service docker.socket containerd
+
+sudo systemctl restart containerd
+
+sudo systemctl restart docker
+```
+
+Verified volume recognition:
+
+```bash
+sudo docker volume ls
+```
+
+All named volumes (`nextcloud_aio_*`, `gitlab`, etc.) were detected immediately by Docker Engine.
+
+### Restoring Nextcloud AIO & Remote Access Workaround
+
+Started the Nextcloud AIO Mastercontainer:
+
+```bash
+cd /srv/docker/nextcloud
+
+sudo docker compose up -d
+```
+
+Verified container health:
+
+```bash
+sudo docker logs nextcloud-aio-mastercontainer --tail 30
+```
+
+Output showed the server listening on HTTPS port `8080`.
+
+Because direct access over Tailscale timed out due to routing/firewall rules, an encrypted SSH tunnel was established from the MacBook to securely map the administration port:
+
+```bash
+# Executed from local MacBook terminal:
+ssh -L 8080:localhost:8080 luca@100.80.227.117
+```
+
+Navigated to `https://localhost:8080` in Safari, submitted the AIO passphrase, and triggered container initialization.
+
+All dependent microservices initialized with `healthy` status:
+
+- `nextcloud-aio-mastercontainer`
+- `nextcloud-aio-database` (PostgreSQL)
+- `nextcloud-aio-redis`
+- `nextcloud-aio-nextcloud`
+- `nextcloud-aio-apache`
+- `nextcloud-aio-notify-push`
+- `nextcloud-aio-imaginary`
+
+### Restoring Remaining Homelab Services & Verification
+
+Started the rest of the application stacks across `/srv/docker`:
+
+```bash
+# Nginx Proxy Manager (Reverse Proxy & SSL termination)
+cd /srv/docker/npm && sudo docker compose up -d
+
+# GitLab CE
+cd /srv/docker/gitlab && sudo docker compose up -d
+
+# PHP Environment
+cd /srv/docker/php && sudo docker compose up -d
+```
+
+Verified that all containers across the node are active and operational:
+
+```bash
+sudo docker ps
+```
+
+### Post-Incident Analysis & Preventive Architecture
+
+**Root Cause Risk:** Spanning an LVM Volume Group (`vg_data`) across an internal SATA bus (`/dev/sdb1`) and an external USB-attached disk (`/dev/sdd`) introduces severe instability. Any momentary power hiccup, sleep cycle, or loose USB cable instantly compromises the entire 1.14 TiB ext4 filesystem.
+
+1. Migrate all active data blocks entirely onto the internal 750GB SATA drive using `pvmove /dev/sdd /dev/sdb1`.
+2. Safely reduce the volume group (`vgreduce vg_data /dev/sdd`) and disconnect the USB drive from the primary LVM array.
+3. Repurpose the external USB hard drive strictly for automated offline/cold backups.
+4. Implement an encrypted offsite cloud backup strategy (Borg / Restic) for critical Nextcloud and GitLab volumes.
+
+### Emergency Recovery Protocol (Reference for Future Outages)
+
+In case of another unexpected USB/drive disconnect causing I/O errors:
+
+```bash
+cd ~
+sudo systemctl stop docker
+sudo systemctl stop containerd
+sudo umount -l /srv
+
+# re-scan SCSI bus & refresh LVM metadata
+for host in /sys/class/scsi_host/host*/scan; do echo "- - -" > "$host"; done
+sudo pvscan --cache
+sudo vgchange -ay vg_data
+
+# repair filesystem consistency
+sudo e2fsck -fy /dev/vg_data/lv_storage
+
+# remount and clean Docker sockets
+sudo mount /dev/vg_data/lv_storage /srv
+sudo rm -rf /run/docker /run/containerd /var/run/docker /var/run/containerd
+
+sudo systemctl restart containerd
+sudo systemctl restart docker
+
+# restart containers
+cd /srv/docker/nextcloud && sudo docker compose up -d
+cd /srv/docker/npm && sudo docker compose up -d
+cd /srv/docker/gitlab && sudo docker compose up -d
+```
+
+**Key Lessons Learned:**
+
+- LVM spanning across mixed storage interfaces (internal SATA + external USB) is a critical single-point-of-failure architecture.
+- ext4 orphan inode recovery via `e2fsck -y` is highly effective for unlinked directory structures with intact data blocks.
+- Docker named volumes persist and survive filesystem corruption; reconnecting them to recovered inodes is the fastest recovery path.
+- SSH tunneling over Tailscale provides secure remote administration when direct network paths are blocked.
+
+---
+
+## Restoring Cloudflare Tunnel & Homelab DNS Resolution
+
+**Date: 2026-08-31 (continued)**
+
+### Problem
+
+After restoring the Docker volumes and starting the container stack, none of the web services were reachable from my MacBook despite all containers reporting healthy status.
+
+**Root Causes:**
+
+- The `cloudflared-nextcloud` container had exited and was not actively maintaining the outbound tunnel connection for `nc.olympus-luca.online`.
+- With public wildcard DNS previously removed from Cloudflare, the MacBook (connected via Tailscale using MagicDNS `100.100.100.100`) could not resolve internal subdomains (`gitlab.`, `npm.`, `dash.`) that were only defined statically in MikroTik's local DNS.
+
+### 1. Re-deploying Cloudflare Tunnel for Nextcloud
+
+Removed the stale stopped container and relaunched the active tunnel process in daemon mode:
+
+```bash
+sudo docker rm -f cloudflared-nextcloud
+
+sudo docker run -d \
+  --name cloudflared-nextcloud \
+  --restart unless-stopped \
+  --network host \
+  --user "$(id -u):$(id -g)" \
+  --env HOME=/tmp \
+  -v "$HOME/.cloudflared:/etc/cloudflared:ro" \
+  cloudflare/cloudflared:latest \
+  tunnel --config /etc/cloudflared/config.yml run
+```
+
+Inspected logs to verify tunnel registration:
+
+```bash
+sudo docker logs cloudflared-nextcloud --tail 15
+```
+
+The output confirmed 4 registered tunnel connections to Cloudflare edge nodes. `https://nc.olympus-luca.online` became immediately reachable from external networks.
+
+### 2. Allowing Tailscale Traffic through Host Firewall
+
+Ensured incoming and forwarded packets on the `tailscale0` virtual interface are explicitly permitted:
+
+```bash
+sudo iptables -I INPUT -i tailscale0 -j ACCEPT
+sudo iptables -I FORWARD -i tailscale0 -j ACCEPT
+sudo netfilter-persistent save
+```
+
+This ensures that Tailscale clients can reach services across the homelab without hitting UFW or iptables drop rules.
+
+### 3. Dedicated Private Namespace (*.home.olympus-luca.online) & HTTP/2 Coalescing Resolution
+
+When `nc.olympus-luca.online` is routed via Cloudflare Tunnel (using Cloudflare Universal SSL `*.olympus-luca.online`), browsers visiting Nextcloud open an HTTP/2 connection to Cloudflare. Because first-level subdomains share the wildcard scope, browsers attempt to reuse that connection for private services (`gitlab`, `npm`, `nd`), which Cloudflare rejects with `421 Misdirected Request (openresty)`.
+
+To eliminate browser connection collisions permanently while keeping Nextcloud public:
+- **Public Domain (Cloudflare Tunnel):** `nc.olympus-luca.online`
+- **Private Subdomain Namespace (NPM / 10.0.0.10):** `*.home.olympus-luca.online` (e.g., `gitlab.home.`, `npm.home.`, `nd.home.`, `home.`)
+
+**Cloudflare DNS Records:**
+- **Name:** `*.home` | **Type:** `A` | **Content:** `10.0.0.10` | **Proxy:** DNS only (Grey Cloud)
+- **Name:** `home` | **Type:** `A` | **Content:** `10.0.0.10` | **Proxy:** DNS only (Grey Cloud)
+
+**MikroTik Local DNS:**
+```routeros
+/ip dns static add name=home.olympus-luca.online match-subdomain=yes address=10.0.0.10
+```
+
+### 4. Root Filesystem Optimization & Containerd Storage Relocation
+
+Identified `/var/lib/containerd` (22GB) and `/var/cache/apt` (6.3GB) filling the root SSD (`vg_system-lv_root`) to 95% capacity:
+1. Emptied apt package cache: `sudo apt clean`
+2. Relocated containerd root data to the 1.2TB HDD storage array:
+   ```bash
+   sudo systemctl stop docker docker.socket containerd
+   sudo mv /var/lib/containerd /srv/containerd
+   sudo ln -s /srv/containerd /var/lib/containerd
+   sudo systemctl start containerd docker
+   ```
+3. Reduced root SSD usage from 95% (2.5GB free) down to 25% (30GB+ free).
+
+### Verification
+
+- `nc.olympus-luca.online` is reachable publicly through Cloudflare Tunnel ✓
+- Internal services on `*.home.olympus-luca.online` resolve to `10.0.0.10` without 421 collisions ✓
+- All services accessible locally and over Tailscale via HTTPS with valid Let's Encrypt wildcard certs ✓
+
+---
+
+## Troubleshooting GitLab 502 Boot Failure & Database Recovery
+
+**Date: 2026-08-31 (continued)**
+
+### Problem
+
+When navigating to `https://gitlab.home.olympus-luca.online`, the browser returned `HTTP 502: Waiting for GitLab to boot`. Inspection of GitLab service status revealed that Puma and Sidekiq were stuck in a continuous crash loop, restarting every 45 seconds:
+
+```bash
+sudo docker exec -it gitlab gitlab-ctl status
+# puma and sidekiq continuously resetting to < 20s runtime
+```
+
+### Root Causes
+
+1. **Puma Cluster Mode Worker Timeout & CPU Starvation:**
+   - Running Puma in cluster mode (`worker_processes = 2`) on the dual-core i3 CPU with 8GB RAM spawned 5 heavy Ruby processes simultaneously.
+   - On the mechanical HDD storage, Rails initialization took ~80 seconds, which exceeded Puma's default 60-second watchdog timeout, causing child workers to be killed before binding to the socket.
+
+2. **Missing Database Schema (`PG::UndefinedTable`):**
+   - Inspection of `/srv/docker/gitlab/logs/puma/current` revealed:
+     ```text
+     PG::UndefinedTable: ERROR: relation "application_settings" does not exist
+     ```
+   - When the root SSD ran out of disk space earlier (95% full), GitLab's initial database migration was interrupted, leaving PostgreSQL with an empty schema.
+
+3. **Unseeded Default Fixtures & Autoloading Error:**
+   - When Rails attempted to dynamically create the missing application settings on the fly inside the web server, it triggered a circular Zeitwerk autoloading crash:
+     ```text
+     NameError: uninitialized constant Gitlab::Redis::ALL_CLASSES
+     ```
+
+### Resolution Steps
+
+1. **Switched Puma to Single Mode in `compose.yaml`:**
+   - Changed `puma['worker_processes'] = 0` and set `puma['worker_timeout'] = 300`.
+   - Running in Single Mode eliminates child worker forking, saves ~1.5GB of RAM, and prevents watchdog timeout kills on low-resource hardware.
+
+2. **Ran Database Schema Migrations:**
+   - Created all PostgreSQL tables, indexes, and constraints:
+     ```bash
+     sudo docker exec -it gitlab gitlab-rake db:migrate
+     ```
+
+3. **Seeded Default System Fixtures & Admin Account:**
+   - Populated the `application_settings` row, default organization, root user credentials, and CI signing keys:
+     ```bash
+     sudo docker exec -it gitlab gitlab-rake db:seed_fu
+     ```
+
+4. **Reconfigured Omnibus & Restarted Services:**
+   - Re-generated internal configuration templates and restarted the web stack:
+     ```bash
+     sudo docker exec -it gitlab gitlab-ctl reconfigure
+     sudo docker exec -it gitlab gitlab-ctl restart puma
+     sudo docker exec -it gitlab gitlab-ctl restart gitlab-workhorse
+     sudo docker exec -it gitlab gitlab-ctl restart nginx
+     ```
+
+### Verification
+
+- Puma bound to `tcp://127.0.0.1:8080` and `unix:///var/opt/gitlab/gitlab-rails/sockets/gitlab.socket` ✓
+- `curl -I http://127.0.0.1:8080` returned `HTTP 302 Found` to `/users/sign_in` ✓
+- `https://gitlab.home.olympus-luca.online` loads the GitLab login dashboard cleanly over HTTPS ✓

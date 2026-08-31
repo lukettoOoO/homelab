@@ -8,7 +8,7 @@ if [[ -f "$CONFIG_FILE" ]]; then
 fi
 
 GITHUB_USER="lukettoOoO"
-GITLAB_URL="https://gitlab.olympus-luca.online"
+GITLAB_URL="https://gitlab.home.olympus-luca.online"
 BACKUP_DIR="/srv/docker/gitlab-backup/repos"
 
 : "${GITHUB_TOKEN:?Set GITHUB_TOKEN before running the backup}"
@@ -17,8 +17,8 @@ BACKUP_DIR="/srv/docker/gitlab-backup/repos"
 mkdir -p "$BACKUP_DIR"
 
 # fetch all public and private github repositories
-REPOS=$(curl -s -H "Authorization: token ${GITHUB_TOKEN}" \
-  "https://api.github.com/user/repos?per_page=100&type=all" | grep -o 'git@[^"]*' || true)
+REPOS=$(curl -s -H "User-Agent: bash" -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+  "https://api.github.com/user/repos?per_page=100&type=all" | grep -o 'git@[^"]*')
 
 for REPO in $REPOS; do
   REPO_NAME=$(basename -s .git "$REPO")
@@ -31,22 +31,23 @@ for REPO in $REPOS; do
     git clone --mirror "https://${GITHUB_TOKEN}@github.com/${GITHUB_USER}/${REPO_NAME}.git" "$TARGET_DIR"
   else
     cd "$TARGET_DIR"
+    git remote set-url origin "https://${GITHUB_TOKEN}@github.com/${GITHUB_USER}/${REPO_NAME}.git"
     git remote update --prune
   fi
 
   # create gitlab project if it doesn't exist
-  PROJECT_EXISTS=$(curl -s --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" "${GITLAB_URL}/api/v4/projects?search=${REPO_NAME}")
+  PROJECT_EXISTS=$(curl -k -s --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" "${GITLAB_URL}/api/v4/projects?search=${REPO_NAME}")
 
-  if [[ "$PROJECT_EXISTS" == "[]" ]]; then
+  if [[ "$PROJECT_EXISTS" == "[]" || "$PROJECT_EXISTS" != *"${REPO_NAME}"* ]]; then
     echo "creating GitLab project ${REPO_NAME}..."
-    curl -s --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
+    curl -k -s --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
       --data "name=${REPO_NAME}&visibility=private" \
       "${GITLAB_URL}/api/v4/projects"
   fi
 
   # push full mirror (all branches, tags, and commits) to gitlab
   cd "$TARGET_DIR"
-  git push --mirror "https://oauth2:${GITLAB_TOKEN}@gitlab.olympus-luca.online/root/${REPO_NAME}.git" || true
+  git push --mirror "https://oauth2:${GITLAB_TOKEN}@gitlab.home.olympus-luca.online/root/${REPO_NAME}.git" || true
 done
 
 echo "backup completed successfully!"

@@ -36,12 +36,12 @@
 | **MikroTik hEX S** | [http://10.0.0.1](http://10.0.0.1) | `10.0.0.1:80` | WebFig (HTTP), WinBox (`8291`), SSH (`22`) |
 | **TP-Link TL-SG108E** | [http://10.0.0.2](http://10.0.0.2) | `10.0.0.2:80` | Web GUI (HTTP) |
 | **Node 01 (Debian Eos)** | - | `10.0.0.10:22` | SSH CLI |
-| **Nginx Proxy Manager** | [http://10.0.0.10:81](http://10.0.0.10:81) | `10.0.0.10:81` | Web Admin (HTTP) |
-| **Olympus Dashboard** | [https://olympus-luca.online](https://olympus-luca.online) | [http://10.0.0.10:8000](http://10.0.0.10:8000) | HTTPS (Reverse Proxy / Docker) |
-| **Nextcloud** | [https://nc.olympus-luca.online](https://nc.olympus-luca.online) | `10.0.0.10:11000` | HTTPS (Reverse Proxy / Docker) |
-| **Nextcloud AIO Panel** | [https://nc-aio.olympus-luca.online](https://nc-aio.olympus-luca.online) | `https://10.0.0.10:8080` | HTTPS (Reverse Proxy / Docker) |
-| **GitLab Server** | [https://gitlab.olympus-luca.online](https://gitlab.olympus-luca.online) | `http://10.0.0.10:8085` | HTTPS (Reverse Proxy / Docker) |
-| **Netdata Monitoring** | [https://nd.olympus-luca.online](https://nd.olympus-luca.online) | `http://10.0.0.10:19999` | HTTPS (Reverse Proxy / Docker) |
+| **Olympus Dashboard** | [https://home.olympus-luca.online](https://home.olympus-luca.online) | [http://10.0.0.10:8000](http://10.0.0.10:8000) | HTTPS (Reverse Proxy / Docker) |
+| **Nextcloud** | [https://nc.olympus-luca.online](https://nc.olympus-luca.online) | `10.0.0.10:11000` | HTTPS (Cloudflare Tunnel) |
+| **Nextcloud AIO Panel** | [https://nc-aio.home.olympus-luca.online](https://nc-aio.home.olympus-luca.online) | `https://10.0.0.10:8080` | HTTPS (Reverse Proxy / Docker) |
+| **GitLab Server** | [https://gitlab.home.olympus-luca.online](https://gitlab.home.olympus-luca.online) | `http://10.0.0.10:8085` | HTTPS (Reverse Proxy / Docker) |
+| **Netdata Monitoring** | [https://nd.home.olympus-luca.online](https://nd.home.olympus-luca.online) | `http://10.0.0.10:19999` | HTTPS (Reverse Proxy / Docker) |
+| **Nginx Proxy Manager** | [https://npm.home.olympus-luca.online](https://npm.home.olympus-luca.online) | `http://10.0.0.10:81` | HTTPS (Reverse Proxy / Docker) |
 | **Node 02 (Proxmox Dionysus)** | [https://10.0.0.20:8006](https://10.0.0.20:8006) | `10.0.0.20:8006` | PVE Web GUI (HTTPS), SSH (`22`) |
 | **VM 100 (Windows Server 2022)** | - | `10.0.0.30:3389` | Remote Desktop (RDP) |
 | **VM 100 OpenSSH** | - | `10.0.0.30:22` | SSH CLI (`Administrator@10.0.0.30`) |
@@ -262,9 +262,6 @@ round-trip min/avg/max/stddev = 3.389/3.465/3.542/0.077 ms
 See [Node 01 README - Cloudflare Tunnel for Nextcloud access](../Node-01/README.md#cloudflare-tunnel-for-nextcloud-access) for the complete setup log.
 
 Only `https://nc.olympus-luca.online` is publicly reachable. No ports were opened on the home router or MikroTik; all other homelab services remain private.
-
-
-## MikroTik Wake-on LAN Script
 
 
 

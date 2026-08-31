@@ -5,11 +5,11 @@ services:
     image: gitlab/gitlab-ce:latest
     container_name: gitlab
     restart: always
-    hostname: gitlab.olympus-luca.online
+    hostname: gitlab.home.olympus-luca.online
     environment:
       GITLAB_OMNIBUS_CONFIG: |
         # external url handled behind nginx proxy manager (reverse proxy)
-        external_url 'https://gitlab.olympus-luca.online' # public url where gitlab will be accessed
+        external_url 'https://gitlab.home.olympus-luca.online' # public url where gitlab will be accessed
         nginx['listen_port'] = 80 # container listens on port 80 internally
         nginx['listen_https'] = false # disables https in internal nginx (handled by reverse proxy) 
         nginx['proxy_set_headers'] = { # lets gitlab know that it is behind a reverse proxy
@@ -21,10 +21,11 @@ services:
         gitlab_rails['gitlab_shell_ssh_port'] = 2222
 
         # low memory optimization
-        puma['worker_processes'] = 2 # 2 web workers
+        puma['worker_processes'] = 0 # single mode (saves 1.5GB RAM, boots reliably on 8GB host)
         puma['min_threads'] = 1 # limit threading
-        puma['max_threads'] = 2 # limit threading
-        sidekiq['concurrency'] = 5 # liit background job workers
+        puma['max_threads'] = 4 # limit threading
+        puma['worker_timeout'] = 300
+        sidekiq['concurrency'] = 5 # limit background job workers
         postgresql['shared_buffers'] = "256MB" # reduce database memory
         postgresql['max_worker_processes'] = 2
         prometheus_monitoring['enable'] = false # disable metrics collection

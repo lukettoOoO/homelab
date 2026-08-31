@@ -1,4 +1,4 @@
-# Node-02 Specifications
+# 💻 Node-02 (Atlas) Specifications
 
 ### Hardware Specs Overview
 | Specification | Details / Value |

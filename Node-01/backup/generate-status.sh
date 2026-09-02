@@ -4,6 +4,9 @@
 # outputs to status json
 set -uo pipefail
 
+# ensure full path for cron environment
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
 STATUS_DIR="/srv/docker/dashboard/html/data"
 STATUS_FILE="${STATUS_DIR}/status.json"
 BACKUP_STATUS_FILE="${STATUS_DIR}/backup-status.json"
@@ -30,7 +33,9 @@ BACKUP_UUID_FILE="/etc/homelab-backup-uuid"
 BACKUP_CONNECTED=false
 if [ -f "${BACKUP_UUID_FILE}" ]; then
     BACKUP_UUID=$(cat "${BACKUP_UUID_FILE}")
-    if blkid -U "${BACKUP_UUID}" > /dev/null 2>&1; then
+    if [ -b "/dev/disk/by-uuid/${BACKUP_UUID}" ] || [ -b "/dev/backup-disk" ]; then
+        BACKUP_CONNECTED=true
+    elif command -v blkid >/dev/null 2>&1 && blkid -U "${BACKUP_UUID}" > /dev/null 2>&1; then
         BACKUP_CONNECTED=true
     fi
 fi

@@ -6,12 +6,15 @@
 # uses rsync with partial so interrupted backups resume next run
 set -uo pipefail
 
+# ensure full path for cron environment
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
 # configuration
 BACKUP_UUID="7452da95-ed38-481f-9331-b341d36fe0e5"
+BACKUP_DEV_LINK="/dev/backup-disk"
 BACKUP_MOUNT="/mnt/backup"
 BACKUP_DIR="${BACKUP_MOUNT}/homelab-backups"
 LATEST_LINK="${BACKUP_DIR}/latest"
-LOG_FILE="/var/log/homelab-backup.log"
 RETENTION_DAYS=30
 IO_TIMEOUT=10       # seconds to wait for drive io test
 MAX_RETRIES=3       # total attempts
@@ -24,9 +27,6 @@ SRV_NOTES="/srv/notes"
 SRV_TEST="/srv/test"
 HOME_LUCA="/home/luca"
 SYS_ETC="/etc"
-
-# logging
-exec > >(tee -a "${LOG_FILE}") 2>&1
 
 # cleanup function always unmount and disable maintenance mode
 cleanup() {
@@ -42,20 +42,43 @@ cleanup() {
 }
 trap cleanup EXIT
 
+# wakeup and rescan scsi and usb buses
+wakeup_drive() {
+    for host in /sys/class/scsi_host/host*/scan; do
+        [ -f "${host}" ] && echo "- - -" > "${host}" 2>/dev/null || true
+    done
+    udevadm trigger --subsystem-match=block 2>/dev/null || true
+    sleep 2
+}
+
 # try to find mount and test the backup drive
 try_mount_and_test() {
-    if ! blkid -U "${BACKUP_UUID}" > /dev/null 2>&1; then
+    wakeup_drive
+
+    # check if drive is available via uuid by id or udev symlink
+    DRIVE_DEV=""
+    if [ -b "/dev/disk/by-uuid/${BACKUP_UUID}" ]; then
+        DRIVE_DEV=$(readlink -f "/dev/disk/by-uuid/${BACKUP_UUID}")
+    elif command -v blkid >/dev/null 2>&1 && blkid -U "${BACKUP_UUID}" >/dev/null 2>&1; then
+        DRIVE_DEV=$(blkid -U "${BACKUP_UUID}")
+    elif [ -b "${BACKUP_DEV_LINK}" ]; then
+        DRIVE_DEV=$(readlink -f "${BACKUP_DEV_LINK}")
+    fi
+
+    if [ -z "${DRIVE_DEV}" ]; then
         echo "[!] backup drive not detected."
         return 1
     fi
 
-    DRIVE_DEV=$(blkid -U "${BACKUP_UUID}")
     echo "    found drive at ${DRIVE_DEV}"
 
+    # check if already mounted
     mkdir -p "${BACKUP_MOUNT}"
-    if ! mount UUID="${BACKUP_UUID}" "${BACKUP_MOUNT}" 2>&1; then
-        echo "[!] could not mount backup drive."
-        return 1
+    if ! findmnt "${BACKUP_MOUNT}" > /dev/null 2>&1; then
+        if ! mount "${DRIVE_DEV}" "${BACKUP_MOUNT}" 2>&1; then
+            echo "[!] could not mount backup drive."
+            return 1
+        fi
     fi
 
     # test io responsiveness

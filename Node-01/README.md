@@ -1265,3 +1265,43 @@ sudo docker exec -it gitlab gitlab-ctl status
 - Puma bound to `tcp://127.0.0.1:8080` and `unix:///var/opt/gitlab/gitlab-rails/sockets/gitlab.socket` ✓
 - `curl -I http://127.0.0.1:8080` returned `HTTP 302 Found` to `/users/sign_in` ✓
 - `https://gitlab.home.olympus-luca.online` loads the GitLab login dashboard cleanly over HTTPS ✓
+
+---
+
+## LVM Span Elimination, Automated Nightly Backup & GitHub Mirror
+
+**Date: 2026-09-01**
+
+### Problem
+
+- Docker containers entered zombie state (`0% CPU, 0B RAM`) due to I/O freeze on `/srv`.
+- The volume group `vg_data` spanned across internal SATA HDD (`/dev/sdb1`) and external USB HDD (`/dev/sdc`). Intermittent USB drops triggered kernel zero-size lockups (`limit=0`), freezing the entire filesystem.
+- Nextcloud returned `502 Bad Gateway` with a corrupted PostgreSQL index (`activity_user_time`).
+
+### Resolution
+
+1. **LVM Span Removal:** Shrunk filesystem (`resize2fs 680G`), reduced logical volume (`lvreduce -L 690G`), removed `/dev/sdc` from VG (`vgreduce` & `pvremove`), and re-extended `/srv` to 100% of internal SATA HDD (698GB).
+2. **Dedicated USB Backup System:** Repurposed `/dev/sdc` as an unmounted off-line backup target with WWN udev rule (`/dev/backup-disk`), 3-attempt retry loop (45 min intervals), and hardlinked incremental rsync (`backup.sh`).
+3. **Database & Nextcloud Repair:** Reindexed PostgreSQL (`reindexdb -U oc_nextcloud`), reset admin credentials, and purged 3,385 orphan file records via `occ files:scan --all`.
+4. **GitHub to GitLab Mirror:** Generated root API token via Rails runner and mirrored all 22 GitHub repos into local GitLab (`backup-github.sh`).
+5. **Dashboard & Cron:** Deployed lightweight HTML status dashboard on port 8000. Configured cron jobs at 02:00 (GitHub mirror), 03:00 (full backup), and */5 (dashboard metrics).
+
+---
+
+## Backup Cron Environment & USB Autosuspend Hardening
+
+**Date: 2026-09-02**
+
+- The automated 03:00 AM backup failed after 3 attempts with `backup drive not detected`.
+- In cron's non-interactive environment, `/sbin` was missing from `PATH`, preventing execution of `blkid`.
+- External USB drive entered kernel autosuspend during long idle periods while unmounted.
+
+* **Environment PATH Export:** Added explicit `export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"` to `backup.sh` and `generate-status.sh`.
+* **Bus Wakeup & Multi-Layer Detection:** Added pre-mount SCSI bus scan (`echo "- - -" > /sys/class/scsi_host/host*/scan`) and detection fallback chain (`/dev/disk/by-uuid/` → `blkid` → `/dev/backup-disk`).
+* **Disabled USB Autosuspend:** Updated udev rule with `ATTR{power/control}="on"` to prevent sleep mode.
+
+### Verification
+
+- Manual and scheduled runs execute cleanly in under 30s using hardlinked incremental snapshots
+- Dashboard live at `http://10.0.0.10:8000` reporting `SUCCESS` and drive connected
+

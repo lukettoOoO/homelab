@@ -1,0 +1,12 @@
+[myself]
+workstation.lab.example.com ansible-connection=local
+
+[intranetweb]
+servera.lab.example.com ansible-connection=local
+
+[internetweb]
+serverb.lab.example.com ansible-connection=local
+
+[web:children]
+intranetweb
+internetweb

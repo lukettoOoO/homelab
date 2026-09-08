@@ -1,0 +1,30 @@
+{
+  "generated": "2026-09-08T18:35:02+03:00",
+  "hostname": "debian-eos",
+  "uptime": "3d 23h",
+  "memory": {
+    "total": 8208199680,
+    "used": 6062616576,
+    "percent": 74
+  },
+  "containers": {
+    "running": 11,
+    "total": 14
+  },
+  "disks": [
+    {"name":"System (SSD)","mount":"/","total":48887476224,"used":16766087168,"free":29604806656,"percent":"37%","online":true},
+    {"name":"Main Storage (HDD)","mount":"/srv","total":737226817536,"used":54885502976,"free":647820910592,"percent":"8%","online":true}
+  ],
+  "backup_drive_connected": true,
+  "backup": {
+  "status": "success",
+  "timestamp": "2026-09-08T03:06:26+03:00",
+  "message": "backup completed successfully",
+  "size": "21G",
+  "drive_used": "30G",
+  "drive_free": "405G",
+  "drive_percent": "7%",
+  "attempt": 1,
+  "location": "/mnt/backup/homelab-backups/2026-09-08_0300"
+}
+}

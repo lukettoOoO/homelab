@@ -1,0 +1,11 @@
+{
+  "status": "success",
+  "timestamp": "2026-09-08T03:06:26+03:00",
+  "message": "backup completed successfully",
+  "size": "21G",
+  "drive_used": "30G",
+  "drive_free": "405G",
+  "drive_percent": "7%",
+  "attempt": 1,
+  "location": "/mnt/backup/homelab-backups/2026-09-08_0300"
+}

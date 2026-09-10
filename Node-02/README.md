@@ -285,10 +285,15 @@ Set-DnsClientServerAddress -InterfaceAlias "Ethernet" -ServerAddresses ("10.0.0.
     - Purged the stale `192.168.1.210` A records from the zone and flushed the cache:
       ```powershell
       Get-DnsServerResourceRecord -ZoneName "ad.home.olympus-luca.online" -RRType A | Where-Object { $_.RecordData.IPv4Address -eq "192.168.1.210" } | Remove-DnsServerResourceRecord -ZoneName "ad.home.olympus-luca.online" -Force
+      Get-DnsServerResourceRecord -ZoneName "_msdcs.ad.home.olympus-luca.online" -RRType A | Where-Object { $_.RecordData.IPv4Address -eq "192.168.1.210" } | Remove-DnsServerResourceRecord -ZoneName "_msdcs.ad.home.olympus-luca.online" -Force
       Clear-DnsClientCache
       ```
-    - Restarted the DNS and Netlogon services to rebind to `10.0.0.30`:
+    - Identified that `New-NetIPAddress` had added `10.0.0.30` as a secondary IP without removing the original `192.168.1.210`, causing the Domain Controller Locator (`wmic ntdomain` / `nltest /dsgetdc`) to advertise the legacy address. Removed the ghost IP from the interface and re-registered DNS/Netlogon records:
       ```powershell
+      Remove-NetIPAddress -InterfaceAlias "Ethernet" -IPAddress "192.168.1.210" -Confirm:$false
+      ipconfig /flushdns
+      ipconfig /registerdns
+      nltest /dsregdns
       Restart-Service DNS
       Restart-Service Netlogon
       ```

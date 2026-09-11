@@ -32,8 +32,8 @@
 
 | Equipment / Service              | Domain / Access URL                                                                    | Internal Destination (IP:Port)                 | Access Type / Protocol                                      |
 | -------------------------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------- | ----------------------------------------------------------- |
-| **MikroTik hEX S**               | [http://router.home.olympus-luca.online](http://router.home.olympus-luca.online)       | `10.0.0.1:80`                                  | WebFig (HTTP), WinBox (`8291`), SSH (`22`)                  |
-| **TP-Link TL-SG108E**            | [http://switch.home.olympus-luca.online](http://switch.home.olympus-luca.online)       | `10.0.0.2:80`                                  | Web GUI (HTTP)                                              |
+| **MikroTik hEX S**               | [https://router.home.olympus-luca.online](https://router.home.olympus-luca.online)     | `10.0.0.1:80`                                  | HTTPS (Reverse Proxy / NPM), WinBox (`8291`), SSH (`22`)    |
+| **TP-Link TL-SG108E**            | [https://switch.home.olympus-luca.online](https://switch.home.olympus-luca.online)     | `10.0.0.2:80`                                  | HTTPS (Reverse Proxy / NPM)                                 |
 | **Node 01 (Debian Eos)**         | -                                                                                      | `10.0.0.10:22`                                 | SSH CLI                                                     |
 | **Olympus Dashboard**            | [https://home.olympus-luca.online](https://home.olympus-luca.online)                   | [http://10.0.0.10:8000](http://10.0.0.10:8000) | HTTPS (Reverse Proxy / Docker)                              |
 | **Nextcloud**                    | [https://nc.olympus-luca.online](https://nc.olympus-luca.online)                       | `10.0.0.10:11000`                              | HTTPS (Cloudflare Tunnel)                                   |
@@ -41,7 +41,7 @@
 | **GitLab Server**                | [https://gitlab.home.olympus-luca.online](https://gitlab.home.olympus-luca.online)     | `http://10.0.0.10:8085`                        | HTTPS (Reverse Proxy / Docker)                              |
 | **Netdata Monitoring**           | [https://nd.home.olympus-luca.online](https://nd.home.olympus-luca.online)             | `http://10.0.0.10:19999`                       | HTTPS (Reverse Proxy / Docker)                              |
 | **Nginx Proxy Manager**          | [https://npm.home.olympus-luca.online](https://npm.home.olympus-luca.online)           | `http://10.0.0.10:81`                          | HTTPS (Reverse Proxy / Docker)                              |
-| **Node 02 (Proxmox Dionysus)**   | [https://pve.home.olympus-luca.online:8006](https://pve.home.olympus-luca.online:8006) | `10.0.0.20:8006`                               | PVE Web GUI (HTTPS), SSH (`22`)                             |
+| **Node 02 (Proxmox Dionysus)**   | [https://pve.home.olympus-luca.online](https://pve.home.olympus-luca.online)           | `10.0.0.20:8006`                               | HTTPS (Reverse Proxy / NPM), SSH (`22`)                     |
 | **VM 100 (Windows Server 2022)** | `dionysus.home.olympus-luca.online`                                                    | `10.0.0.30:3389`                               | Remote Desktop (RDP - Windows App)                          |
 | **VM 100 OpenSSH**               | `dionysus.home.olympus-luca.online`                                                    | `10.0.0.30:22`                                 | SSH CLI (`Administrator@dionysus.home.olympus-luca.online`) |
 | **Tailscale Subnet Router**      | Subnet route `10.0.0.0/24`                                                             | `100.80.227.117` -> `10.0.0.10`                | WireGuard / Tailnet VPN                                     |
@@ -300,10 +300,10 @@ Only `https://nc.olympus-luca.online` is publicly reachable. No ports were opene
 2.  **Configured Explicit Static DNS Records on MikroTik:**
 
     ```routeros
-    /ip dns static add name="router.home.olympus-luca.online" address=10.0.0.1
-    /ip dns static add name="switch.home.olympus-luca.online" address=10.0.0.2
+    /ip dns static add name="router.home.olympus-luca.online" address=10.0.0.10
+    /ip dns static add name="switch.home.olympus-luca.online" address=10.0.0.10
     /ip dns static add name="dionysus.home.olympus-luca.online" address=10.0.0.30
-    /ip dns static add name="pve.home.olympus-luca.online" address=10.0.0.20
+    /ip dns static add name="pve.home.olympus-luca.online" address=10.0.0.10
     /ip dns static add name="home.olympus-luca.online" address=10.0.0.10
     /ip dns static add name="gitlab.home.olympus-luca.online" address=10.0.0.10
     /ip dns static add name="npm.home.olympus-luca.online" address=10.0.0.10

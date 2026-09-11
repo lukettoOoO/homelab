@@ -29,9 +29,18 @@ services:
         postgresql['shared_buffers'] = "256MB" # reduce database memory
         postgresql['max_worker_processes'] = 2
         prometheus_monitoring['enable'] = false # disable metrics collection
+
+        # automatic backup retention (7 days = 604800 seconds)
+        gitlab_rails['backup_keep_time'] = 604800
+      GITLAB_PRE_RECONFIGURE_SCRIPT: |
+        # auto-heal permissions and clean stale locks on container startup
+        rm -f /var/opt/gitlab/postgresql/.s.PGSQL.* 2>/dev/null || true
+        rm -f /var/opt/gitlab/postgresql/data/postmaster.pid 2>/dev/null || true
+        /assets/update-permissions 2>/dev/null || true
+        chown gitlab-redis:git /var/opt/gitlab/redis 2>/dev/null || true
     ports:
-      - "8085:80" # web ui passed to nginx proxy manager (maps container port 80 to host port 8085)
-      - "2222:22" # git ssh clone port (maps container port 22 to host port 2222)
+      - '8085:80' # web ui passed to nginx proxy manager (maps container port 80 to host port 8085)
+      - '2222:22' # git ssh clone port (maps container port 22 to host port 2222)
     volumes:
       - /srv/docker/gitlab/config:/etc/gitlab
       - /srv/docker/gitlab/logs:/var/log/gitlab

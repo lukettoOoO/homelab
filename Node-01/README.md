@@ -1441,7 +1441,7 @@ sudo docker exec -it gitlab gitlab-ctl status
 - Defined explicit static DNS records on the MikroTik router (`/ip dns static`):
   - `router.home.olympus-luca.online` $\rightarrow$ `10.0.0.1` (MikroTik WebFig)
   - `switch.home.olympus-luca.online` $\rightarrow$ `10.0.0.2` (TP-Link Switch)
-  - `pve.home.olympus-luca.online` $\rightarrow$ `10.0.0.20` (Proxmox VE)
+  - `pve.home.olympus-luca.online` $\rightarrow$ `10.0.0.10` (Proxmox VE via NPM)
   - `dionysus.home.olympus-luca.online` $\rightarrow$ `10.0.0.30` (Windows Server 2022 VM)
   - `home.`, `gitlab.`, `npm.`, `nd.`, `nc-aio.` $\rightarrow$ `10.0.0.10`
 - Flushed the RouterOS DNS cache (`/ip dns cache flush`).
@@ -1451,7 +1451,49 @@ sudo docker exec -it gitlab gitlab-ctl status
 
 - Updated the dashboard website (`/srv/docker/dashboard/html/index.html`) on Node 01 to include all nodes and network hardware:
   - **Node 01 (Debian Eos):** Nextcloud, GitLab, Netdata, Nginx Proxy Manager
-  - **Node 02 (Atlas / Dionysus):** Proxmox VE Web UI (`https://pve.home.olympus-luca.online:8006`), Windows Server 2022 VM (RDP on port 3389 via Windows App)
+  - **Node 02 (Atlas / Dionysus):** Proxmox VE Web UI (`https://pve.home.olympus-luca.online`), Windows Server 2022 VM (RDP on port 3389 via Windows App)
   - **Network Infrastructure:** MikroTik RouterOS (`http://router.home.olympus-luca.online`), TP-Link Switch (`http://switch.home.olympus-luca.online`)
 - Resolved permission restrictions on `/srv/docker/dashboard/` by assigning directory ownership to `luca:luca` (`sudo chown -R luca:luca /srv/docker/dashboard`).
 - Synchronized all modified dashboard code, assets, and metric data files back to the local repository.
+
+---
+
+## GitLab Boot Recovery, Startup Permission Self-Healing & Backup Pipeline Hardening
+
+**Date: 2026-09-10**
+
+### 1. GitLab Boot Failure & 502 Gateway Diagnosis
+
+- Following an abrupt server reboot, GitLab failed to boot and remained stuck returning `HTTP 502: Waiting for GitLab to boot`.
+- Inspected container services (`gitlab-ctl status`) and logs:
+  - **PostgreSQL Socket & Lock Conflict:** Stale unix domain socket lock file `/var/opt/gitlab/postgresql/.s.PGSQL.5432.lock` and `postmaster.pid` persisted after the sudden shutdown, blocking the PostgreSQL daemon from binding.
+  - **Host Permission Bleed:** When directory ownership adjustments (`chown -R luca:luca`) were previously run on `/srv/docker`, bind-mounted paths (`/srv/docker/gitlab/data` and `/srv/docker/gitlab/logs`) got mapped to host UID `1000`.
+  - Inside the container, services run under distinct system accounts: PostgreSQL (`gitlab-psql`, UID 996), Redis (`gitlab-redis`, UID 997), and Rails/Puma/Workhorse/Gitaly (`git`, UID 998). UID 1000 ownership caused PostgreSQL to fail reading database files, Puma to crash when reopening `/var/log/gitlab/puma/puma_stdout.log`, and KAS to crash repeatedly trying to connect to `/var/opt/gitlab/redis/redis.socket`.
+
+### 2. Container Self-Healing & Startup Hooks
+
+- Configured `GITLAB_PRE_RECONFIGURE_SCRIPT` in `/srv/docker/gitlab/compose.yaml` to run automatically before Omnibus service startup:
+  - Deletes stale socket and pid locks: `rm -f /var/opt/gitlab/postgresql/.s.PGSQL.* /var/opt/gitlab/postgresql/data/postmaster.pid`.
+  - Runs native `/assets/update-permissions` to restore proper ownership across `.ssh`, `gitaly`, `git-data`, `gitlab-rails`, and all service log directories.
+  - Enforces `chown gitlab-redis:git /var/opt/gitlab/redis` so processes running as user `git` have traverse access to the Redis unix socket.
+- Added automatic 7-day retention for backup archives: `gitlab_rails['backup_keep_time'] = 604800`.
+- Recreated container (`docker compose up -d`); verified clean boot sequence where all 10 runit services reached `run: ...` state and web UI returned `HTTP 200 OK` on `/users/sign_in`.
+
+### 3. Backup Scripts Hardening
+
+- **Nightly Homelab Backup (`/srv/docker/backup/backup.sh`):**
+  - Added container pre-backup checks: runs `/assets/update-permissions` and verifies Redis socket ownership before executing `gitlab-backup create CRON=1`.
+  - Tested backup run; verified internal dump completed with exit code 0 (`1789063095_2026_09_10_19.3.0_gitlab_backup.tar`, 417 MB).
+- **GitHub to GitLab Mirror (`/srv/docker/github-backup/backup-github.sh`):**
+  - When invoked under root cron at 02:00, Git 2.35+ threw `fatal: detected dubious ownership in repository` on the `luca`-owned repos directory, causing `set -e` to abort the script.
+  - Added `git config --global --add safe.directory '*'` at script execution.
+  - Added error trapping around per-repo fetch/push commands so isolated branch push rejections (e.g. protected branches or hidden refs) log warnings instead of aborting the sync of remaining repositories.
+  - Tested execution; all 24 repositories synced cleanly.
+
+### 4. Reverse Proxy & DNS Cache Resolution
+
+- Verified HTTPS reverse proxy pass-through on NPM (`10.0.0.10`):
+  - `https://router.home.olympus-luca.online` $\rightarrow$ MikroTik WebFig (`HTTP 200`).
+  - `https://switch.home.olympus-luca.online` $\rightarrow$ TP-Link Easy Smart Switch (`HTTP 200`).
+  - `https://gitlab.home.olympus-luca.online` $\rightarrow$ GitLab CE (`HTTP 200`).
+  - `https://pve.home.olympus-luca.online` and `https://pve.home.olympus-luca.online:8006` $\rightarrow$ Proxmox VE (`HTTP 200` with valid Let's Encrypt TLS on both ports).

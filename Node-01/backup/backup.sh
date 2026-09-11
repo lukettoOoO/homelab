@@ -170,6 +170,9 @@ echo "[*] creating database and app dumps..."
 # gitlab internal backup
 if docker ps --format '{{.Names}}' | grep -q '^gitlab$'; then
     echo "    creating gitlab backup archive..."
+    # ensure container permissions and redis socket group are correct prior to backup
+    docker exec gitlab /assets/update-permissions 2>/dev/null || true
+    docker exec gitlab chown gitlab-redis:git /var/opt/gitlab/redis 2>/dev/null || true
     docker exec -t gitlab gitlab-backup create CRON=1 2>&1 || {
         echo "[!] warning: gitlab internal backup failed. raw data will still be synced."
     }

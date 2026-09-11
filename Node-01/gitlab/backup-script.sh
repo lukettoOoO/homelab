@@ -16,6 +16,9 @@ BACKUP_DIR="/srv/docker/gitlab-backup/repos"
 
 mkdir -p "$BACKUP_DIR"
 
+# allow git to operate on repos regardless of owner (avoids dubious ownership error in cron)
+git config --global --add safe.directory '*' 2>/dev/null || true
+
 # fetch all public and private github repositories
 REPOS=$(curl -s -H "User-Agent: bash" -H "Authorization: Bearer ${GITHUB_TOKEN}" \
   "https://api.github.com/user/repos?per_page=100&type=all" | grep -o 'git@[^"]*')
@@ -28,11 +31,15 @@ for REPO in $REPOS; do
 
   # mirror clone from GitHub locally
   if [ ! -d "$TARGET_DIR" ]; then
-    git clone --mirror "https://${GITHUB_TOKEN}@github.com/${GITHUB_USER}/${REPO_NAME}.git" "$TARGET_DIR"
+    if ! git clone --mirror "https://${GITHUB_TOKEN}@github.com/${GITHUB_USER}/${REPO_NAME}.git" "$TARGET_DIR"; then
+      echo "[-] Failed to clone ${REPO_NAME}, skipping..."
+      continue
+    fi
   else
-    cd "$TARGET_DIR"
-    git remote set-url origin "https://${GITHUB_TOKEN}@github.com/${GITHUB_USER}/${REPO_NAME}.git"
-    git remote update --prune
+    if ! (cd "$TARGET_DIR" && git remote set-url origin "https://${GITHUB_TOKEN}@github.com/${GITHUB_USER}/${REPO_NAME}.git" && git remote update --prune); then
+      echo "[-] Failed to update ${REPO_NAME}, skipping..."
+      continue
+    fi
   fi
 
   # create gitlab project if it doesn't exist
@@ -46,8 +53,12 @@ for REPO in $REPOS; do
   fi
 
   # push full mirror (all branches, tags, and commits) to gitlab
-  cd "$TARGET_DIR"
-  git push --mirror "https://oauth2:${GITLAB_TOKEN}@gitlab.home.olympus-luca.online/root/${REPO_NAME}.git" || true
+  if (cd "$TARGET_DIR"); then
+    cd "$TARGET_DIR"
+    git push --mirror "https://oauth2:${GITLAB_TOKEN}@gitlab.home.olympus-luca.online/root/${REPO_NAME}.git" 2>&1 || {
+      echo "[-] Warning: Push mirror for ${REPO_NAME} had non-critical errors."
+    }
+  fi
 done
 
 echo "backup completed successfully!"

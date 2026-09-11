@@ -1,0 +1,5 @@
+[webserver]
+servera.lab.example.com ansible_host=localhost ansible_connection=local
+
+[clients]
+workstation ansible_host=localhost ansible_connection=local

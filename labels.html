@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Homelab Device Labels</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      background: #f8fafc;
+      color: #0f172a;
+      margin: 0;
+      padding: 32px;
+    }
+
+    .controls {
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .controls h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin: 0;
+      flex: 1;
+    }
+
+    .btn-print {
+      padding: 8px 20px;
+      background: #1e293b;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-print:hover { background: #334155; }
+
+    .hint {
+      font-size: 0.78rem;
+      color: #64748b;
+      margin-bottom: 24px;
+    }
+
+    .section-header {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #94a3b8;
+      margin: 24px 0 12px;
+    }
+
+    .label-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    /* ── Label card ── */
+    .label-card {
+      border-radius: 14px;
+      border: 2px solid #e2e8f0;
+      background: #fff;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .label-header {
+      padding: 16px 20px;
+      color: #fff;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .type-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.75;
+      margin-bottom: 3px;
+    }
+
+    .device-name {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    .hostname-pill {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.8rem;
+      background: rgba(255,255,255,0.15);
+      border-radius: 6px;
+      padding: 4px 10px;
+      white-space: nowrap;
+    }
+
+    .os-label {
+      font-size: 0.72rem;
+      opacity: 0.65;
+      margin-top: 4px;
+      text-align: right;
+    }
+
+    .label-body {
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* ── Specs grid (hardware) ── */
+    .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px 20px;
+    }
+
+    .spec-label {
+      font-size: 0.72rem;
+      color: #94a3b8;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .spec-value {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.3;
+    }
+
+    .spec-sub {
+      font-size: 0.75rem;
+      color: #64748b;
+    }
+
+    /* ── Access block ── */
+    .access-block {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .access-rows {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .access-row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .access-type {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #94a3b8;
+      min-width: 56px;
+    }
+
+    .access-val {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.88rem;
+      color: #1e293b;
+      font-weight: 600;
+    }
+
+    .qr-box {
+      width: 68px;
+      height: 68px;
+      border: 1.5px dashed #cbd5e1;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      color: #cbd5e1;
+      text-align: center;
+      flex-shrink: 0;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* ── Port map ── */
+    .portmap-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #94a3b8;
+      margin-bottom: 6px;
+    }
+
+    .portmap-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .portmap-row {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      font-size: 0.88rem;
+    }
+
+    .port-id {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-weight: 700;
+      min-width: 64px;
+    }
+
+    .port-desc { color: #475569; }
+
+    /* parent pill on VM cards */
+    .parent-pill {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      background: rgba(255,255,255,0.18);
+      border-radius: 20px;
+      padding: 2px 9px;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Color themes ── */
+    .theme-slate  .label-header { background: #1e293b; }
+    .theme-orange .label-header { background: #7c2d12; }
+    .theme-sky    .label-header { background: #0c4a6e; }
+    .theme-teal   .label-header { background: #134e4a; }
+    .theme-violet .label-header { background: #3b0764; }
+
+    .theme-slate  .port-id { color: #475569; }
+    .theme-orange .port-id { color: #9a3412; }
+    .theme-sky    .port-id { color: #0369a1; }
+    .theme-teal   .port-id { color: #0f766e; }
+    .theme-violet .port-id { color: #7e22ce; }
+
+    @page { size: A4; margin: 10mm; }
+
+    @media print {
+      body { background: white; padding: 0; }
+      .controls, .hint, .section-header { display: none; }
+
+      /* Two labels per row, each 100mm wide — fits MikroTik (113×89mm) */
+      .label-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 100mm);
+        gap: 6mm;
+      }
+
+      .label-card {
+        width: 100mm;
+        border: 2px solid #1e293b;
+        box-shadow: none;
+        page-break-inside: avoid;
+        border-radius: 8px;
+      }
+
+      /* Header */
+      .label-header {
+        padding: 6px 10px;
+        border-radius: 6px 6px 0 0;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .type-label    { font-size: 0.5rem;  }
+      .device-name   { font-size: 1.05rem; }
+      .hostname-pill { font-size: 0.55rem; padding: 2px 5px; }
+      .os-label      { font-size: 0.5rem;  }
+      .parent-pill   { font-size: 0.5rem;  }
+
+      /* Body */
+      .label-body  { padding: 7px 10px; gap: 6px; }
+
+      /* Specs */
+      .specs-grid  { gap: 5px 10px; }
+      .spec-label  { font-size: 0.5rem;  }
+      .spec-value  { font-size: 0.68rem; }
+      .spec-sub    { font-size: 0.5rem;  }
+
+      /* Access block */
+      .access-block {
+        padding: 5px 8px;
+        background: #f1f5f9 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .access-rows { gap: 3px; }
+      .access-type { font-size: 0.5rem; min-width: 38px; }
+      .access-val  { font-size: 0.63rem; }
+
+      /* QR box */
+      .qr-box { width: 40px; height: 40px; font-size: 0.45rem; }
+
+      /* Port map */
+      .portmap-label { font-size: 0.5rem; margin-bottom: 3px; }
+      .portmap-rows  { gap: 2px; }
+      .portmap-row   { font-size: 0.63rem; }
+      .port-id       { min-width: 42px; }
+
+      .vm-grid { margin-top: 6mm; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="controls">
+    <h1>Homelab Device Labels</h1>
+    <button class="btn-print" onclick="window.print()">Print / Save as PDF</button>
+  </div>
+  <p class="hint">To save as PDF: click "Print / Save as PDF", then choose <strong>Save as PDF</strong> as the destination in your browser's print dialog.</p>
+
+  <!-- ═══ PHYSICAL DEVICES ═══ -->
+  <div class="section-header">Physical Devices</div>
+  <div class="label-grid">
+
+    <!-- NODE 01 – EOS -->
+    <div class="label-card theme-slate">
+      <div class="label-header">
+        <div>
+          <div class="type-label">Node 01 · Linux Server</div>
+          <div class="device-name">Eos</div>
+        </div>
+        <div style="text-align:right">
+          <div class="hostname-pill">debian-eos</div>
+          <div class="os-label">Debian 13 Server</div>
+        </div>
+      </div>
+      <div class="label-body">
+
+        <div class="specs-grid">
+          <div>
+            <div class="spec-label">Device</div>
+            <div class="spec-value">ASUS X550LB</div>
+            <div class="spec-sub">Repurposed laptop (~2013)</div>
+          </div>
+          <div>
+            <div class="spec-label">CPU</div>
+            <div class="spec-value">Intel Core i3-4010U</div>
+            <div class="spec-sub">2C / 4T · Haswell</div>
+          </div>
+          <div>
+            <div class="spec-label">RAM</div>
+            <div class="spec-value">8 GB DDR3</div>
+          </div>
+          <div>
+            <div class="spec-label">Storage</div>
+            <div class="spec-value">240 GB Kingston SSD</div>
+            <div class="spec-sub">+ 750 GB Samsung HDD</div>
+          </div>
+          <div>
+            <div class="spec-label">Network</div>
+            <div class="spec-value">Realtek Gigabit LAN</div>
+          </div>
+          <div>
+            <div class="spec-label">GPU</div>
+            <div class="spec-value">Intel HD 4400</div>
+          </div>
+        </div>
+
+        <div class="access-block">
+          <div class="access-rows">
+            <div class="access-row">
+              <span class="access-type">LAN IP</span>
+              <span class="access-val">10.0.0.10 / 24</span>
+            </div>
+            <div class="access-row">
+              <span class="access-type">VPN IP</span>
+              <span class="access-val">100.80.227.117 (Tailscale)</span>
+            </div>
+            <div class="access-row">
+              <span class="access-type">SSH</span>
+              <span class="access-val">luca@10.0.0.10</span>
+            </div>
+          </div>
+          <div class="qr-box">QR<br/>Code</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- NODE 02 – DIONYSUS -->
+    <div class="label-card theme-orange">
+      <div class="label-header">
+        <div>
+          <div class="type-label">Node 02 · Hypervisor</div>
+          <div class="device-name">Atlas</div>
+        </div>
+        <div style="text-align:right">
+          <div class="hostname-pill">proxmox</div>
+          <div class="os-label">Proxmox VE</div>
+        </div>
+      </div>
+      <div class="label-body">
+
+        <div class="specs-grid">
+          <div>
+            <div class="spec-label">Device</div>
+            <div class="spec-value">HP EliteDesk 800 G4</div>
+            <div class="spec-sub">35W Mini PC</div>
+          </div>
+          <div>
+            <div class="spec-label">CPU</div>
+            <div class="spec-value">Intel Core i5-8500T</div>
+            <div class="spec-sub">6C · 2.1–2.5 GHz · 8th Gen</div>
+          </div>
+          <div>
+            <div class="spec-label">RAM</div>
+            <div class="spec-value">16 GB DDR4</div>
+          </div>
+          <div>
+            <div class="spec-label">Storage</div>
+            <div class="spec-value">256 GB M.2 NVMe SSD</div>
+          </div>
+          <div>
+            <div class="spec-label">Network</div>
+            <div class="spec-value">Intel i219LM Gigabit</div>
+          </div>
+          <div>
+            <div class="spec-label">GPU</div>
+            <div class="spec-value">Intel UHD 630</div>
+          </div>
+        </div>
+
+        <div class="access-block">
+          <div class="access-rows">
+            <div class="access-row">
+              <span class="access-type">LAN IP</span>
+              <span class="access-val">10.0.0.20 / 24</span>
+            </div>
+            <div class="access-row">
+              <span class="access-type">PVE UI</span>
+              <span class="access-val">10.0.0.20:8006 (HTTPS)</span>
+            </div>
+            <div class="access-row">
+              <span class="access-type">Domain</span>
+              <span class="access-val">pve.home.olympus-luca.online</span>
+            </div>
+            <div class="access-row">
+              <span class="access-type">SSH</span>
+              <span class="access-val">root@10.0.0.20</span>
+            </div>
+          </div>
+          <div class="qr-box">QR<br/>Code</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MIKROTIK HEX S -->
+    <div class="label-card theme-sky">
+      <div class="label-header">
+        <div>
+          <div class="type-label">Router · Gateway</div>
+          <div class="device-name">MikroTik hEX S</div>
+        </div>
+        <div style="text-align:right">
+          <div class="hostname-pill">RB760iGS</div>
+          <div class="os-label">RouterOS Level 4</div>
+        </div>
+      </div>
+      <div class="label-body">
+
+        <div class="specs-grid">
+          <div>
+            <div class="spec-label">CPU</div>
+            <div class="spec-value">MT7621A Dual-Core</div>
+            <div class="spec-sub">880 MHz</div>
+          </div>
+          <div>
+            <div class="spec-label">RAM</div>
+            <div class="spec-value">256 MB</div>
+          </div>
+          <div>
+            <div class="spec-label">Ports</div>
+            <div class="spec-value">5 x Gigabit + 1 SFP</div>
+          </div>
+          <div>
+            <div class="spec-label">PoE Out</div>
+            <div class="spec-value">ether5 · Passive</div>
+            <div class="spec-sub">Up to 57 V / 500 mA</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="portmap-label">Port Map</div>
+          <div class="portmap-rows">
+            <div class="portmap-row">
+              <span class="port-id">ether1</span>
+              <span class="port-desc">WAN — Home Router (192.168.1.x)</span>
+            </div>
+            <div class="portmap-row">
+              <span class="port-id">ether2</span>
+              <span class="port-desc">LAN — TP-Link Switch (Uplink)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="access-block">
+          <div class="access-rows">
+            <div class="access-row">
+              <span class="access-type">LAN IP</span>
+              <span class="access-val">10.0.0.1 / 24 (Gateway)</span>
+            </div>
+            <div class="access-row">
+              <span class="access-type">Domain</span>
+              <span class="access-val">router.home.olympus-luca.online</span>
+            </div>
+            <div class="access-row">
+              <span class="access-type">SSH</span>
+              <span class="access-val">admin@10.0.0.1</span>
+            </div>
+            <div class="access-row">
+              <span class="access-type">WinBox</span>
+              <span class="access-val">10.0.0.1:8291</span>
+            </div>
+          </div>
+          <div class="qr-box">QR<br/>Code</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TP-LINK SWITCH -->
+    <div class="label-card theme-teal">
+      <div class="label-header">
+        <div>
+          <div class="type-label">Switch · Layer 2</div>
+          <div class="device-name">TP-Link TL-SG108E</div>
+        </div>
+        <div style="text-align:right">
+          <div class="hostname-pill">Easy Smart</div>
+          <div class="os-label">8-Port Gigabit</div>
+        </div>
+      </div>
+      <div class="label-body">
+
+        <div class="specs-grid">
+          <div>
+            <div class="spec-label">Switching Capacity</div>
+            <div class="spec-value">16 Gbps</div>
+          </div>
+          <div>
+            <div class="spec-label">Forwarding Rate</div>
+            <div class="spec-value">11.9 Mpps</div>
+          </div>
+          <div>
+            <div class="spec-label">MAC Table</div>
+            <div class="spec-value">4K entries</div>
+          </div>
+          <div>
+            <div class="spec-label">Power</div>
+            <div class="spec-value">5 V DC · 3.7 W · Fanless</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="portmap-label">Port Map</div>
+          <div class="portmap-rows">
+            <div class="portmap-row">
+              <span class="port-id">Port 1</span>
+              <span class="port-desc">MikroTik hEX S (Uplink)</span>
+            </div>
+            <div class="portmap-row">
+              <span class="port-id">Port 2</span>
+              <span class="port-desc">Node 01 — Eos (10.0.0.10)</span>
+            </div>
+            <div class="portmap-row">
+              <span class="port-id">Port 3</span>
+              <span class="port-desc">Node 02 — Dionysus (10.0.0.20)</span>
+            </div>
+            <div class="portmap-row">
+              <span class="port-id">Port 4</span>
+              <span class="port-desc">MacBook / Management (DHCP)</span>
+            </div>
+            <div class="portmap-row">
+              <span class="port-id">Ports 5–8</span>
+              <span class="port-desc">Expansion / Spare</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="access-block">
+          <div class="access-rows">
+            <div class="access-row">
+              <span class="access-type">LAN IP</span>
+              <span class="access-val">10.0.0.2 / 24</span>
+            </div>
+            <div class="access-row">
+              <span class="access-type">Domain</span>
+              <span class="access-val">switch.home.olympus-luca.online</span>
+            </div>
+          </div>
+          <div class="qr-box">QR<br/>Code</div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ VIRTUAL MACHINES ═══ -->
+  <div class="section-header vm-grid">Virtual Machines</div>
+  <div class="label-grid vm-grid">
+
+    <!-- VM 100 – WINDOWS SERVER 2022 -->
+    <div class="label-card theme-violet">
+      <div class="label-header">
+        <div>
+          <div class="type-label">VM 100 · Windows Server</div>
+          <div class="device-name">Dionysus</div>
+        </div>
+        <div style="text-align:right">
+          <div class="hostname-pill">windows-server-2022</div>
+          <div class="os-label">
+            <span class="parent-pill">on Proxmox · Node 02</span>
+          </div>
+        </div>
+      </div>
+      <div class="label-body">
+
+        <div class="specs-grid">
+          <div>
+            <div class="spec-label">OS</div>
+            <div class="spec-value">Windows Server 2022</div>
+            <div class="spec-sub">Domain Controller (AD DS)</div>
+          </div>
+          <div>
+            <div class="spec-label">VM ID</div>
+            <div class="spec-value">100</div>
+          </div>
+          <div>
+            <div class="spec-label">CPU</div>
+            <div class="spec-value">2 vCores (host type)</div>
+          </div>
+          <div>
+            <div class="spec-label">RAM</div>
+            <div class="spec-value">6 GB</div>
+          </div>
+          <div>
+            <div class="spec-label">Disk</div>
+            <div class="spec-value">70 GB VirtIO Block</div>
+          </div>
+          <div>
+            <div class="spec-label">NIC</div>
+            <div class="spec-value">VirtIO (vmbr0)</div>
+          </div>
+          <div>
+            <div class="spec-label">AD Domain</div>
+            <div class="spec-value">ad.home.olympus-luca.online</div>
+            <div class="spec-sub">NetBIOS: DIONYSUS</div>
+          </div>
+          <div>
+            <div class="spec-label">Boot</div>
+            <div class="spec-value">Auto-start on Proxmox boot</div>
+          </div>
+        </div>
+
+        <div class="access-block">
+          <div class="access-rows">
+            <div class="access-row">
+              <span class="access-type">LAN IP</span>
+              <span class="access-val">10.0.0.30 / 24</span>
+            </div>
+            <div class="access-row">
+              <span class="access-type">Domain</span>
+              <span class="access-val">dionysus.home.olympus-luca.online</span>
+            </div>
+            <div class="access-row">
+              <span class="access-type">RDP</span>
+              <span class="access-val">10.0.0.30:3389</span>
+            </div>
+            <div class="access-row">
+              <span class="access-type">SSH</span>
+              <span class="access-val">Administrator@10.0.0.30</span>
+            </div>
+          </div>
+          <div class="qr-box">QR<br/>Code</div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+- name: Display total amount of system memory, and the number of processors it has
+  hosts: servers
+  tasks:
+    - name: Display total amount of system memory
+      ansible.builtin.debug:
+        msg: "{{ ansible_facts['memtotal_mb'] }}"
+    - name: Display the number of processors
+      ansible.builtin.debug:
+        msg: "{{ ansible_facts['processor_count'] }}"

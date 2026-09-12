@@ -1,0 +1,898 @@
+Sep  7 19:33:53 workstation sudo[3427]:    luca : TTY=pts/0 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/dnf install -y podman pipx
+Sep  7 19:33:53 workstation sudo[3427]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  7 19:34:10 workstation (o-bridge)[3604]: pam_unix(login:session): session opened for user gdm(uid=42) by gdm(uid=0)
+Sep  7 19:34:10 workstation (o-bridge)[3603]: pam_unix(login:session): session opened for user luca(uid=1000) by luca(uid=0)
+Sep  7 19:34:10 workstation (sd-pam)[3608]: pam_unix(login:session): session closed for user gdm
+Sep  7 19:34:10 workstation (sd-pam)[3609]: pam_unix(login:session): session closed for user luca
+Sep  7 19:34:11 workstation sudo[3427]: pam_unix(sudo:session): session closed for user root
+Sep  7 19:35:02 workstation sudo[3748]:    luca : TTY=pts/0 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/dnf install -y python3-devel gcc oniguruma-devel
+Sep  7 19:35:02 workstation sudo[3748]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  7 19:35:15 workstation sudo[3748]: pam_unix(sudo:session): session closed for user root
+Sep  7 20:04:39 workstation sudo[4567]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-inventory ; USER=root ; COMMAND=/bin/nano inventory
+Sep  7 20:04:39 workstation sudo[4567]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  7 20:09:34 workstation sudo[4567]: pam_unix(sudo:session): session closed for user root
+Sep  7 20:23:56 workstation unix_chkpwd[5219]: password check failed for user (luca)
+Sep  7 20:23:56 workstation sudo[5217]: pam_unix(sudo:auth): authentication failure; logname=luca uid=1000 euid=0 tty=/dev/pts/0 ruser=luca rhost=  user=luca
+Sep  7 20:28:58 workstation sudo[5217]: pam_unix(sudo:auth): conversation failed
+Sep  7 20:28:58 workstation sudo[5217]: pam_unix(sudo:auth): auth could not identify password for [luca]
+Sep  7 20:28:59 workstation sudo[5217]:    luca : 1 incorrect password attempt ; TTY=pts/0 ; PWD=/home/luca/classroom_env ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-mdnroutuxzwstmoprymznjcnqodcvqqj ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788801835.8933797-5205-1617462801735/AnsiballZ_dnf.py'
+Sep  8 11:32:10 workstation sshd[1199]: Server listening on 0.0.0.0 port 22.
+Sep  8 11:32:10 workstation sshd[1199]: Server listening on :: port 22.
+Sep  8 11:32:22 workstation (systemd)[2476]: pam_unix(systemd-user:session): session opened for user gdm(uid=42) by gdm(uid=0)
+Sep  8 11:32:22 workstation gdm-launch-environment][2469]: pam_unix(gdm-launch-environment:session): session opened for user gdm(uid=42) by (uid=0)
+Sep  8 11:32:55 workstation sshd-session[3152]: Accepted password for luca from 192.168.1.154 port 58523 ssh2
+Sep  8 11:32:55 workstation (systemd)[3158]: pam_unix(systemd-user:session): session opened for user luca(uid=1000) by luca(uid=0)
+Sep  8 11:32:55 workstation sshd-session[3152]: pam_unix(sshd:session): session opened for user luca(uid=1000) by luca(uid=0)
+Sep  8 11:35:23 workstation unix_chkpwd[3235]: password check failed for user (luca)
+Sep  8 11:35:23 workstation sudo[3233]: pam_unix(sudo:auth): authentication failure; logname=luca uid=1000 euid=0 tty=/dev/pts/0 ruser=luca rhost=  user=luca
+Sep  8 11:35:29 workstation sudo[3233]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-manage ; USER=root ; COMMAND=/bin/nano ansible-navigator.yml
+Sep  8 11:35:29 workstation sudo[3233]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 11:36:58 workstation sudo[3233]: pam_unix(sudo:session): session closed for user root
+Sep  8 11:37:42 workstation sudo[3300]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-manage ; USER=root ; COMMAND=/bin/nano ansible-navigator.yml
+Sep  8 11:37:42 workstation sudo[3300]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 11:38:01 workstation sudo[3300]: pam_unix(sudo:session): session closed for user root
+Sep  8 11:39:05 workstation sudo[3460]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-manage ; USER=root ; COMMAND=/bin/nano ansible.cfg
+Sep  8 11:39:05 workstation sudo[3460]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 11:39:34 workstation sudo[3460]: pam_unix(sudo:session): session closed for user root
+Sep  8 11:40:06 workstation sudo[3486]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-manage ; USER=root ; COMMAND=/bin/nano inventory
+Sep  8 11:40:06 workstation sudo[3486]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 11:42:02 workstation sudo[3486]: pam_unix(sudo:session): session closed for user root
+Sep  8 11:45:13 workstation sudo[3579]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-manage ; USER=root ; COMMAND=/bin/nano inventory
+Sep  8 11:45:13 workstation sudo[3579]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 11:45:34 workstation sudo[3579]: pam_unix(sudo:session): session closed for user root
+Sep  8 11:46:14 workstation sudo[3667]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-manage ; USER=root ; COMMAND=/bin/nano inventory
+Sep  8 11:46:14 workstation sudo[3667]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 11:46:45 workstation sudo[3667]: pam_unix(sudo:session): session closed for user root
+Sep  8 11:47:14 workstation sudo[3740]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-manage ; USER=root ; COMMAND=/bin/nano inventory
+Sep  8 11:47:14 workstation sudo[3740]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 11:47:28 workstation sudo[3740]: pam_unix(sudo:session): session closed for user root
+Sep  8 11:49:40 workstation sudo[4006]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-manage ; USER=root ; COMMAND=/bin/nano inventory
+Sep  8 11:49:40 workstation sudo[4006]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 11:49:57 workstation sudo[4006]: pam_unix(sudo:session): session closed for user root
+Sep  8 11:51:09 workstation sudo[4501]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-manage ; USER=root ; COMMAND=/bin/nano ansible.cfg
+Sep  8 11:51:09 workstation sudo[4501]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 11:53:34 workstation sudo[4501]: pam_unix(sudo:session): session closed for user root
+Sep  8 11:53:36 workstation sudo[4509]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-manage ; USER=root ; COMMAND=/bin/nano ansible.cfg
+Sep  8 11:53:36 workstation sudo[4509]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 11:53:45 workstation sudo[4509]: pam_unix(sudo:session): session closed for user root
+Sep  8 11:57:03 workstation unix_chkpwd[4742]: password check failed for user (luca)
+Sep  8 11:57:03 workstation sshd-session[4740]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=100.112.181.107  user=luca
+Sep  8 11:57:06 workstation sshd-session[4740]: Failed password for luca from 100.112.181.107 port 58976 ssh2
+Sep  8 11:57:13 workstation sshd-session[4740]: Accepted password for luca from 100.112.181.107 port 58976 ssh2
+Sep  8 11:57:13 workstation sshd-session[4740]: pam_unix(sshd:session): session opened for user luca(uid=1000) by luca(uid=0)
+Sep  8 11:57:13 workstation sshd-session[4745]: Received disconnect from 100.112.181.107 port 58976:11: disconnected by user
+Sep  8 11:57:13 workstation sshd-session[4745]: Disconnected from user luca 100.112.181.107 port 58976
+Sep  8 11:57:13 workstation sshd-session[4740]: pam_unix(sshd:session): session closed for user luca
+Sep  8 12:50:04 workstation sudo[4907]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-basic ; USER=root ; COMMAND=/bin/sh -c 'echo "127.0.0.1 serverc.lab.example.com" >> /etc/hosts'
+Sep  8 12:50:04 workstation sudo[4907]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 12:50:04 workstation sudo[4907]: pam_unix(sudo:session): session closed for user root
+Sep  8 12:52:53 workstation sudo[4929]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-basic ; USER=root ; COMMAND=/bin/nano site.yml
+Sep  8 12:52:53 workstation sudo[4929]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:00:01 workstation sudo[4929]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:00:55 workstation sudo[4976]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-basic ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-pnqwcsyqxietxafdxvtviztwdkbszzzp ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788861655.354141-4959-21473340139569/AnsiballZ_setup.py'
+Sep  8 13:00:55 workstation sudo[4976]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:00:57 workstation sudo[4976]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:00:57 workstation sudo[5060]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-basic ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-biiuxhwmwegtrtbrgqoojlysngzspaov ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788861657.2441876-5048-3343129569274/AnsiballZ_dnf.py'
+Sep  8 13:00:57 workstation sudo[5060]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:01:04 workstation groupadd[5093]: group added to /etc/group: name=apache, GID=48
+Sep  8 13:01:04 workstation groupadd[5093]: group added to /etc/gshadow: name=apache
+Sep  8 13:01:04 workstation groupadd[5093]: new group: name=apache, GID=48
+Sep  8 13:01:04 workstation useradd[5097]: new user: name=apache, UID=48, GID=48, home=/usr/share/httpd, shell=/sbin/nologin, from=none
+Sep  8 13:01:06 workstation sudo[5060]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:01:06 workstation sudo[5253]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-basic ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-qecvcfvnaxthiwstsmocvgutwscacnho ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788861666.3463807-5241-64051488767832/AnsiballZ_stat.py'
+Sep  8 13:01:06 workstation sudo[5253]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:01:06 workstation sudo[5253]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:01:06 workstation sudo[5262]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-basic ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-xowbrucrjvexvkynyffdfftgnphuxewu ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788861666.3463807-5241-64051488767832/AnsiballZ_copy.py'
+Sep  8 13:01:06 workstation sudo[5262]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:01:06 workstation sudo[5262]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:01:07 workstation sudo[5280]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-basic ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-rsymvwtlqsphodmvnxwoxptrimkgyyax ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788861666.938514-5268-252232125534688/AnsiballZ_systemd.py'
+Sep  8 13:01:07 workstation sudo[5280]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:01:08 workstation sudo[5280]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:02:20 workstation sudo[5664]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-basic ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-ndzfjqqrdzobhfvlehwtihkptxmbytre ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788861740.2702484-5630-203752629270052/AnsiballZ_setup.py'
+Sep  8 13:02:20 workstation sudo[5662]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-basic ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-hmzyzxnlrxlikvwhvxsklitvvlsxhckb ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788861740.262382-5629-154797567398882/AnsiballZ_setup.py'
+Sep  8 13:02:20 workstation sudo[5662]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:02:20 workstation sudo[5664]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:02:21 workstation sudo[5662]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:02:21 workstation sudo[5664]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:02:21 workstation sudo[5832]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-basic ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-bphllkpzyzaqkjthldkhtbotvsyurxcs ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788861741.5864062-5807-62793709989013/AnsiballZ_dnf.py'
+Sep  8 13:02:21 workstation sudo[5831]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-basic ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-dewsuqvxbxabusiuxjpkyyrmgrzpjznw ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788861741.5896306-5808-254808821924142/AnsiballZ_dnf.py'
+Sep  8 13:02:21 workstation sudo[5832]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:02:21 workstation sudo[5831]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:02:22 workstation sudo[5832]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:02:23 workstation sudo[5831]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:02:23 workstation sudo[5871]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-basic ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-fdckmqksieuufbtjrfaevjnykqbcwegh ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788861743.3884554-5847-206839730609907/AnsiballZ_stat.py'
+Sep  8 13:02:23 workstation sudo[5872]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-basic ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-glcfkolyjwguqvoaugvbghkmkqsqhzil ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788861743.3905294-5848-26358138073528/AnsiballZ_stat.py'
+Sep  8 13:02:23 workstation sudo[5871]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:02:23 workstation sudo[5872]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:02:23 workstation sudo[5872]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:02:23 workstation sudo[5871]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:02:23 workstation sudo[5891]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-basic ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-anuqpndtfmvacahrotcysgxpysjjtdjr ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788861743.3884554-5847-206839730609907/AnsiballZ_file.py'
+Sep  8 13:02:23 workstation sudo[5892]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-basic ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-caiywykxkgikyogqanlhnvugnmxlukbr ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788861743.3905294-5848-26358138073528/AnsiballZ_file.py'
+Sep  8 13:02:23 workstation sudo[5891]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:02:23 workstation sudo[5892]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:02:23 workstation sudo[5891]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:02:23 workstation sudo[5892]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:02:23 workstation sudo[5928]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-basic ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-sysqzrtpyixfxvwtgvuovvmfwbvvvjzi ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788861743.776491-5905-102264464653281/AnsiballZ_systemd.py'
+Sep  8 13:02:23 workstation sudo[5930]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-basic ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-opafpgclitjpqhfoilmfyebzioswlkdz ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788861743.7796867-5906-13332878739036/AnsiballZ_systemd.py'
+Sep  8 13:02:23 workstation sudo[5928]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:02:23 workstation sudo[5930]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:02:24 workstation sudo[5928]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:02:24 workstation sudo[5930]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:03:27 workstation sudo[5959]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-basic ; USER=root ; COMMAND=/bin/sh -c 'echo "127.0.0.1 serverd.lab.example.com" >> /etc/hosts'
+Sep  8 13:03:27 workstation sudo[5959]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:03:27 workstation sudo[5959]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:15:23 workstation sudo[5979]:    luca : TTY=pts/0 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/dnf install -y firewalld python3-firewall
+Sep  8 13:15:23 workstation sudo[5979]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:15:27 workstation sudo[5979]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:15:38 workstation sudo[6300]:    luca : TTY=pts/0 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/sh -c 'echo "127.0.0.1 servera.lab.example.com workstation.lab.example.com" >> /etc/hosts'
+Sep  8 13:15:38 workstation sudo[6300]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:15:38 workstation sudo[6300]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:16:47 workstation sshd-session[6333]: Accepted password for luca from 100.112.181.107 port 60706 ssh2
+Sep  8 13:16:47 workstation sshd-session[6333]: pam_unix(sshd:session): session opened for user luca(uid=1000) by luca(uid=0)
+Sep  8 13:16:47 workstation sshd-session[6338]: Received disconnect from 100.112.181.107 port 60706:11: disconnected by user
+Sep  8 13:16:47 workstation sshd-session[6338]: Disconnected from user luca 100.112.181.107 port 60706
+Sep  8 13:16:47 workstation sshd-session[6333]: pam_unix(sshd:session): session closed for user luca
+Sep  8 13:18:13 workstation sudo[6416]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-multi ; USER=root ; COMMAND=/bin/nano intranet.yml
+Sep  8 13:18:13 workstation sudo[6416]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:30:24 workstation sudo[6416]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:31:08 workstation sudo[6474]:    luca : a password is required ; TTY=pts/0 ; PWD=/home/luca/playbook-multi ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-izvshxmbkvraceyfquuodokhipzsxewe ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788863468.4442642-6457-49786981736155/AnsiballZ_setup.py'
+Sep  8 13:31:21 workstation sudo[6501]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-multi ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-ijfshgoirucdanxjviebxzvhrazkzifo ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788863481.7871914-6484-82539815925501/AnsiballZ_setup.py'
+Sep  8 13:31:21 workstation sudo[6501]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:31:23 workstation sudo[6501]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:31:23 workstation sudo[6585]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-multi ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-krwtlypgyjipeakadnganodkzplxmzpd ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788863483.1036372-6573-99925468622296/AnsiballZ_dnf.py'
+Sep  8 13:31:23 workstation sudo[6585]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:31:23 workstation sudo[6585]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:31:24 workstation sudo[6604]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-multi ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-maaclmfbjkdebxucnztvlvbaqxuqgawu ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788863483.9438686-6592-244837909748705/AnsiballZ_stat.py'
+Sep  8 13:31:24 workstation sudo[6604]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:31:24 workstation sudo[6604]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:31:24 workstation sudo[6615]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-multi ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-fytrabwknjlrqvbwzgfpdwnambnkcwpb ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788863483.9438686-6592-244837909748705/AnsiballZ_copy.py'
+Sep  8 13:31:24 workstation sudo[6615]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:31:24 workstation sudo[6615]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:31:24 workstation sudo[6633]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-multi ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-iblvwwebapzwkaveridayqczqillqizm ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788863484.2899916-6621-217070320297448/AnsiballZ_systemd.py'
+Sep  8 13:31:24 workstation sudo[6633]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:31:24 workstation sudo[6633]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:31:24 workstation sudo[6653]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-multi ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-trwlxcoeyhgklvzpjhzgduecfhipqzer ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788863484.597195-6641-91049331021843/AnsiballZ_firewalld.py'
+Sep  8 13:31:24 workstation sudo[6653]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:31:24 workstation sudo[6653]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:31:59 workstation sudo[6671]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-multi ; USER=root ; COMMAND=/bin/nano intranet.yml
+Sep  8 13:31:59 workstation sudo[6671]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:32:15 workstation sudo[6671]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:32:21 workstation sudo[6700]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-multi ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-tmvwcvjgmacemgdfjkypkwhlrxqfspbx ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788863540.9736085-6683-232843376391681/AnsiballZ_setup.py'
+Sep  8 13:32:21 workstation sudo[6700]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:32:22 workstation sudo[6700]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:32:22 workstation sudo[6783]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-multi ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-pkflrajhocecqhapcbfvawuurfnchtxo ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788863542.3914034-6771-91944306094543/AnsiballZ_dnf.py'
+Sep  8 13:32:22 workstation sudo[6783]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:32:23 workstation sudo[6783]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:32:23 workstation sudo[6802]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-multi ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-ehmrhgwnhjkzqgkjltqxyihmxivqwxpt ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788863543.21791-6790-6496534931386/AnsiballZ_stat.py'
+Sep  8 13:32:23 workstation sudo[6802]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:32:23 workstation sudo[6802]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:32:23 workstation sudo[6811]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-multi ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-ykguquucddfodfciarvulzfpqhqyzhmo ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788863543.21791-6790-6496534931386/AnsiballZ_file.py'
+Sep  8 13:32:23 workstation sudo[6811]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:32:23 workstation sudo[6811]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:32:23 workstation sudo[6829]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-multi ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-bzqmsnqkcdiynheyoymlovagilfxydwq ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788863543.5726418-6817-262915728753112/AnsiballZ_systemd.py'
+Sep  8 13:32:23 workstation sudo[6829]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:32:23 workstation sudo[6829]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:32:23 workstation sudo[6849]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-multi ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-wgkmevjqlxnlkyrkfssnbyjizloymqgy ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788863543.8978405-6837-35758570056016/AnsiballZ_firewalld.py'
+Sep  8 13:32:23 workstation sudo[6849]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:32:24 workstation sudo[6849]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:32:24 workstation sudo[6867]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-multi ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-hbbtvpqncxuqywdddntpprwhobewhyjl ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788863544.2054925-6855-219060900151424/AnsiballZ_systemd.py'
+Sep  8 13:32:24 workstation sudo[6867]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:32:24 workstation sudo[6867]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:33:27 workstation sshd-session[6979]: Accepted password for luca from 100.112.181.107 port 61064 ssh2
+Sep  8 13:33:27 workstation sshd-session[6979]: pam_unix(sshd:session): session opened for user luca(uid=1000) by luca(uid=0)
+Sep  8 13:33:27 workstation sshd-session[6983]: Received disconnect from 100.112.181.107 port 61064:11: disconnected by user
+Sep  8 13:33:27 workstation sshd-session[6983]: Disconnected from user luca 100.112.181.107 port 61064
+Sep  8 13:33:27 workstation sshd-session[6979]: pam_unix(sshd:session): session closed for user luca
+Sep  8 13:35:43 workstation sudo[7034]:    luca : TTY=pts/0 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/sh -c 'echo "127.0.0.1 serverb.lab.example.com" >> /etc/hosts'
+Sep  8 13:35:43 workstation sudo[7034]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:35:43 workstation sudo[7034]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:36:04 workstation sudo[7060]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-review ; USER=root ; COMMAND=/bin/sh -c 'echo "127.0.0.1 serverb.lab.example.com" >> /etc/hosts'
+Sep  8 13:36:04 workstation sudo[7060]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 13:36:04 workstation sudo[7060]: pam_unix(sudo:session): session closed for user root
+Sep  8 13:37:13 workstation sudo[7078]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-review ; USER=root ; COMMAND=/bin/nano internet.yml
+Sep  8 13:37:13 workstation sudo[7078]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 14:41:27 workstation sudo[7078]: pam_unix(sudo:session): session closed for user root
+Sep  8 14:41:53 workstation sudo[7200]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-review ; USER=root ; COMMAND=/bin/nano internet.yml
+Sep  8 14:41:53 workstation sudo[7200]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 14:42:15 workstation sudo[7200]: pam_unix(sudo:session): session closed for user root
+Sep  8 14:42:21 workstation sudo[7207]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-review ; USER=root ; COMMAND=/bin/nano internet.yml
+Sep  8 14:42:21 workstation sudo[7207]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 14:46:42 workstation sudo[7207]: pam_unix(sudo:session): session closed for user root
+Sep  8 14:46:59 workstation sudo[7221]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-review ; USER=root ; COMMAND=/bin/nano internet.yml
+Sep  8 14:46:59 workstation sudo[7221]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 14:48:30 workstation sudo[7221]: pam_unix(sudo:session): session closed for user root
+Sep  8 14:50:19 workstation sudo[7247]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-review ; USER=root ; COMMAND=/bin/nano internet.yml
+Sep  8 14:50:19 workstation sudo[7247]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 14:50:31 workstation sudo[7247]: pam_unix(sudo:session): session closed for user root
+Sep  8 14:51:01 workstation sudo[7283]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-jqwqhxszstomqyfgnghpwyntotntexft ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788868261.018583-7266-145584795678406/AnsiballZ_setup.py'
+Sep  8 14:51:01 workstation sudo[7283]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 14:51:02 workstation sudo[7283]: pam_unix(sudo:session): session closed for user root
+Sep  8 14:51:02 workstation sudo[7365]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-pzwqopsbqhcumwpkkuvuigxjihsjeakr ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788868262.706609-7353-196072950516965/AnsiballZ_dnf.py'
+Sep  8 14:51:02 workstation sudo[7365]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 14:51:09 workstation groupadd[7394]: group added to /etc/group: name=nginx, GID=979
+Sep  8 14:51:09 workstation groupadd[7394]: group added to /etc/gshadow: name=nginx
+Sep  8 14:51:09 workstation groupadd[7394]: new group: name=nginx, GID=979
+Sep  8 14:51:09 workstation useradd[7397]: new user: name=nginx, UID=982, GID=979, home=/var/lib/nginx, shell=/sbin/nologin, from=none
+Sep  8 14:51:22 workstation groupadd[7507]: group added to /etc/group: name=mysql, GID=27
+Sep  8 14:51:22 workstation groupadd[7507]: group added to /etc/gshadow: name=mysql
+Sep  8 14:51:22 workstation groupadd[7507]: new group: name=mysql, GID=27
+Sep  8 14:51:22 workstation useradd[7508]: new user: name=mysql, UID=27, GID=27, home=/var/lib/mysql, shell=/sbin/nologin, from=none
+Sep  8 14:51:24 workstation sudo[7365]: pam_unix(sudo:session): session closed for user root
+Sep  8 14:51:24 workstation sudo[8108]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-ghtnukmwkcqnzdcteywfvxkfdlbvmasd ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788868284.70548-8096-200550749899001/AnsiballZ_systemd.py'
+Sep  8 14:51:24 workstation sudo[8108]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 14:51:25 workstation sudo[8108]: pam_unix(sudo:session): session closed for user root
+Sep  8 14:51:25 workstation sudo[8128]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-skuyxxjkkwuyegjebxnkdeujdtipnjjv ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788868285.3632004-8116-265062710942589/AnsiballZ_firewalld.py'
+Sep  8 14:51:25 workstation sudo[8128]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 14:51:25 workstation sudo[8128]: pam_unix(sudo:session): session closed for user root
+Sep  8 14:51:25 workstation sudo[8146]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-tsogwzeopieywovcvmcaiczcujkklmgz ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788868285.7434773-8134-243299869627746/AnsiballZ_systemd.py'
+Sep  8 14:51:25 workstation sudo[8146]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 14:51:25 workstation sudo[8146]: pam_unix(sudo:session): session closed for user root
+Sep  8 14:52:03 workstation sudo[8170]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-review ; USER=root ; COMMAND=/bin/nano internet.yml
+Sep  8 14:52:03 workstation sudo[8170]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 14:52:20 workstation sudo[8170]: pam_unix(sudo:session): session closed for user root
+Sep  8 14:52:43 workstation sudo[8176]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-review ; USER=root ; COMMAND=/bin/nano internet.yml
+Sep  8 14:52:43 workstation sudo[8176]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 14:53:09 workstation sudo[8176]: pam_unix(sudo:session): session closed for user root
+Sep  8 14:53:16 workstation sudo[8205]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-pyjibdtcxtdhjhcqrhvzwavibgoeymhe ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788868395.9437072-8188-274072715047778/AnsiballZ_setup.py'
+Sep  8 14:53:16 workstation sudo[8205]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 14:53:17 workstation sudo[8205]: pam_unix(sudo:session): session closed for user root
+Sep  8 14:53:17 workstation sudo[8287]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-yozwvthkmkzoutulexhofdmayijqgalo ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788868397.2684524-8275-191911594169639/AnsiballZ_dnf.py'
+Sep  8 14:53:17 workstation sudo[8287]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 14:53:18 workstation sudo[8287]: pam_unix(sudo:session): session closed for user root
+Sep  8 14:53:18 workstation sudo[8307]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-znbybmhkclyangvjqxpgwhtyhtgkvufv ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788868398.132283-8295-130045675384322/AnsiballZ_systemd.py'
+Sep  8 14:53:18 workstation sudo[8307]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 14:53:18 workstation sudo[8307]: pam_unix(sudo:session): session closed for user root
+Sep  8 14:53:18 workstation sudo[8327]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-fguipbretsbdhgfwcsdqmhwimjoivhau ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788868398.4409359-8315-117916006143865/AnsiballZ_firewalld.py'
+Sep  8 14:53:18 workstation sudo[8327]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 14:53:18 workstation sudo[8327]: pam_unix(sudo:session): session closed for user root
+Sep  8 14:53:18 workstation sudo[8345]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-idrfmambyzvidfkkjjzzsadktyzyrtkg ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788868398.7271225-8333-160734265353735/AnsiballZ_systemd.py'
+Sep  8 14:53:18 workstation sudo[8345]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 14:53:18 workstation sudo[8345]: pam_unix(sudo:session): session closed for user root
+Sep  8 14:53:18 workstation sudo[8365]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-zawodiqfeihkcmpcftkbaequpsdaojjn ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788868398.9517078-8353-124439520819258/AnsiballZ_systemd.py'
+Sep  8 14:53:18 workstation sudo[8365]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 14:53:19 workstation sudo[8365]: pam_unix(sudo:session): session closed for user root
+Sep  8 14:53:25 workstation sudo[8371]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-review ; USER=root ; COMMAND=/bin/nano internet.yml
+Sep  8 14:53:25 workstation sudo[8371]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 14:53:34 workstation sudo[8371]: pam_unix(sudo:session): session closed for user root
+Sep  8 14:53:38 workstation sudo[8399]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-uxrugriyenjmanttcrqvpenvjqsnlfpf ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788868418.8238783-8382-49901351378298/AnsiballZ_setup.py'
+Sep  8 14:53:39 workstation sudo[8399]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 14:53:40 workstation sudo[8399]: pam_unix(sudo:session): session closed for user root
+Sep  8 14:53:40 workstation sudo[8481]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-cljaoxxqqcxnjsegypyukpudhwcxwkns ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788868420.175571-8469-70228856904653/AnsiballZ_dnf.py'
+Sep  8 14:53:40 workstation sudo[8481]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 14:53:41 workstation sudo[8481]: pam_unix(sudo:session): session closed for user root
+Sep  8 14:53:41 workstation sudo[8500]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-yapbtmrgbyldhottanyhagyatrmuudxy ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788868421.0450656-8488-244358315928803/AnsiballZ_systemd.py'
+Sep  8 14:53:41 workstation sudo[8500]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 14:53:41 workstation sudo[8500]: pam_unix(sudo:session): session closed for user root
+Sep  8 14:53:41 workstation sudo[8520]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-gbetaxcjvkrglpsyaoszyvlyrfinzeel ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788868421.3626373-8508-51972358251900/AnsiballZ_firewalld.py'
+Sep  8 14:53:41 workstation sudo[8520]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 14:53:41 workstation sudo[8520]: pam_unix(sudo:session): session closed for user root
+Sep  8 14:53:41 workstation sudo[8538]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-jjogdxdyayjdhgovoajmponiskrjxvko ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788868421.787314-8526-14604382452381/AnsiballZ_systemd.py'
+Sep  8 14:53:41 workstation sudo[8538]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 14:53:41 workstation sudo[8538]: pam_unix(sudo:session): session closed for user root
+Sep  8 14:53:42 workstation sudo[8558]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-plaxbgsinhyvkxiihxyjxpbkhxndvntl ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788868422.0024116-8546-234241635979385/AnsiballZ_systemd.py'
+Sep  8 14:53:42 workstation sudo[8558]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 14:53:46 workstation sudo[8558]: pam_unix(sudo:session): session closed for user root
+Sep  8 14:53:46 workstation sudo[8853]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-ofaplisgtusqkfwptudwpezzdmrddzhr ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788868426.4618616-8841-262234265752906/AnsiballZ_stat.py'
+Sep  8 14:53:46 workstation sudo[8853]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 14:53:46 workstation sudo[8853]: pam_unix(sudo:session): session closed for user root
+Sep  8 14:53:46 workstation sudo[8862]:    luca : TTY=pts/0 ; PWD=/home/luca/playbook-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-njfvfjvrbwpjildkhdvqkikrlxifygfg ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1788868426.4618616-8841-262234265752906/AnsiballZ_copy.py'
+Sep  8 14:53:46 workstation sudo[8862]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep  8 14:53:46 workstation sudo[8862]: pam_unix(sudo:session): session closed for user root
+Sep  8 14:56:56 workstation sshd-session[8972]: Accepted password for luca from 100.112.181.107 port 62890 ssh2
+Sep  8 14:56:56 workstation sshd-session[8972]: pam_unix(sshd:session): session opened for user luca(uid=1000) by luca(uid=0)
+Sep  8 14:56:56 workstation sshd-session[8976]: Received disconnect from 100.112.181.107 port 62890:11: disconnected by user
+Sep  8 14:56:56 workstation sshd-session[8976]: Disconnected from user luca 100.112.181.107 port 62890
+Sep  8 14:56:56 workstation sshd-session[8972]: pam_unix(sshd:session): session closed for user luca
+Sep  8 18:41:05 workstation sshd-session[3182]: Received disconnect from 192.168.1.154 port 58523:11: disconnected by user
+Sep  8 18:41:05 workstation sshd-session[3182]: Disconnected from user luca 192.168.1.154 port 58523
+Sep  8 18:41:05 workstation sshd-session[3152]: pam_unix(sshd:session): session closed for user luca
+Sep 10 13:21:08 workstation sshd[1155]: Server listening on 0.0.0.0 port 22.
+Sep 10 13:21:08 workstation sshd[1155]: Server listening on :: port 22.
+Sep 10 13:21:20 workstation (systemd)[2862]: pam_unix(systemd-user:session): session opened for user gdm(uid=42) by gdm(uid=0)
+Sep 10 13:21:20 workstation gdm-launch-environment][2855]: pam_unix(gdm-launch-environment:session): session opened for user gdm(uid=42) by (uid=0)
+Sep 10 13:32:06 workstation sshd-session[3525]: Accepted password for luca from 192.168.1.154 port 54804 ssh2
+Sep 10 13:32:06 workstation (systemd)[3531]: pam_unix(systemd-user:session): session opened for user luca(uid=1000) by luca(uid=0)
+Sep 10 13:32:07 workstation sshd-session[3525]: pam_unix(sshd:session): session opened for user luca(uid=1000) by luca(uid=0)
+Sep 10 13:36:13 workstation unix_chkpwd[3601]: password check failed for user (luca)
+Sep 10 13:36:13 workstation sudo[3599]: pam_unix(sudo:auth): authentication failure; logname=luca uid=1000 euid=0 tty=/dev/pts/0 ruser=luca rhost=  user=luca
+Sep 10 13:36:21 workstation sudo[3599]:    luca : TTY=pts/0 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/dnf install -y python3-firewall firewalld
+Sep 10 13:36:21 workstation sudo[3599]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 13:40:08 workstation sshd-session[3549]: Received disconnect from 192.168.1.154 port 54804:11: disconnected by user
+Sep 10 13:40:08 workstation sshd-session[3549]: Disconnected from user luca 192.168.1.154 port 54804
+Sep 10 13:40:08 workstation sshd-session[3525]: pam_unix(sshd:session): session closed for user luca
+Sep 10 13:40:08 workstation sudo[3599]: pam_unix(sudo:session): session closed for user root
+Sep 10 13:41:01 workstation unix_chkpwd[3627]: password check failed for user (luca)
+Sep 10 13:41:01 workstation sshd-session[3625]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.1.154  user=luca
+Sep 10 13:41:02 workstation sshd-session[3625]: Failed password for luca from 192.168.1.154 port 54976 ssh2
+Sep 10 13:41:07 workstation unix_chkpwd[3628]: password check failed for user (luca)
+Sep 10 13:41:09 workstation sshd-session[3625]: Failed password for luca from 192.168.1.154 port 54976 ssh2
+Sep 10 13:41:13 workstation sshd-session[3625]: Accepted password for luca from 192.168.1.154 port 54976 ssh2
+Sep 10 13:41:13 workstation (systemd)[3637]: pam_unix(systemd-user:session): session opened for user luca(uid=1000) by luca(uid=0)
+Sep 10 13:41:13 workstation sshd-session[3625]: pam_unix(sshd:session): session opened for user luca(uid=1000) by luca(uid=0)
+Sep 10 13:42:39 workstation sudo[3696]:    luca : TTY=pts/0 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/sh -c 'echo "127.0.0.1 servera.lab.example.com workstation" >> /etc/hosts'
+Sep 10 13:42:39 workstation sudo[3696]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 13:42:39 workstation sudo[3696]: pam_unix(sudo:session): session closed for user root
+Sep 10 13:43:18 workstation sudo[3717]:    luca : TTY=pts/0 ; PWD=/home/luca/data-variables ; USER=root ; COMMAND=/bin/nano playbook.yml
+Sep 10 13:43:18 workstation sudo[3717]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 13:53:40 workstation sudo[3717]: pam_unix(sudo:session): session closed for user root
+Sep 10 13:54:54 workstation sudo[3755]:    luca : TTY=pts/0 ; PWD=/home/luca/data-variables ; USER=root ; COMMAND=/bin/nano playbook.yml
+Sep 10 13:54:54 workstation sudo[3755]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 13:55:36 workstation sudo[3755]: pam_unix(sudo:session): session closed for user root
+Sep 10 13:56:02 workstation sudo[3767]:    luca : TTY=pts/0 ; PWD=/home/luca/data-variables ; USER=root ; COMMAND=/bin/nano playbook.yml
+Sep 10 13:56:02 workstation sudo[3767]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 13:56:13 workstation sudo[3767]: pam_unix(sudo:session): session closed for user root
+Sep 10 13:56:20 workstation sudo[3777]:    luca : TTY=pts/0 ; PWD=/home/luca/data-variables ; USER=root ; COMMAND=/bin/nano playbook.yml
+Sep 10 13:56:20 workstation sudo[3777]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 13:56:27 workstation sudo[3777]: pam_unix(sudo:session): session closed for user root
+Sep 10 13:56:41 workstation sudo[3781]:    luca : TTY=pts/0 ; PWD=/home/luca/data-variables ; USER=root ; COMMAND=/bin/nano playbook.yml
+Sep 10 13:56:41 workstation sudo[3781]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 13:57:00 workstation sudo[3781]: pam_unix(sudo:session): session closed for user root
+Sep 10 13:57:30 workstation sudo[3837]:    luca : TTY=pts/0 ; PWD=/home/luca/data-variables ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-buoexsjjwuebczrtbailaoqzfbvmuvmy ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789037850.1411464-3804-60186767281761/AnsiballZ_setup.py'
+Sep 10 13:57:30 workstation sudo[3838]:    luca : TTY=pts/0 ; PWD=/home/luca/data-variables ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-iloexksafuumeqsffzyjckzxtfrwkjid ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789037850.140932-3803-200656564717741/AnsiballZ_setup.py'
+Sep 10 13:57:30 workstation sudo[3837]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 13:57:30 workstation sudo[3838]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 13:57:31 workstation sudo[3837]: pam_unix(sudo:session): session closed for user root
+Sep 10 13:57:31 workstation sudo[3838]: pam_unix(sudo:session): session closed for user root
+Sep 10 13:57:31 workstation sudo[4004]:    luca : TTY=pts/0 ; PWD=/home/luca/data-variables ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-fvzcjiplhhzgczgivszoggmqytflojqk ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789037851.4077265-3980-248914948063374/AnsiballZ_dnf.py'
+Sep 10 13:57:31 workstation sudo[4005]:    luca : TTY=pts/0 ; PWD=/home/luca/data-variables ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-sykoikphadyqyghnemsjhredgodgjpzj ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789037851.412756-3981-53570021081700/AnsiballZ_dnf.py'
+Sep 10 13:57:31 workstation sudo[4004]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 13:57:31 workstation sudo[4005]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 13:59:43 workstation sudo[4005]: pam_unix(sudo:session): session closed for user root
+Sep 10 13:59:47 workstation sudo[4022]:    luca : TTY=pts/0 ; PWD=/home/luca/data-variables ; USER=root ; COMMAND=/bin/nano playbook.yml
+Sep 10 13:59:47 workstation sudo[4022]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 14:00:12 workstation sudo[4004]: pam_unix(sudo:session): session closed for user root
+Sep 10 14:00:59 workstation sudo[4022]: pam_unix(sudo:session): session closed for user root
+Sep 10 14:01:22 workstation sudo[4044]:    luca : TTY=pts/0 ; PWD=/home/luca/data-variables ; USER=root ; COMMAND=/bin/killall -9 dnf
+Sep 10 14:01:22 workstation sudo[4044]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 14:01:22 workstation sudo[4044]: pam_unix(sudo:session): session closed for user root
+Sep 10 14:01:51 workstation sudo[4052]:    luca : TTY=pts/0 ; PWD=/home/luca/data-variables ; USER=root ; COMMAND=/bin/nano playbook.yml
+Sep 10 14:01:51 workstation sudo[4052]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 14:02:04 workstation sudo[4052]: pam_unix(sudo:session): session closed for user root
+Sep 10 14:02:18 workstation sudo[4098]:    luca : TTY=pts/0 ; PWD=/home/luca/data-variables ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-xqpddfscdjjodffvwkuhgdetigirnucg ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789038138.2861483-4064-260073289065801/AnsiballZ_setup.py'
+Sep 10 14:02:18 workstation sudo[4097]:    luca : TTY=pts/0 ; PWD=/home/luca/data-variables ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-ukhxcwxnfuuxfotkmnghthcwomalsygr ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789038138.2782016-4063-255539463564336/AnsiballZ_setup.py'
+Sep 10 14:02:18 workstation sudo[4097]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 14:02:18 workstation sudo[4098]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 14:02:19 workstation sudo[4097]: pam_unix(sudo:session): session closed for user root
+Sep 10 14:02:19 workstation sudo[4098]: pam_unix(sudo:session): session closed for user root
+Sep 10 14:02:19 workstation sudo[4263]:    luca : TTY=pts/0 ; PWD=/home/luca/data-variables ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-wmbupxmgknjkelhhbdrgtrsfaoufhrvh ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789038139.681111-4240-247874553605068/AnsiballZ_dnf.py'
+Sep 10 14:02:19 workstation sudo[4265]:    luca : TTY=pts/0 ; PWD=/home/luca/data-variables ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-vrglehqekiuudcbttixjihqgycbyuvrl ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789038139.6862233-4241-249270659394790/AnsiballZ_dnf.py'
+Sep 10 14:02:19 workstation sudo[4265]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 14:02:19 workstation sudo[4263]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 14:03:14 workstation sudo[4265]: pam_unix(sudo:session): session closed for user root
+Sep 10 14:03:17 workstation sudo[4280]:    luca : TTY=pts/0 ; PWD=/home/luca/data-variables ; USER=root ; COMMAND=/bin/killall -9 dnf
+Sep 10 14:03:17 workstation sudo[4280]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 14:03:17 workstation sudo[4280]: pam_unix(sudo:session): session closed for user root
+Sep 10 14:03:40 workstation sudo[4263]: pam_unix(sudo:session): session closed for user root
+Sep 10 14:03:42 workstation sudo[4309]:    luca : TTY=pts/0 ; PWD=/home/luca/data-variables ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-olvhrqoyjioosiurmkmdrdkklpqhnstj ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789038221.9328907-4292-149101699629183/AnsiballZ_setup.py'
+Sep 10 14:03:42 workstation sudo[4309]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 14:03:43 workstation sudo[4309]: pam_unix(sudo:session): session closed for user root
+Sep 10 14:03:43 workstation sudo[4391]:    luca : TTY=pts/0 ; PWD=/home/luca/data-variables ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-vstkakyunjobngggscyghymbvjoqoesj ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789038223.3015926-4379-271634194465601/AnsiballZ_dnf.py'
+Sep 10 14:03:43 workstation sudo[4391]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 14:11:44 workstation sudo[4391]: pam_unix(sudo:session): session closed for user root
+Sep 10 14:35:25 workstation unix_chkpwd[4454]: password check failed for user (luca)
+Sep 10 14:35:25 workstation sudo[4452]: pam_unix(sudo:auth): authentication failure; logname=luca uid=1000 euid=0 tty=/dev/pts/0 ruser=luca rhost=  user=luca
+Sep 10 14:35:31 workstation sudo[4452]:    luca : TTY=pts/0 ; PWD=/home/luca/data-variables ; USER=root ; COMMAND=/bin/dnf config-manager setopt epel.enabled=0
+Sep 10 14:35:31 workstation sudo[4452]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 14:35:32 workstation sudo[4452]: pam_unix(sudo:session): session closed for user root
+Sep 10 14:35:48 workstation sudo[4460]:    luca : TTY=pts/0 ; PWD=/home/luca/data-variables ; USER=root ; COMMAND=/bin/dnf config-manager --disable epel
+Sep 10 14:35:48 workstation sudo[4460]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 14:35:48 workstation sudo[4460]: pam_unix(sudo:session): session closed for user root
+Sep 10 14:36:04 workstation sudo[4488]:    luca : TTY=pts/0 ; PWD=/home/luca/data-variables ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-kldljlsnaxcrnaiedmgnmszlpqvpcvwr ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789040164.5766346-4471-111529155663869/AnsiballZ_setup.py'
+Sep 10 14:36:04 workstation sudo[4488]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 14:36:05 workstation sudo[4488]: pam_unix(sudo:session): session closed for user root
+Sep 10 14:36:06 workstation sudo[4570]:    luca : TTY=pts/0 ; PWD=/home/luca/data-variables ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-gatvjmdigelxtkfszgnprhgrbdtfufyw ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789040165.9727895-4558-204161529661449/AnsiballZ_dnf.py'
+Sep 10 14:36:06 workstation sudo[4570]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 14:40:00 workstation sudo[4588]:    luca : TTY=pts/0 ; PWD=/home/luca/data-variables ; USER=root ; COMMAND=/bin/pkill -9 -f dnf
+Sep 10 14:40:00 workstation sudo[4588]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 14:40:04 workstation sudo[4617]:    luca : TTY=pts/0 ; PWD=/home/luca/data-variables ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-rkrvrmlkxlvtxabmaaasggrdjloxatwl ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789040404.4416373-4600-273649416804959/AnsiballZ_setup.py'
+Sep 10 14:40:04 workstation sudo[4617]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 14:40:05 workstation sudo[4617]: pam_unix(sudo:session): session closed for user root
+Sep 10 14:40:06 workstation sudo[4699]:    luca : TTY=pts/0 ; PWD=/home/luca/data-variables ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-huasksqmoggwehgizkxemnxsegwnbfhb ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789040405.90657-4687-176711592668584/AnsiballZ_dnf.py'
+Sep 10 14:40:06 workstation sudo[4699]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 14:40:07 workstation sudo[4699]: pam_unix(sudo:session): session closed for user root
+Sep 10 14:40:07 workstation sudo[4718]:    luca : TTY=pts/0 ; PWD=/home/luca/data-variables ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-ymarwqmdgkxzksjehyaobzhuzhyysqhk ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789040407.2560937-4706-170021617766383/AnsiballZ_systemd.py'
+Sep 10 14:40:07 workstation sudo[4718]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 14:40:08 workstation sudo[4718]: pam_unix(sudo:session): session closed for user root
+Sep 10 14:40:08 workstation sudo[4738]:    luca : TTY=pts/0 ; PWD=/home/luca/data-variables ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-clpdubkleqcpyrubxgiqmkkvswooirht ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789040408.2874088-4726-22008390748279/AnsiballZ_systemd.py'
+Sep 10 14:40:08 workstation sudo[4738]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 14:40:08 workstation sudo[4738]: pam_unix(sudo:session): session closed for user root
+Sep 10 14:40:08 workstation sudo[4758]:    luca : TTY=pts/0 ; PWD=/home/luca/data-variables ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-rawriiesjapqbhadfxdrxzhoayeeihww ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789040408.6021671-4746-117256226429621/AnsiballZ_stat.py'
+Sep 10 14:40:08 workstation sudo[4758]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 14:40:08 workstation sudo[4758]: pam_unix(sudo:session): session closed for user root
+Sep 10 14:40:08 workstation sudo[4769]:    luca : TTY=pts/0 ; PWD=/home/luca/data-variables ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-pyagvrwzzzjcxzynhwuotadyshiwcghy ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789040408.6021671-4746-117256226429621/AnsiballZ_copy.py'
+Sep 10 14:40:08 workstation sudo[4769]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 14:40:09 workstation sudo[4769]: pam_unix(sudo:session): session closed for user root
+Sep 10 14:40:09 workstation sudo[4787]:    luca : TTY=pts/0 ; PWD=/home/luca/data-variables ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-yhxsfajuqgbjphfccdravolzoqfbekmy ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789040409.1403258-4775-147300951179959/AnsiballZ_firewalld.py'
+Sep 10 14:40:09 workstation sudo[4787]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 14:40:09 workstation sudo[4787]: pam_unix(sudo:session): session closed for user root
+Sep 10 15:34:57 workstation sshd-session[4997]: Accepted password for luca from 100.112.181.107 port 58009 ssh2
+Sep 10 15:34:57 workstation sshd-session[4997]: pam_unix(sshd:session): session opened for user luca(uid=1000) by luca(uid=0)
+Sep 10 15:34:57 workstation sshd-session[5001]: Received disconnect from 100.112.181.107 port 58009:11: disconnected by user
+Sep 10 15:34:57 workstation sshd-session[5001]: Disconnected from user luca 100.112.181.107 port 58009
+Sep 10 15:34:57 workstation sshd-session[4997]: pam_unix(sshd:session): session closed for user luca
+Sep 10 15:36:46 workstation sudo[5034]:    luca : TTY=pts/0 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/systemctl enable --now sshd
+Sep 10 15:36:46 workstation sudo[5034]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 15:36:46 workstation sudo[5034]: pam_unix(sudo:session): session closed for user root
+Sep 10 15:36:46 workstation sudo[5147]:    luca : TTY=pts/0 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/sh -c 'echo "127.0.0.1 servera.lab.example.com" >> /etc/hosts'
+Sep 10 15:36:46 workstation sudo[5147]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 15:36:46 workstation sudo[5147]: pam_unix(sudo:session): session closed for user root
+Sep 10 15:36:46 workstation sudo[5154]:    luca : TTY=pts/0 ; PWD=/home/luca ; USER=root ; COMMAND=/sbin/useradd -m -s /bin/bash devops
+Sep 10 15:36:46 workstation sudo[5154]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 15:36:46 workstation useradd[5157]: new group: name=devops, GID=1016
+Sep 10 15:36:46 workstation useradd[5157]: new user: name=devops, UID=1009, GID=1016, home=/home/devops, shell=/bin/bash, from=/dev/pts/1
+Sep 10 15:36:46 workstation sudo[5154]: pam_unix(sudo:session): session closed for user root
+Sep 10 15:36:46 workstation sudo[5159]:    luca : TTY=pts/0 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/tee /etc/sudoers.d/devops
+Sep 10 15:36:46 workstation sudo[5159]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 15:36:46 workstation sudo[5159]: pam_unix(sudo:session): session closed for user root
+Sep 10 15:37:23 workstation sudo[5177]:    luca : TTY=pts/0 ; PWD=/home/luca/data-secret ; USER=root ; COMMAND=/bin/nano secret.yml
+Sep 10 15:37:23 workstation sudo[5177]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 15:37:27 workstation sudo[5177]: pam_unix(sudo:session): session closed for user root
+Sep 10 15:39:02 workstation sudo[5199]:    luca : TTY=pts/0 ; PWD=/home/luca/data-secret ; USER=root ; COMMAND=/bin/nano create_users.yml
+Sep 10 15:39:02 workstation sudo[5199]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 15:48:40 workstation sudo[5199]: pam_unix(sudo:session): session closed for user root
+Sep 10 15:51:56 workstation sudo[5262]:    luca : TTY=pts/0 ; PWD=/home/luca/data-secret ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-adgpnbejlgdxgxxafvxmgfclhgepauwb ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789044716.6444585-5245-144495099093250/AnsiballZ_setup.py'
+Sep 10 15:51:56 workstation sudo[5262]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 15:51:58 workstation sudo[5262]: pam_unix(sudo:session): session closed for user root
+Sep 10 15:51:58 workstation sudo[5346]:    luca : TTY=pts/0 ; PWD=/home/luca/data-secret ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-uonluarlvrhjeldtzdbhjhvkxkrcwobr ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789044718.3356702-5334-16491002020995/AnsiballZ_user.py'
+Sep 10 15:51:58 workstation sudo[5346]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 15:51:58 workstation useradd[5351]: new group: name=ansibleuser1, GID=1017
+Sep 10 15:51:58 workstation useradd[5351]: new user: name=ansibleuser1, UID=1010, GID=1017, home=/home/ansibleuser1, shell=/bin/bash, from=/dev/pts/1
+Sep 10 15:51:58 workstation sudo[5346]: pam_unix(sudo:session): session closed for user root
+Sep 10 15:52:40 workstation sshd-session[5375]: Accepted password for ansibleuser1 from 127.0.0.1 port 48566 ssh2
+Sep 10 15:52:40 workstation (systemd)[5396]: pam_unix(systemd-user:session): session opened for user ansibleuser1(uid=1010) by ansibleuser1(uid=0)
+Sep 10 15:52:40 workstation sshd-session[5375]: pam_unix(sshd:session): session opened for user ansibleuser1(uid=1010) by ansibleuser1(uid=0)
+Sep 10 15:53:00 workstation sshd-session[5414]: Received disconnect from 127.0.0.1 port 48566:11: disconnected by user
+Sep 10 15:53:00 workstation sshd-session[5414]: Disconnected from user ansibleuser1 127.0.0.1 port 48566
+Sep 10 15:53:00 workstation sshd-session[5375]: pam_unix(sshd:session): session closed for user ansibleuser1
+Sep 10 15:54:57 workstation sshd-session[5463]: Accepted password for luca from 100.112.181.107 port 58515 ssh2
+Sep 10 15:54:57 workstation sshd-session[5463]: pam_unix(sshd:session): session opened for user luca(uid=1000) by luca(uid=0)
+Sep 10 15:54:57 workstation sshd-session[5467]: Received disconnect from 100.112.181.107 port 58515:11: disconnected by user
+Sep 10 15:54:57 workstation sshd-session[5467]: Disconnected from user luca 100.112.181.107 port 58515
+Sep 10 15:54:57 workstation sshd-session[5463]: pam_unix(sshd:session): session closed for user luca
+Sep 10 16:05:32 workstation sudo[5519]:    luca : TTY=pts/0 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/systemctl stop httpd
+Sep 10 16:05:32 workstation sudo[5519]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 16:05:33 workstation sudo[5519]: pam_unix(sudo:session): session closed for user root
+Sep 10 16:05:33 workstation sudo[5530]:    luca : TTY=pts/0 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/rm -rf /etc/ansible/facts.d
+Sep 10 16:05:33 workstation sudo[5530]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 16:05:33 workstation sudo[5530]: pam_unix(sudo:session): session closed for user root
+Sep 10 16:06:00 workstation sudo[5543]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/nano display_facts.yml
+Sep 10 16:06:00 workstation sudo[5543]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 16:07:49 workstation sudo[5543]: pam_unix(sudo:session): session closed for user root
+Sep 10 16:08:18 workstation sudo[5568]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/nano display_facts.yml
+Sep 10 16:08:18 workstation sudo[5568]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 16:09:16 workstation sudo[5568]: pam_unix(sudo:session): session closed for user root
+Sep 10 16:09:26 workstation sudo[5581]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/nano display_facts.yml
+Sep 10 16:09:26 workstation sudo[5581]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 16:09:33 workstation sudo[5581]: pam_unix(sudo:session): session closed for user root
+Sep 10 16:09:55 workstation sudo[5604]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/nano display_facts.yml
+Sep 10 16:09:55 workstation sudo[5604]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 16:10:21 workstation sudo[5604]: pam_unix(sudo:session): session closed for user root
+Sep 10 16:10:30 workstation sudo[5633]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-nntjgxefizzahpomzjzdlhfxyneplmut ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789045830.2415369-5616-244305456673450/AnsiballZ_setup.py'
+Sep 10 16:10:30 workstation sudo[5633]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 16:10:31 workstation sudo[5633]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:04:03 workstation sudo[5783]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/nano display_specific_facts.yml
+Sep 10 17:04:03 workstation sudo[5783]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:11:02 workstation sudo[5783]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:11:41 workstation sudo[5827]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-nbrrdjwiqmabcjrumusbufkopnrxyaag ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789049501.2520967-5810-168920647608743/AnsiballZ_setup.py'
+Sep 10 17:11:41 workstation sudo[5827]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:11:42 workstation sudo[5827]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:12:18 workstation sudo[5900]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/nano display_specific_facts.yml
+Sep 10 17:12:18 workstation sudo[5900]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:13:48 workstation sudo[5900]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:13:58 workstation sudo[5929]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-jkajxqzesovajfziiqflwlqtcnknopzn ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789049638.3920767-5912-34096527665636/AnsiballZ_setup.py'
+Sep 10 17:13:58 workstation sudo[5929]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:13:59 workstation sudo[5929]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:14:44 workstation sshd-session[6004]: Accepted password for luca from 127.0.0.1 port 43442 ssh2
+Sep 10 17:14:44 workstation sshd-session[6004]: pam_unix(sshd:session): session opened for user luca(uid=1000) by luca(uid=0)
+Sep 10 17:15:09 workstation sudo[6058]:    luca : TTY=pts/1 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/mkdir -p /etc/ansible/facts.d
+Sep 10 17:15:09 workstation sudo[6058]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:15:09 workstation sudo[6058]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:15:44 workstation sudo[6075]:    luca : TTY=pts/1 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/touch /etc/ansible/facts.d/custom.fact
+Sep 10 17:15:44 workstation sudo[6075]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:15:44 workstation sudo[6075]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:15:53 workstation sudo[6079]:    luca : TTY=pts/1 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/nano /etc/ansible/facts.d/custom.fact
+Sep 10 17:15:53 workstation sudo[6079]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:16:17 workstation sudo[6079]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:16:20 workstation sshd-session[6024]: Received disconnect from 127.0.0.1 port 43442:11: disconnected by user
+Sep 10 17:16:20 workstation sshd-session[6024]: Disconnected from user luca 127.0.0.1 port 43442
+Sep 10 17:16:20 workstation sshd-session[6004]: pam_unix(sshd:session): session closed for user luca
+Sep 10 17:17:01 workstation sudo[6091]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/nano playbook.yml
+Sep 10 17:17:01 workstation sudo[6091]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:21:33 workstation sudo[6091]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:22:30 workstation sudo[6112]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/nano check_httpd.yml
+Sep 10 17:22:30 workstation sudo[6112]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:24:14 workstation sudo[6112]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:24:36 workstation sudo[6143]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-faooaahrsogkynvdbunndguriwbozztm ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789050276.0610118-6126-150668406221703/AnsiballZ_setup.py'
+Sep 10 17:24:36 workstation sudo[6143]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:24:37 workstation sudo[6143]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:24:37 workstation sudo[6225]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-ihdudcecralacjmzqmhrvvdhaubruazo ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789050277.465923-6213-195896430807892/AnsiballZ_command.py'
+Sep 10 17:24:37 workstation sudo[6225]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:24:37 workstation sudo[6225]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:25:26 workstation sudo[6260]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-lkbwxwfqqzjguaasoopthvhkezbvwlca ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789050326.653783-6243-88101788328165/AnsiballZ_setup.py'
+Sep 10 17:25:26 workstation sudo[6260]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:25:28 workstation sudo[6260]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:25:41 workstation sudo[6334]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/nano playbook.yml
+Sep 10 17:25:41 workstation sudo[6334]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:26:22 workstation sudo[6334]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:26:27 workstation sudo[6362]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-bwluysghktxwigdnccxtqfrmrbqajlpk ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789050387.5020747-6345-68983115058517/AnsiballZ_setup.py'
+Sep 10 17:26:27 workstation sudo[6362]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:26:28 workstation sudo[6362]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:26:28 workstation sudo[6446]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-vqbnlcrooahdpornmzhjqqdshwifemzu ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789050388.7520719-6434-226217054303861/AnsiballZ_dnf.py'
+Sep 10 17:26:28 workstation sudo[6446]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:27:08 workstation sudo[6486]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-vzjtufalwrlodtbqeoesfkredrrsxkaz ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789050427.879496-6469-278273725573470/AnsiballZ_setup.py'
+Sep 10 17:27:08 workstation sudo[6486]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:27:09 workstation sudo[6486]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:27:09 workstation sudo[6569]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-itbjkgqagsrpogiijbawgoqviqdgpsoy ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789050429.1530278-6557-223144227336913/AnsiballZ_dnf.py'
+Sep 10 17:27:09 workstation sudo[6569]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:27:09 workstation sudo[6446]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:28:27 workstation sudo[6577]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/pkill -9 -f dnf
+Sep 10 17:28:27 workstation sudo[6577]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:28:56 workstation sudo[6582]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/pkill -9 -f dnf
+Sep 10 17:28:56 workstation sudo[6582]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:28:56 workstation sudo[6586]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/sed -i s/enabled=1/enabled=0/g /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel-testing.repo
+Sep 10 17:28:56 workstation sudo[6586]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:28:56 workstation sudo[6586]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:28:56 workstation sudo[6590]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/dnf makecache
+Sep 10 17:28:56 workstation sudo[6590]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:30:09 workstation sshd-session[3655]: Received disconnect from 192.168.1.154 port 54976:11: disconnected by user
+Sep 10 17:30:09 workstation sshd-session[3655]: Disconnected from user luca 192.168.1.154 port 54976
+Sep 10 17:30:09 workstation sshd-session[3625]: pam_unix(sshd:session): session closed for user luca
+Sep 10 17:30:09 workstation sudo[6590]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:30:21 workstation sshd-session[6599]: Accepted password for luca from 192.168.1.154 port 60878 ssh2
+Sep 10 17:30:21 workstation (systemd)[6613]: pam_unix(systemd-user:session): session opened for user luca(uid=1000) by luca(uid=0)
+Sep 10 17:30:21 workstation sshd-session[6599]: pam_unix(sshd:session): session opened for user luca(uid=1000) by luca(uid=0)
+Sep 10 17:30:28 workstation sudo[6667]:    luca : TTY=pts/0 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/tee -a /etc/resolv.conf
+Sep 10 17:30:28 workstation sudo[6667]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:30:28 workstation sudo[6667]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:30:28 workstation sudo[6673]:    luca : TTY=pts/0 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/sed -i s/enabled=1/enabled=0/g /etc/yum.repos.d/docker-ce.repo
+Sep 10 17:30:28 workstation sudo[6673]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:30:28 workstation sudo[6673]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:30:28 workstation sudo[6680]:    luca : TTY=pts/0 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/pkill -9 -f dnf
+Sep 10 17:30:28 workstation sudo[6680]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:30:28 workstation sudo[6684]:    luca : TTY=pts/0 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/dnf makecache
+Sep 10 17:30:28 workstation sudo[6684]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:31:24 workstation sshd-session[6632]: Received disconnect from 192.168.1.154 port 60878:11: disconnected by user
+Sep 10 17:31:24 workstation sshd-session[6632]: Disconnected from user luca 192.168.1.154 port 60878
+Sep 10 17:31:24 workstation sshd-session[6599]: pam_unix(sshd:session): session closed for user luca
+Sep 10 17:31:24 workstation sudo[6684]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:31:33 workstation sshd-session[6698]: Accepted password for luca from 192.168.1.154 port 60907 ssh2
+Sep 10 17:31:33 workstation sshd-session[6698]: pam_unix(sshd:session): session opened for user luca(uid=1000) by luca(uid=0)
+Sep 10 17:31:41 workstation sudo[6737]:    luca : TTY=pts/0 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/pkill -9 -f dnf
+Sep 10 17:31:41 workstation sudo[6737]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:31:42 workstation sudo[6743]:    luca : TTY=pts/0 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/sh -c 'echo "metadata_expire=never" >> /etc/dnf/dnf.conf'
+Sep 10 17:31:42 workstation sudo[6743]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:31:42 workstation sudo[6743]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:32:04 workstation sudo[6785]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-fqlkuvmxpawygbozhyykstpyzvatkagz ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789050724.3747647-6768-186923510760275/AnsiballZ_setup.py'
+Sep 10 17:32:04 workstation sudo[6785]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:32:05 workstation sudo[6785]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:32:05 workstation sudo[6869]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-bklimpkdghbjgddfdjliimcvahmjjezp ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789050725.7489486-6857-117324933497701/AnsiballZ_dnf.py'
+Sep 10 17:32:05 workstation sudo[6869]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:32:46 workstation sudo[6869]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:32:49 workstation sudo[6875]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/pkill -9 -f dnf
+Sep 10 17:32:49 workstation sudo[6875]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:32:50 workstation sudo[6879]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/pkill -9 -f rpm
+Sep 10 17:32:50 workstation sudo[6879]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:32:50 workstation sudo[6883]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/sed -i s/enabled=1/enabled=0/g /etc/yum.repos.d/docker-ce.repo /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel-testing.repo /etc/yum.repos.d/rocky-addons.repo /etc/yum.repos.d/rocky-devel.repo /etc/yum.repos.d/rocky-extras.repo /etc/yum.repos.d/rocky.repo /etc/yum.repos.d/rocky-security.repo /etc/yum.repos.d/tailscale.repo
+Sep 10 17:32:50 workstation sudo[6883]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:32:50 workstation sudo[6883]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:32:54 workstation sudo[6911]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-upurminrtaymaqjqakjviheyjgiulqwu ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789050773.9133863-6894-1960583425236/AnsiballZ_setup.py'
+Sep 10 17:32:54 workstation sudo[6911]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:32:55 workstation sudo[6911]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:32:55 workstation sudo[6994]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-dgzomtsdkellqvvgbcqjbtfcpsyjvouc ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789050775.213542-6982-214664649507900/AnsiballZ_dnf.py'
+Sep 10 17:32:55 workstation sudo[6994]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:32:55 workstation sudo[6994]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:32:56 workstation sudo[7013]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-tobhzubbufedoqdmgjzajbmygiywyozj ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789050775.9762099-7001-62290065788576/AnsiballZ_systemd.py'
+Sep 10 17:32:56 workstation sudo[7013]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:32:56 workstation sudo[7013]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:33:19 workstation sudo[7241]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-cxcjychzflgrhziqjabykobxnwsjgtoc ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789050799.6033952-7224-172071878286948/AnsiballZ_setup.py'
+Sep 10 17:33:19 workstation sudo[7241]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:33:20 workstation sudo[7241]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:33:21 workstation sudo[7323]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-niffdkozeqiolnfmalnxlmfknqxdatif ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789050800.8601756-7311-102320982293084/AnsiballZ_command.py'
+Sep 10 17:33:21 workstation sudo[7323]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:33:21 workstation sudo[7323]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:34:00 workstation sshd-session[7332]: Accepted password for luca from 100.112.181.107 port 60987 ssh2
+Sep 10 17:34:00 workstation sshd-session[7332]: pam_unix(sshd:session): session opened for user luca(uid=1000) by luca(uid=0)
+Sep 10 17:34:01 workstation sshd-session[7336]: Received disconnect from 100.112.181.107 port 60987:11: disconnected by user
+Sep 10 17:34:01 workstation sshd-session[7336]: Disconnected from user luca 100.112.181.107 port 60987
+Sep 10 17:34:01 workstation sshd-session[7332]: pam_unix(sshd:session): session closed for user luca
+Sep 10 17:35:48 workstation sudo[7374]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/sh -c 'echo "127.0.0.1 serverb.lab.example.com workstation" >> /etc/hosts'
+Sep 10 17:35:48 workstation sudo[7374]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:35:48 workstation sudo[7374]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:35:48 workstation sudo[7378]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/sh -c 'echo "nameserver 1.1.1.1" > /etc/resolv.conf'
+Sep 10 17:35:48 workstation sudo[7378]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:35:48 workstation sudo[7378]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:35:48 workstation sudo[7383]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/sed -i s/enabled=0/enabled=1/g /etc/yum.repos.d/rocky-addons.repo /etc/yum.repos.d/rocky-devel.repo /etc/yum.repos.d/rocky-extras.repo /etc/yum.repos.d/rocky.repo /etc/yum.repos.d/rocky-security.repo
+Sep 10 17:35:48 workstation sudo[7383]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:35:48 workstation sudo[7383]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:35:48 workstation sudo[7390]:    luca : TTY=pts/0 ; PWD=/home/luca/data-facts ; USER=root ; COMMAND=/bin/dnf install -y --disablerepo=* --enablerepo=baseos,appstream mod_ssl
+Sep 10 17:35:48 workstation sudo[7390]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 17:35:57 workstation sudo[7390]: pam_unix(sudo:session): session closed for user root
+Sep 10 17:37:29 workstation sudo[7587]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/nano playbook.yml
+Sep 10 17:37:29 workstation sudo[7587]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 18:52:01 workstation sudo[7587]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:31:58 workstation sudo[7865]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/nano playbook.yml
+Sep 10 19:31:58 workstation sudo[7865]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:32:30 workstation sudo[7865]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:33:23 workstation sudo[7895]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/nano playbook.yml
+Sep 10 19:33:23 workstation sudo[7895]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:34:17 workstation sudo[7895]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:35:12 workstation sudo[7910]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/nano playbook.yml
+Sep 10 19:35:12 workstation sudo[7910]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:41:07 workstation sudo[7910]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:42:03 workstation sudo[7939]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review/vars ; USER=root ; COMMAND=/bin/nano secret.yml
+Sep 10 19:42:03 workstation sudo[7939]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:42:32 workstation sudo[7939]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:42:42 workstation sudo[7952]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review/vars ; USER=root ; COMMAND=/bin/nano secret.yml
+Sep 10 19:42:42 workstation sudo[7952]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:42:53 workstation sudo[7952]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:43:47 workstation sudo[7976]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review/vars ; USER=root ; COMMAND=/bin/chown -R luca:luca /home/luca/data-review
+Sep 10 19:43:47 workstation sudo[7976]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:43:47 workstation sudo[7976]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:44:34 workstation sudo[8010]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-mpkmfumspogfvyysnfrayvbucbcomueo ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058674.251343-7993-121584522599391/AnsiballZ_setup.py'
+Sep 10 19:44:34 workstation sudo[8010]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:44:36 workstation sudo[8010]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:44:36 workstation sudo[8092]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-yqjqxehfxqsfvmeoydhjokkrmkwwwirx ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058676.7659135-8080-193377979449856/AnsiballZ_dnf.py'
+Sep 10 19:44:36 workstation sudo[8092]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:44:41 workstation sudo[8092]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:45:07 workstation sudo[8103]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/dnf config-manager --disable nfv
+Sep 10 19:45:07 workstation sudo[8103]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:45:07 workstation sudo[8103]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:45:20 workstation sudo[8131]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-jvpvvsgbalouesejvpnrngwigcwmwfdx ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058720.0147772-8114-168377387836168/AnsiballZ_setup.py'
+Sep 10 19:45:20 workstation sudo[8131]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:45:21 workstation sudo[8131]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:45:22 workstation sudo[8213]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-kejickfqcprwitqqvnhnofxaotvmcpkn ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058722.0711386-8201-184904779151903/AnsiballZ_dnf.py'
+Sep 10 19:45:22 workstation sudo[8213]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:45:36 workstation sudo[8213]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:45:59 workstation sudo[8246]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/dnf config-manager --disable *
+Sep 10 19:45:59 workstation sudo[8246]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:46:00 workstation sudo[8246]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:46:00 workstation sudo[8250]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/dnf config-manager --enable baseos appstream
+Sep 10 19:46:00 workstation sudo[8250]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:46:00 workstation sudo[8250]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:46:10 workstation sudo[8279]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-ftkfeovmqrudndnhmlafrlxtqtaejbxx ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058769.8994493-8262-111101819174891/AnsiballZ_setup.py'
+Sep 10 19:46:10 workstation sudo[8279]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:46:11 workstation sudo[8279]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:46:12 workstation sudo[8362]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-qtcupdkacsannjortaunlpokspctzrks ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058772.0314593-8350-131647280099494/AnsiballZ_dnf.py'
+Sep 10 19:46:12 workstation sudo[8362]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:46:14 workstation sudo[8362]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:46:14 workstation sudo[8385]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-vckwoicszjqdxpiyvkeqtvrgjezqednw ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058774.7231028-8373-43607644305859/AnsiballZ_stat.py'
+Sep 10 19:46:14 workstation sudo[8385]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:46:15 workstation sudo[8385]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:46:15 workstation sudo[8396]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-knfjqsbakdjsywlnpbtznmylmdcrkjyd ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058774.7231028-8373-43607644305859/AnsiballZ_copy.py'
+Sep 10 19:46:15 workstation sudo[8396]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:46:15 workstation sudo[8396]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:46:15 workstation sudo[8416]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-imabaxdoeewvssxccwrlhwiitmcpeqej ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058775.689041-8404-57537132151189/AnsiballZ_file.py'
+Sep 10 19:46:15 workstation sudo[8416]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:46:16 workstation sudo[8416]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:46:16 workstation sudo[8434]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-fkofbqrterkhfljufpsddarigbqdwcsd ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058776.1744924-8422-161471284931134/AnsiballZ_stat.py'
+Sep 10 19:46:16 workstation sudo[8434]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:46:16 workstation sudo[8434]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:46:16 workstation sudo[8443]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-xhcyuyaqynmuwwrzovauotxdpbbnlnuw ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058776.1744924-8422-161471284931134/AnsiballZ_copy.py'
+Sep 10 19:46:16 workstation sudo[8443]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:46:16 workstation sudo[8443]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:46:16 workstation sudo[8462]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-mrexxxpokitxrkyhrnuzmlhskgczdows ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058776.8265162-8450-233305723797175/AnsiballZ_stat.py'
+Sep 10 19:46:16 workstation sudo[8462]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:46:17 workstation sudo[8462]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:46:17 workstation sudo[8471]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-ejlxrxvbzlwixryslhlljwktwwgyxevv ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058776.8265162-8450-233305723797175/AnsiballZ_copy.py'
+Sep 10 19:46:17 workstation sudo[8471]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:46:17 workstation sudo[8471]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:46:17 workstation sudo[8489]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-lipjgbykodaijjuzbddjclyurxjlrbjq ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058777.464898-8477-3391195412477/AnsiballZ_stat.py'
+Sep 10 19:46:17 workstation sudo[8489]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:46:17 workstation sudo[8489]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:46:17 workstation sudo[8500]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-fuvhhcoztcajdctpcszvzixcsgselwbk ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058777.464898-8477-3391195412477/AnsiballZ_copy.py'
+Sep 10 19:46:17 workstation sudo[8500]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:46:18 workstation sudo[8500]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:46:18 workstation sudo[8518]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-upbowdzuumntbmoxpfsiezjdsnjrekuq ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058778.1212552-8506-67598664272552/AnsiballZ_systemd.py'
+Sep 10 19:46:18 workstation sudo[8518]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:46:18 workstation sudo[8518]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:46:19 workstation sudo[8538]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-kuprnwaawotmqvlvstfdylrpfwdajxkz ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058778.9500616-8526-120174535008490/AnsiballZ_firewalld.py'
+Sep 10 19:46:19 workstation sudo[8538]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:46:20 workstation sudo[8538]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:46:20 workstation sudo[8556]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-ovdvfjbzjphnhtsywpntigmlreldemhc ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058780.1604733-8544-360572061405/AnsiballZ_systemd.py'
+Sep 10 19:46:20 workstation sudo[8556]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:46:20 workstation sudo[8556]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:46:20 workstation sudo[8582]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-wqgasqivmxqdhzmtcvyrwfdkkcnpcryv ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058780.762037-8565-106705462852280/AnsiballZ_setup.py'
+Sep 10 19:46:20 workstation sudo[8582]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:46:22 workstation sudo[8582]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:46:22 workstation sudo[8664]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-jlfulwyhprrgocydtepfkpikcedpzltn ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058782.435974-8652-16835422633598/AnsiballZ_uri.py'
+Sep 10 19:46:22 workstation sudo[8664]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:46:23 workstation sudo[8664]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:47:03 workstation sudo[8671]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/systemctl restart httpd
+Sep 10 19:47:03 workstation sudo[8671]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:47:05 workstation sudo[8671]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:47:13 workstation sudo[8895]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-cowtpfqamqqwenftqoiydrmhknzbijjr ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058833.07001-8878-198284891424340/AnsiballZ_setup.py'
+Sep 10 19:47:13 workstation sudo[8895]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:47:14 workstation sudo[8895]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:47:15 workstation sudo[8977]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-qinqyvibtbixptjzczeewkbukseiimud ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058834.9821858-8965-184934702153530/AnsiballZ_dnf.py'
+Sep 10 19:47:15 workstation sudo[8977]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:47:16 workstation sudo[8977]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:47:16 workstation sudo[8996]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-csvtwzocdowfmvclpkrowdhwfhqiimbu ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058836.3656838-8984-12331219166350/AnsiballZ_stat.py'
+Sep 10 19:47:16 workstation sudo[8996]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:47:16 workstation sudo[8996]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:47:16 workstation sudo[9005]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-xkkepuhvhnudhbrzhqywnbgavbdxevhx ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058836.3656838-8984-12331219166350/AnsiballZ_file.py'
+Sep 10 19:47:16 workstation sudo[9005]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:47:17 workstation sudo[9005]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:47:17 workstation sudo[9023]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-chikgupfokqevlifapqxfopvryyuwahw ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058837.2175484-9011-132518860940862/AnsiballZ_file.py'
+Sep 10 19:47:17 workstation sudo[9023]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:47:17 workstation sudo[9023]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:47:17 workstation sudo[9042]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-lojcekbmhjblrwweajrehactnakmzjww ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058837.5452104-9030-111346692726825/AnsiballZ_stat.py'
+Sep 10 19:47:17 workstation sudo[9042]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:47:17 workstation sudo[9042]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:47:17 workstation sudo[9051]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-utznkkkcueupufhbisttltyyzoxasaob ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058837.5452104-9030-111346692726825/AnsiballZ_file.py'
+Sep 10 19:47:17 workstation sudo[9051]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:47:18 workstation sudo[9051]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:47:18 workstation sudo[9069]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-mtoawhiygtwkygbhyebistucmmxhtsfr ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058838.2481182-9057-91271251821998/AnsiballZ_stat.py'
+Sep 10 19:47:18 workstation sudo[9069]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:47:18 workstation sudo[9069]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:47:18 workstation sudo[9078]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-winxrkkjvourcenqoanmordraqzdgaet ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058838.2481182-9057-91271251821998/AnsiballZ_file.py'
+Sep 10 19:47:18 workstation sudo[9078]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:47:18 workstation sudo[9078]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:47:18 workstation sudo[9096]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-wsbodspaulruxlxfcglpddbptkucuezg ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058838.8486512-9084-137673739564183/AnsiballZ_stat.py'
+Sep 10 19:47:18 workstation sudo[9096]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:47:19 workstation sudo[9096]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:47:19 workstation sudo[9105]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-luxhzahftxoaltofydeocelvgqutcirl ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058838.8486512-9084-137673739564183/AnsiballZ_file.py'
+Sep 10 19:47:19 workstation sudo[9105]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:47:19 workstation sudo[9105]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:47:19 workstation sudo[9123]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-tfjyxwqlblmcrravepxlwdgdhlmwlukd ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058839.4418535-9111-243888896903104/AnsiballZ_systemd.py'
+Sep 10 19:47:19 workstation sudo[9123]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:47:20 workstation sudo[9123]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:47:20 workstation sudo[9144]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-okziaxqcccdftvcvptmawlqixflqnwxc ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058840.2057831-9132-178756558751202/AnsiballZ_firewalld.py'
+Sep 10 19:47:20 workstation sudo[9144]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:47:20 workstation sudo[9144]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:47:20 workstation sudo[9162]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-xebbawvyphxxwsoooncqdhckfkkhphmu ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058840.812452-9150-235879465098731/AnsiballZ_systemd.py'
+Sep 10 19:47:20 workstation sudo[9162]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:47:21 workstation sudo[9162]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:47:21 workstation sudo[9189]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-lyvpmlaoyodcofxjoaifqotmfqlywgyg ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058841.4483588-9172-127581581972042/AnsiballZ_setup.py'
+Sep 10 19:47:21 workstation sudo[9189]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:47:22 workstation sudo[9189]: pam_unix(sudo:session): session closed for user root
+Sep 10 19:47:23 workstation sudo[9271]:    luca : TTY=pts/0 ; PWD=/home/luca/data-review ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-kvnksgzymyxhtpvnpdirmwgxgjlsjcrc ; /usr/bin/python3 /home/luca/.ansible/tmp/ansible-tmp-1789058843.0123491-9259-121494002548872/AnsiballZ_uri.py'
+Sep 10 19:47:23 workstation sudo[9271]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 10 19:47:23 workstation sudo[9271]: pam_unix(sudo:session): session closed for user root
+Sep 11 18:30:11 workstation sshd[1142]: Server listening on 0.0.0.0 port 22.
+Sep 11 18:30:11 workstation sshd[1142]: Server listening on :: port 22.
+Sep 11 18:30:24 workstation (systemd)[2836]: pam_unix(systemd-user:session): session opened for user gdm(uid=42) by gdm(uid=0)
+Sep 11 18:30:24 workstation gdm-launch-environment][2829]: pam_unix(gdm-launch-environment:session): session opened for user gdm(uid=42) by (uid=0)
+Sep 11 18:30:44 workstation sshd-session[3441]: Accepted password for luca from 192.168.1.154 port 51563 ssh2
+Sep 11 18:30:44 workstation (systemd)[3447]: pam_unix(systemd-user:session): session opened for user luca(uid=1000) by luca(uid=0)
+Sep 11 18:30:45 workstation sshd-session[3441]: pam_unix(sshd:session): session opened for user luca(uid=1000) by luca(uid=0)
+Sep 11 18:30:52 workstation sudo[3498]:    luca : TTY=pts/0 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/tee -a /etc/hosts
+Sep 11 18:30:52 workstation sudo[3498]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 11 18:30:52 workstation sudo[3498]: pam_unix(sudo:session): session closed for user root
+Sep 11 18:30:52 workstation sudo[3504]:    luca : TTY=pts/0 ; PWD=/home/luca ; USER=root ; COMMAND=/sbin/useradd -m devops
+Sep 11 18:30:52 workstation sudo[3504]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 11 18:30:52 workstation useradd[3507]: failed adding user 'devops', exit code: 9
+Sep 11 18:30:52 workstation sudo[3504]: pam_unix(sudo:session): session closed for user root
+Sep 11 18:30:52 workstation sudo[3508]:    luca : TTY=pts/0 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/passwd devops
+Sep 11 18:30:52 workstation sudo[3508]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 11 18:31:09 workstation passwd[3511]: gkr-pam: couldn't update the login keyring password: no old password was entered
+Sep 11 18:31:09 workstation sudo[3508]: pam_unix(sudo:session): session closed for user root
+Sep 11 18:31:09 workstation sudo[3519]:    luca : TTY=pts/0 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/tee /etc/sudoers.d/devops
+Sep 11 18:31:09 workstation sudo[3519]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 11 18:31:09 workstation sudo[3519]: pam_unix(sudo:session): session closed for user root
+Sep 11 18:31:09 workstation sudo[3525]:    luca : TTY=pts/0 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/chmod 0440 /etc/sudoers.d/devops
+Sep 11 18:31:09 workstation sudo[3525]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 11 18:31:09 workstation sudo[3525]: pam_unix(sudo:session): session closed for user root
+Sep 11 18:31:09 workstation sudo[3529]:    luca : TTY=pts/0 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/dnf install -y policycoreutils-python-utils python3-libselinux tree
+Sep 11 18:31:09 workstation sudo[3529]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 11 18:31:30 workstation sudo[3529]: pam_unix(sudo:session): session closed for user root
+Sep 11 18:31:31 workstation sudo[3709]:    luca : TTY=pts/0 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/touch /var/log/secure
+Sep 11 18:31:31 workstation sudo[3709]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 11 18:31:31 workstation sudo[3709]: pam_unix(sudo:session): session closed for user root
+Sep 11 18:31:31 workstation sudo[3713]:    luca : TTY=pts/0 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/chmod 0600 /var/log/secure
+Sep 11 18:31:31 workstation sudo[3713]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 11 18:31:31 workstation sudo[3713]: pam_unix(sudo:session): session closed for user root
+Sep 11 18:31:52 workstation sshd-session[3759]: Connection closed by authenticating user devops 127.0.0.1 port 46598 [preauth]
+Sep 11 18:31:52 workstation sshd-session[3766]: Connection closed by authenticating user devops 127.0.0.1 port 46604 [preauth]
+Sep 11 18:31:57 workstation unix_chkpwd[3797]: password check failed for user (devops)
+Sep 11 18:31:57 workstation sshd-session[3780]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=127.0.0.1  user=devops
+Sep 11 18:31:59 workstation sshd-session[3780]: Failed password for devops from 127.0.0.1 port 46614 ssh2
+Sep 11 18:32:05 workstation unix_chkpwd[3798]: password check failed for user (devops)
+Sep 11 18:32:08 workstation sshd-session[3780]: Failed password for devops from 127.0.0.1 port 46614 ssh2
+Sep 11 18:32:11 workstation unix_chkpwd[3799]: password check failed for user (devops)
+Sep 11 18:32:12 workstation sshd-session[3780]: Failed password for devops from 127.0.0.1 port 46614 ssh2
+Sep 11 18:32:13 workstation sshd-session[3780]: Connection closed by authenticating user devops 127.0.0.1 port 46614 [preauth]
+Sep 11 18:32:13 workstation sshd-session[3780]: PAM 2 more authentication failures; logname= uid=0 euid=0 tty=ssh ruser= rhost=127.0.0.1  user=devops
+Sep 11 18:32:15 workstation sshd-session[3822]: Connection closed by authenticating user devops 127.0.0.1 port 44512 [preauth]
+Sep 11 18:32:15 workstation sshd-session[3829]: Connection closed by authenticating user devops 127.0.0.1 port 44522 [preauth]
+Sep 11 18:32:23 workstation unix_chkpwd[3845]: password check failed for user (devops)
+Sep 11 18:32:23 workstation sshd-session[3843]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=127.0.0.1  user=devops
+Sep 11 18:32:24 workstation sshd-session[3843]: Failed password for devops from 127.0.0.1 port 44532 ssh2
+Sep 11 18:32:27 workstation unix_chkpwd[3846]: password check failed for user (devops)
+Sep 11 18:32:29 workstation sshd-session[3843]: Failed password for devops from 127.0.0.1 port 44532 ssh2
+Sep 11 18:32:32 workstation unix_chkpwd[3847]: password check failed for user (devops)
+Sep 11 18:32:35 workstation sshd-session[3843]: Failed password for devops from 127.0.0.1 port 44532 ssh2
+Sep 11 18:32:36 workstation sshd-session[3843]: Connection closed by authenticating user devops 127.0.0.1 port 44532 [preauth]
+Sep 11 18:32:36 workstation sshd-session[3843]: PAM 2 more authentication failures; logname= uid=0 euid=0 tty=ssh ruser= rhost=127.0.0.1  user=devops
+Sep 11 18:32:44 workstation unix_chkpwd[3852]: password check failed for user (devops)
+Sep 11 18:32:44 workstation sshd-session[3850]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=127.0.0.1  user=devops
+Sep 11 18:32:46 workstation sshd-session[3850]: Failed password for devops from 127.0.0.1 port 57982 ssh2
+Sep 11 18:32:49 workstation sshd-session[3850]: Connection closed by authenticating user devops 127.0.0.1 port 57982 [preauth]
+Sep 11 18:33:19 workstation sudo[3855]:    luca : TTY=pts/0 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/mkdir -p /home/devops/.ssh
+Sep 11 18:33:19 workstation sudo[3855]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 11 18:33:19 workstation sudo[3855]: pam_unix(sudo:session): session closed for user root
+Sep 11 18:33:19 workstation sudo[3859]:    luca : TTY=pts/0 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/cp /home/luca/.ssh/id_ed25519.pub /home/devops/.ssh/authorized_keys
+Sep 11 18:33:19 workstation sudo[3859]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 11 18:33:19 workstation sudo[3859]: pam_unix(sudo:session): session closed for user root
+Sep 11 18:33:19 workstation sudo[3863]:    luca : TTY=pts/0 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/chown -R devops:devops /home/devops/.ssh
+Sep 11 18:33:19 workstation sudo[3863]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 11 18:33:19 workstation sudo[3863]: pam_unix(sudo:session): session closed for user root
+Sep 11 18:33:19 workstation sudo[3867]:    luca : TTY=pts/0 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/chmod 700 /home/devops/.ssh
+Sep 11 18:33:19 workstation sudo[3867]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 11 18:33:19 workstation sudo[3867]: pam_unix(sudo:session): session closed for user root
+Sep 11 18:33:19 workstation sudo[3872]:    luca : TTY=pts/0 ; PWD=/home/luca ; USER=root ; COMMAND=/bin/chmod 600 /home/devops/.ssh/authorized_keys
+Sep 11 18:33:19 workstation sudo[3872]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 11 18:33:19 workstation sudo[3872]: pam_unix(sudo:session): session closed for user root
+Sep 11 18:33:19 workstation sshd-session[3877]: Accepted publickey for devops from 127.0.0.1 port 49874 ssh2: ED25519 SHA256:MVbKkyZhUYOj4MKRqpP8kjzWmtbsrIb7ux2dhKjFEAc
+Sep 11 18:33:20 workstation (systemd)[3882]: pam_unix(systemd-user:session): session opened for user devops(uid=1009) by devops(uid=0)
+Sep 11 18:33:20 workstation sshd-session[3877]: pam_unix(sshd:session): session opened for user devops(uid=1009) by devops(uid=0)
+Sep 11 18:33:20 workstation sshd-session[3901]: Received disconnect from 127.0.0.1 port 49874:11: disconnected by user
+Sep 11 18:33:20 workstation sshd-session[3901]: Disconnected from user devops 127.0.0.1 port 49874
+Sep 11 18:33:20 workstation sshd-session[3877]: pam_unix(sshd:session): session closed for user devops
+Sep 11 18:36:38 workstation sudo[3971]:    luca : TTY=pts/0 ; PWD=/home/luca/file-manage ; USER=root ; COMMAND=/bin/nano file_management.yml
+Sep 11 18:36:39 workstation sudo[3971]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 11 18:45:41 workstation sudo[3971]: pam_unix(sudo:session): session closed for user root
+Sep 11 18:46:14 workstation sshd-session[4026]: Accepted publickey for devops from 127.0.0.1 port 45064 ssh2: ED25519 SHA256:MVbKkyZhUYOj4MKRqpP8kjzWmtbsrIb7ux2dhKjFEAc
+Sep 11 18:46:14 workstation sshd-session[4024]: Accepted publickey for devops from 127.0.0.1 port 45050 ssh2: ED25519 SHA256:MVbKkyZhUYOj4MKRqpP8kjzWmtbsrIb7ux2dhKjFEAc
+Sep 11 18:46:14 workstation (systemd)[4056]: pam_unix(systemd-user:session): session opened for user devops(uid=1009) by devops(uid=0)
+Sep 11 18:46:14 workstation sshd-session[4026]: pam_unix(sshd:session): session opened for user devops(uid=1009) by devops(uid=0)
+Sep 11 18:46:14 workstation sshd-session[4024]: pam_unix(sshd:session): session opened for user devops(uid=1009) by devops(uid=0)
+Sep 11 18:46:15 workstation sudo[4493]:  devops : TTY=pts/3 ; PWD=/home/devops ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-ulitquwkmrkqdpjavhbufkcflwvppotm ; /usr/bin/python3 /home/devops/.ansible/tmp/ansible-tmp-1789141575.028404-4021-95578743147248/AnsiballZ_setup.py'
+Sep 11 18:46:15 workstation sudo[4497]:  devops : TTY=pts/4 ; PWD=/home/devops ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-svjzpxpcjocbmpkdolzufckealfgwgcp ; /usr/bin/python3 /home/devops/.ansible/tmp/ansible-tmp-1789141575.0285497-4022-254481525945025/AnsiballZ_setup.py'
+Sep 11 18:46:15 workstation sudo[4493]: pam_unix(sudo:session): session opened for user root(uid=0) by devops(uid=1009)
+Sep 11 18:46:15 workstation sudo[4497]: pam_unix(sudo:session): session opened for user root(uid=0) by devops(uid=1009)
+Sep 11 18:46:16 workstation sudo[4493]: pam_unix(sudo:session): session closed for user root
+Sep 11 18:46:16 workstation sudo[4497]: pam_unix(sudo:session): session closed for user root
+Sep 11 18:46:16 workstation sudo[4996]:  devops : TTY=pts/4 ; PWD=/home/devops ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-vntnitwryvnvbbvitlzoyeeeguwgwupt ; /usr/bin/python3 /home/devops/.ansible/tmp/ansible-tmp-1789141576.6428027-4692-135162932536740/AnsiballZ_slurp.py'
+Sep 11 18:46:16 workstation sudo[4996]: pam_unix(sudo:session): session opened for user root(uid=0) by devops(uid=1009)
+Sep 11 18:46:16 workstation sudo[4995]:  devops : TTY=pts/3 ; PWD=/home/devops ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-paangjgvmremyloasxlvddebiaasxklp ; /usr/bin/python3 /home/devops/.ansible/tmp/ansible-tmp-1789141576.6428747-4691-184322887942077/AnsiballZ_slurp.py'
+Sep 11 18:46:16 workstation sudo[4995]: pam_unix(sudo:session): session opened for user root(uid=0) by devops(uid=1009)
+Sep 11 18:46:16 workstation sudo[4996]: pam_unix(sudo:session): session closed for user root
+Sep 11 18:46:16 workstation sudo[4995]: pam_unix(sudo:session): session closed for user root
+Sep 11 18:46:17 workstation sudo[5360]:  devops : TTY=pts/3 ; PWD=/home/devops ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-hhfklauofqkveavmemfxueyazhxzbpcq ; /usr/bin/python3 /home/devops/.ansible/tmp/ansible-tmp-1789141577.027407-5062-175373009211822/AnsiballZ_file.py'
+Sep 11 18:46:17 workstation sudo[5360]: pam_unix(sudo:session): session opened for user root(uid=0) by devops(uid=1009)
+Sep 11 18:46:17 workstation sudo[5368]:  devops : TTY=pts/4 ; PWD=/home/devops ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-zfaefyljltooambtwdxlzvkgmllnoztv ; /usr/bin/python3 /home/devops/.ansible/tmp/ansible-tmp-1789141577.0290117-5063-40172241010339/AnsiballZ_file.py'
+Sep 11 18:46:17 workstation sudo[5368]: pam_unix(sudo:session): session opened for user root(uid=0) by devops(uid=1009)
+Sep 11 18:46:17 workstation sudo[5360]: pam_unix(sudo:session): session closed for user root
+Sep 11 18:46:17 workstation sudo[5368]: pam_unix(sudo:session): session closed for user root
+Sep 11 18:46:17 workstation sudo[5737]:  devops : TTY=pts/3 ; PWD=/home/devops ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-dwlcvyylglxmvxkvkfvsosfczkogwghd ; /usr/bin/python3 /home/devops/.ansible/tmp/ansible-tmp-1789141577.4179015-5433-223777477162153/AnsiballZ_lineinfile.py'
+Sep 11 18:46:17 workstation sudo[5736]:  devops : TTY=pts/4 ; PWD=/home/devops ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-canfakbuamjpwrwhjgfojxwggzaaoxjo ; /usr/bin/python3 /home/devops/.ansible/tmp/ansible-tmp-1789141577.4126768-5432-48977151042967/AnsiballZ_lineinfile.py'
+Sep 11 18:46:17 workstation sudo[5736]: pam_unix(sudo:session): session opened for user root(uid=0) by devops(uid=1009)
+Sep 11 18:46:17 workstation sudo[5737]: pam_unix(sudo:session): session opened for user root(uid=0) by devops(uid=1009)
+Sep 11 18:46:17 workstation sudo[5736]: pam_unix(sudo:session): session closed for user root
+Sep 11 18:46:17 workstation sudo[5737]: pam_unix(sudo:session): session closed for user root
+Sep 11 18:47:02 workstation sshd-session[5813]: Accepted publickey for devops from 127.0.0.1 port 40892 ssh2: ED25519 SHA256:MVbKkyZhUYOj4MKRqpP8kjzWmtbsrIb7ux2dhKjFEAc
+Sep 11 18:47:02 workstation sshd-session[5813]: pam_unix(sshd:session): session opened for user devops(uid=1009) by devops(uid=0)
+Sep 11 18:47:02 workstation sshd-session[5816]: Received disconnect from 127.0.0.1 port 40892:11: disconnected by user
+Sep 11 18:47:02 workstation sshd-session[5816]: Disconnected from user devops 127.0.0.1 port 40892
+Sep 11 18:47:02 workstation sshd-session[5813]: pam_unix(sshd:session): session closed for user devops
+Sep 11 18:47:16 workstation sshd-session[4077]: Received disconnect from 127.0.0.1 port 45050:11: disconnected by user
+Sep 11 18:47:16 workstation sshd-session[4077]: Disconnected from user devops 127.0.0.1 port 45050
+Sep 11 18:47:16 workstation sshd-session[4024]: pam_unix(sshd:session): session closed for user devops
+Sep 11 18:47:16 workstation sshd-session[4076]: Received disconnect from 127.0.0.1 port 45064:11: disconnected by user
+Sep 11 18:47:16 workstation sshd-session[4076]: Disconnected from user devops 127.0.0.1 port 45064
+Sep 11 18:47:16 workstation sshd-session[4026]: pam_unix(sshd:session): session closed for user devops
+Sep 11 18:47:19 workstation sshd-session[5851]: Accepted publickey for devops from 127.0.0.1 port 33446 ssh2: ED25519 SHA256:MVbKkyZhUYOj4MKRqpP8kjzWmtbsrIb7ux2dhKjFEAc
+Sep 11 18:47:19 workstation sshd-session[5851]: pam_unix(sshd:session): session opened for user devops(uid=1009) by devops(uid=0)
+Sep 11 18:47:19 workstation sshd-session[5854]: Received disconnect from 127.0.0.1 port 33446:11: disconnected by user
+Sep 11 18:47:19 workstation sshd-session[5854]: Disconnected from user devops 127.0.0.1 port 33446
+Sep 11 18:47:19 workstation sshd-session[5851]: pam_unix(sshd:session): session closed for user devops
+Sep 11 18:47:49 workstation sshd-session[5888]: Accepted publickey for devops from 127.0.0.1 port 55252 ssh2: ED25519 SHA256:MVbKkyZhUYOj4MKRqpP8kjzWmtbsrIb7ux2dhKjFEAc
+Sep 11 18:47:49 workstation (systemd)[5893]: pam_unix(systemd-user:session): session opened for user devops(uid=1009) by devops(uid=0)
+Sep 11 18:47:49 workstation sshd-session[5888]: pam_unix(sshd:session): session opened for user devops(uid=1009) by devops(uid=0)
+Sep 11 18:47:49 workstation sshd-session[5912]: Received disconnect from 127.0.0.1 port 55252:11: disconnected by user
+Sep 11 18:47:49 workstation sshd-session[5912]: Disconnected from user devops 127.0.0.1 port 55252
+Sep 11 18:47:49 workstation sshd-session[5888]: pam_unix(sshd:session): session closed for user devops
+Sep 11 18:50:14 workstation sudo[5960]:    luca : TTY=pts/0 ; PWD=/home/luca/file-manage ; USER=root ; COMMAND=/bin/nano file_management.yml
+Sep 11 18:50:14 workstation sudo[5960]: pam_unix(sudo:session): session opened for user root(uid=0) by luca(uid=1000)
+Sep 11 18:57:02 workstation sudo[5960]: pam_unix(sudo:session): session closed for user root
+Sep 11 18:58:04 workstation sshd-session[6003]: Accepted publickey for devops from 127.0.0.1 port 58876 ssh2: ED25519 SHA256:MVbKkyZhUYOj4MKRqpP8kjzWmtbsrIb7ux2dhKjFEAc
+Sep 11 18:58:04 workstation sshd-session[6004]: Accepted publickey for devops from 127.0.0.1 port 58888 ssh2: ED25519 SHA256:MVbKkyZhUYOj4MKRqpP8kjzWmtbsrIb7ux2dhKjFEAc
+Sep 11 18:58:05 workstation (systemd)[6035]: pam_unix(systemd-user:session): session opened for user devops(uid=1009) by devops(uid=0)
+Sep 11 18:58:05 workstation sshd-session[6004]: pam_unix(sshd:session): session opened for user devops(uid=1009) by devops(uid=0)
+Sep 11 18:58:05 workstation sshd-session[6003]: pam_unix(sshd:session): session opened for user devops(uid=1009) by devops(uid=0)
+Sep 11 18:58:05 workstation sudo[6465]:  devops : TTY=pts/3 ; PWD=/home/devops ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-pdhwckaxvybpgzwfpbtxdcrwhjepzuxs ; /usr/bin/python3 /home/devops/.ansible/tmp/ansible-tmp-1789142285.1901283-6000-22091619385018/AnsiballZ_setup.py'
+Sep 11 18:58:05 workstation sudo[6465]: pam_unix(sudo:session): session opened for user root(uid=0) by devops(uid=1009)
+Sep 11 18:58:05 workstation sudo[6479]:  devops : TTY=pts/4 ; PWD=/home/devops ; USER=root ; COMMAND=/bin/sh -c 'echo BECOME-SUCCESS-aamtemtneeiywhijxaeyzymyzxjqoxry ; /usr/bin/python3 /home/devops/.ansible/tmp/ansible-tmp-1789142285.1939282-5999-102335296427056/AnsiballZ_setup.py'
+Sep 11 18:58:05 workstation sudo[6479]: pam_unix(sudo:session): session opened for user root(uid=0) by devops(uid=1009)
+Sep 11 18:58:06 workstation sudo[6479]: pam_unix(sudo:session): session closed for user root
+Sep 11 18:58:06 workstation sudo[6465]: pam_unix(sudo:session): session closed for user root

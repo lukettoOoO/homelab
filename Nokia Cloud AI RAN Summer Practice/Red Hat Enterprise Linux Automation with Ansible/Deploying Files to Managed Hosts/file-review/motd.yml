@@ -1,0 +1,39 @@
+- name:
+  hosts: all
+  become: yes
+  remote_user: devops
+  tasks:
+    - name: Deploy Jinja2 template file
+      ansible.builtin.template:
+        src: motd.j2
+        dest: /etc/motd
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Get stats
+      ansible.builtin.stat:
+        path: /etc/motd
+      register: st
+
+    - name: Print result
+      ansible.builtin.debug:
+        msg: st
+
+    - name: Place files/issue on managed hosts
+      ansible.builtin.copy:
+        src: files/issue
+        dest: /etc/
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Ensure that /etc/issue.net is a symbolic link to /etc/issue on the hosts
+      ansible.builtin.file:
+        src: /etc/issue
+        dest: /etc/issue.net
+        owner: root
+        group: root
+        state: link
+        force: true
+

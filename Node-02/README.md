@@ -347,3 +347,67 @@ Set-DnsClientServerAddress -InterfaceAlias "Ethernet" -ServerAddresses ("10.0.0.
 
 - Installing IIS Web Server role and features on Windows Server 2022
   - View workflow here: [IIS Web Server Installation & Configuration](../Learning/Windows/Advanced%20Windows%20Administration/README.md#13-internet-information-services-iis-web-server)
+
+**[Date: 14-09-2026]**
+
+- Installing an Ubuntu WSL distribution on Windows Server 2022
+  - Enabling WSL features through PowerShell:
+
+  ```powershell
+   dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+   dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+  ```
+
+  - Downloading and extracting Ubuntu archive from Microsoft:
+
+  ```powershell
+  New-Item -ItemType Directory -Path "C:\WSL" -Force
+  Invoke-WebRequest -Uri "https://aka.ms/wslubuntu2204" -OutFile "C:\WSL\Ubuntu.zip" -UseBasicParsing
+  Expand-Archive -Path "C:\WSL\Ubuntu.zip" -DestinationPath "C:\WSL\Ubuntu" -Force
+  cd C:\WSL\Ubuntu
+   if (Test-Path .\*x64.appx) {
+     $x64pkg = (Get-ChildItem -Filter *x64.appx).Name
+     Rename-Item $x64pkg "x64.zip"
+     Expand-Archive -Path "x64.zip" -DestinationPath "C:\WSL\Ubuntu\dist" -Force
+     cd "C:\WSL\Ubuntu\dist"
+  }
+  ```
+
+  - Installing Ubuntu:
+
+  ```powershell
+  .\ubuntu.exe
+  ```
+
+  ```
+  Installing, this may take a few minutes...
+  Please create a default UNIX user account. The username does not need to match your Windows username.
+  For more information visit: https://aka.ms/wslusers
+  Enter new UNIX username: luca
+  New password:
+  Retype new password:
+  passwd: password updated successfully
+  Installation successful!
+  To run a command as administrator (user "root"), use "sudo <command>".
+  See "man sudo_root" for details.
+  ```
+
+  Welcome to Ubuntu 22.04.1 LTS (GNU/Linux 4.4.0-20348-Microsoft x86_64)
+  - Documentation: https://help.ubuntu.com
+  - Management: https://landscape.canonical.com
+  - Support: https://ubuntu.com/advantage
+
+  This message is shown once a day. To disable it please create the
+  /home/luca/.hushlogin file.
+  luca@windows-server-dionysus:~$
+
+  ```
+  - The benefit of WSL is that there is no VM overhead: it hares the server's CPU and RAM dynamically without reserving fixed hardware like a traditional Hyper-V / VMware virtual machine
+  - I can now drag and drop files directly through Windows Explorer
+  ```
+
+- Bridging this Ubuntu instance with the other Linux instances in the homelab:
+  - Installing `sshfs` on Ubuntu:
+  ```bash
+  sudo apt update && sudo apt install -y sshfs
+  ```

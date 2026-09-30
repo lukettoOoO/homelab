@@ -1497,3 +1497,28 @@ sudo docker exec -it gitlab gitlab-ctl status
   - `https://switch.home.olympus-luca.online` $\rightarrow$ TP-Link Easy Smart Switch (`HTTP 200`).
   - `https://gitlab.home.olympus-luca.online` $\rightarrow$ GitLab CE (`HTTP 200`).
   - `https://pve.home.olympus-luca.online` and `https://pve.home.olympus-luca.online:8006` $\rightarrow$ Proxmox VE (`HTTP 200` with valid Let's Encrypt TLS on both ports).
+
+---
+
+## Server CPU Saturation Diagnosis, Docker Log Rotation & Nextcloud Optimization
+
+**Date: 2026-09-30**
+
+### Issues Identified
+- **CPU & Load Saturation:** All 4 CPU threads pegged at 100% with a load average of ~13.73 and ~1.8 GB active swap on dual-core Intel Core i3-4010U.
+- **Runaway Docker Log:** GitLab CE container accumulated a 15 GB unrotated JSON log file (`/srv/docker-data/containers/...-json.log`), causing `dockerd` and `containerd` to burn ~85–95% CPU continuously.
+- **Nextcloud ffmpeg Video Previews:** Nextcloud AIO spawned multiple concurrent `ffmpeg` instances tonemapping 10-bit HDR iPhone videos (`.mov`/`.mp4`), overloading CPU cores.
+- **GitLab Sidekiq Overhead:** High baseline CPU usage from 5 concurrent Sidekiq worker threads polling Redis.
+
+### Actions Taken & Resolution
+- **Log File Truncated:** Safely truncated the 15 GB log file to 0 bytes via `truncate -s 0`, immediately freeing disk space.
+- **Docker Log Rotation Enforced:** Configured `/etc/docker/daemon.json` with `"log-driver": "json-file"` and `"log-opts": {"max-size": "10m", "max-file": "3"}` to prevent unbounded log growth.
+- **Daemon Restart:** Restarted `containerd` and `dockerd` to clear stuck file descriptors and orphaned shims.
+- **Disabled Nextcloud Video Previews:** Removed `OC\Preview\Movie` from Nextcloud's `enabledPreviewProviders` via `occ`, restricting previews to fast image formats (PNG, JPEG, GIF, HEIC).
+- **GitLab Low-Resource Tuning:** Updated `Node-01/gitlab/compose.yaml` to reduce `sidekiq['concurrency']` from 5 to 1 and added explicit container logging limits. Recreated the container with `docker compose up -d --force-recreate`.
+
+### Results
+- Load average dropped from **13.73** down to **~4.3** (and declining).
+- Swap usage fell from **1.79 GB** to **~75 MB**, eliminating disk thrashing.
+- Available memory increased from ~1.5 GB to **4.74 GB**.
+

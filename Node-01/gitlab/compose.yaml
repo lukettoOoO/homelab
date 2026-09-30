@@ -25,7 +25,7 @@ services:
         puma['min_threads'] = 1 # limit threading
         puma['max_threads'] = 4 # limit threading
         puma['worker_timeout'] = 300
-        sidekiq['concurrency'] = 5 # limit background job workers
+        sidekiq['concurrency'] = 1 # limit background job workers (ideal for dual-core host)
         postgresql['shared_buffers'] = "256MB" # reduce database memory
         postgresql['max_worker_processes'] = 2
         prometheus_monitoring['enable'] = false # disable metrics collection
@@ -45,4 +45,9 @@ services:
       - /srv/docker/gitlab/config:/etc/gitlab
       - /srv/docker/gitlab/logs:/var/log/gitlab
       - /srv/docker/gitlab/data:/var/opt/gitlab
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     shm_size: '256m' # shared memory limit

@@ -1505,12 +1505,14 @@ sudo docker exec -it gitlab gitlab-ctl status
 **Date: 2026-09-30**
 
 ### Issues Identified
+
 - **CPU & Load Saturation:** All 4 CPU threads pegged at 100% with a load average of ~13.73 and ~1.8 GB active swap on dual-core Intel Core i3-4010U.
 - **Runaway Docker Log:** GitLab CE container accumulated a 15 GB unrotated JSON log file (`/srv/docker-data/containers/...-json.log`), causing `dockerd` and `containerd` to burn ~85–95% CPU continuously.
 - **Nextcloud ffmpeg Video Previews:** Nextcloud AIO spawned multiple concurrent `ffmpeg` instances tonemapping 10-bit HDR iPhone videos (`.mov`/`.mp4`), overloading CPU cores.
 - **GitLab Sidekiq Overhead:** High baseline CPU usage from 5 concurrent Sidekiq worker threads polling Redis.
 
 ### Actions Taken & Resolution
+
 - **Log File Truncated:** Safely truncated the 15 GB log file to 0 bytes via `truncate -s 0`, immediately freeing disk space.
 - **Docker Log Rotation Enforced:** Configured `/etc/docker/daemon.json` with `"log-driver": "json-file"` and `"log-opts": {"max-size": "10m", "max-file": "3"}` to prevent unbounded log growth.
 - **Daemon Restart:** Restarted `containerd` and `dockerd` to clear stuck file descriptors and orphaned shims.
@@ -1518,7 +1520,63 @@ sudo docker exec -it gitlab gitlab-ctl status
 - **GitLab Low-Resource Tuning:** Updated `Node-01/gitlab/compose.yaml` to reduce `sidekiq['concurrency']` from 5 to 1 and added explicit container logging limits. Recreated the container with `docker compose up -d --force-recreate`.
 
 ### Results
+
 - Load average dropped from **13.73** down to **~4.3** (and declining).
 - Swap usage fell from **1.79 GB** to **~75 MB**, eliminating disk thrashing.
 - Available memory increased from ~1.5 GB to **4.74 GB**.
 
+## Personal Website Deployment & Cloudflare Tunnel Exposure
+
+**Date: 2026-10-06**
+
+### Objective & Architecture
+
+- Deployed personal portfolio website (Windows 95-themed Vue 3 + TypeScript + Vite SPA) directly on Node 01 (`10.0.0.10`).
+- Chose homelab self-hosting over static edge hosting to maintain full control, data sovereignty, and integration with the Olympus ecosystem.
+- Bound web server to port `8088:80`, avoiding port conflicts with Homelab Dashboard (`8000`), Nextcloud AIO Panel (`8080`), GitLab CE (`8085`), and Nextcloud Apache (`11000`).
+- Exposed the site to the internet via Cloudflare Tunnel (`cloudflared-nextcloud`), creating a zero-trust outbound-only reverse tunnel without opening inbound router ports or modifying NAT/firewall rules.
+
+### 1. Multi-Stage Containerization & SPA Web Server
+
+- Packaged the project using a multi-stage Docker build (`/srv/docker/personal-website/Dockerfile`):
+  - **Stage 1 (Builder):** `node:20-alpine` runs `npm ci` and `npm run build` to typecheck (`vue-tsc`) and compile the Vite SPA bundle into `dist/`.
+  - **Stage 2 (Runtime):** Lightweight `nginx:alpine` image serving static assets (~25 MB total container footprint).
+- Configured dedicated `nginx.conf`:
+  - `try_files $uri $uri/ /index.html;` ensures seamless client-side SPA routing and prevents HTTP 404 errors on direct window/route requests.
+  - Implemented immutable caching (`Cache-Control: public, max-age=31536000, immutable`) for hashed `/assets/` and strict validation (`no-cache`) for `index.html` to guarantee instant propagation of new releases.
+  - Enabled gzip compression for HTML, CSS, JavaScript, JSON, and SVG assets.
+- Defined container lifecycle in `/srv/docker/personal-website/docker-compose.yml` with `restart: unless-stopped`.
+
+### 2. Cloudflare Tunnel Ingress Configuration
+
+- Updated Cloudflare Tunnel configuration (`$HOME/.cloudflared/config.yml`) on Node 01 to register the new ingress rule alongside Nextcloud:
+
+  ```yaml
+  tunnel: e76021be-987c-4797-b788-1147f4fdd9d9
+  credentials-file: /etc/cloudflared/e76021be-987c-4797-b788-1147f4fdd9d9.json
+
+  ingress:
+    - hostname: nc.olympus-luca.online
+      service: http://10.0.0.10:11000
+    - hostname: me.olympus-luca.online
+      service: http://10.0.0.10:8088
+    - service: http_status:404
+  ```
+
+- Created the DNS route using `cloudflare/cloudflared` CLI:
+  ```bash
+  docker run --rm -it \
+    --user "$(id -u):$(id -g)" \
+    --env HOME=/tmp \
+    -v "$HOME/.cloudflared:/tmp/.cloudflared" \
+    cloudflare/cloudflared:latest \
+    tunnel --origincert /tmp/.cloudflared/cert.pem \
+    route dns nextcloud-only me.olympus-luca.online
+  ```
+- Reloaded the tunnel container (`docker restart cloudflared-nextcloud`) and verified active tunnel ingress registration via `docker logs cloudflared-nextcloud`.
+
+### 3. Verification & Resource Footprint
+
+- Verified container health (`docker compose ps` and `curl -I http://10.0.0.10:8088` $\rightarrow$ `HTTP/1.1 200 OK`).
+- Confirmed external TLS termination and HTTP/2 delivery through Cloudflare edge network.
+- Negligible system resource impact: container consumes < 15 MB RAM at idle on Haswell i3-4010U, preserving CPU headroom for GitLab CE and Nextcloud.

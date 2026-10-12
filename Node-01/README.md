@@ -1558,7 +1558,7 @@ sudo docker exec -it gitlab gitlab-ctl status
   ingress:
     - hostname: nc.olympus-luca.online
       service: http://10.0.0.10:11000
-    - hostname: me.olympus-luca.online
+    - hostname: web.olympus-luca.online
       service: http://10.0.0.10:8088
     - service: http_status:404
   ```
@@ -1571,7 +1571,7 @@ sudo docker exec -it gitlab gitlab-ctl status
     -v "$HOME/.cloudflared:/tmp/.cloudflared" \
     cloudflare/cloudflared:latest \
     tunnel --origincert /tmp/.cloudflared/cert.pem \
-    route dns nextcloud-only me.olympus-luca.online
+    route dns nextcloud-only web.olympus-luca.online
   ```
 - Reloaded the tunnel container (`docker restart cloudflared-nextcloud`) and verified active tunnel ingress registration via `docker logs cloudflared-nextcloud`.
 

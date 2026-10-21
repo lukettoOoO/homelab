@@ -116,7 +116,7 @@ Total cost via G0/1 = 8
 - Every collision domain has a single STP designated port
 
 1. The switch with the lowest root cost will make its port designated
-2. If the root cost is the same, the switch with the lowest bridge ID will make its port designated
+2. If the root cost is the same, the switch with the lowest bridge ID will make its port designated _(if bridge ID is the same on both interfaces on the switch, then the criteria will be in terms of Port ID)_
 3. The other switch will make its port non-designated (blocking)
 
 ## Quiz

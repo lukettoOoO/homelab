@@ -79,6 +79,9 @@ try_mount_and_test() {
             echo "[!] could not mount backup drive."
             return 1
         fi
+    else
+        # ensure drive is mounted read-write in case it was left mounted read-only during manual inspection
+        mount -o remount,rw "${BACKUP_MOUNT}" 2>/dev/null || true
     fi
 
     # test io responsiveness
@@ -160,8 +163,9 @@ mkdir -p "${CURRENT_BACKUP}/home-luca"
 mkdir -p "${CURRENT_BACKUP}/system-etc"
 mkdir -p "${CURRENT_BACKUP}/database-dumps"
 
-# common rsync flags
-RSYNC_OPTS="-a --delete --partial --timeout=60"
+# common rsync flags with bandwidth throttling and low-priority io to protect disk sata bus
+RSYNC_OPTS="-a --delete --partial --timeout=60 --bwlimit=35000"
+RSYNC_CMD="ionice -c2 -n7 rsync"
 
 # step 1: database dumps
 echo ""
@@ -187,16 +191,18 @@ fi
 
 if docker ps --format '{{.Names}}' | grep -q '^nextcloud-aio-database$'; then
     echo "    dumping nextcloud database..."
-    if docker exec nextcloud-aio-database pg_dumpall -U oc_nextcloud \
-        > "${CURRENT_BACKUP}/database-dumps/nextcloud_database.sql" 2>/dev/null; then
+    if docker exec nextcloud-aio-database pg_dumpall -U oc_nextcloud --no-role-passwords \
+        > "${CURRENT_BACKUP}/database-dumps/nextcloud_database.sql"; then
         echo "    database dump complete: $(du -sh "${CURRENT_BACKUP}/database-dumps/nextcloud_database.sql" | cut -f1)"
+    else
+        echo "[!] warning: nextcloud database dump failed."
     fi
 fi
 
 # step 2: sync all srv docker directories
 echo ""
 echo "[*] syncing all /srv/docker data..."
-rsync ${RSYNC_OPTS} ${LINK_DEST_OPT:+"${LINK_DEST_OPT}/srv-docker/"} \
+${RSYNC_CMD} ${RSYNC_OPTS} ${LINK_DEST_OPT:+"${LINK_DEST_OPT}/srv-docker/"} \
     "${SRV_DOCKER}/" "${CURRENT_BACKUP}/srv-docker/" || {
     echo "[!] warning: /srv/docker sync had some non-critical warnings."
 }
@@ -205,7 +211,7 @@ echo "[ok] /srv/docker synced."
 # step 3: sync all docker named volumes
 echo ""
 echo "[*] syncing /srv/docker-data/volumes..."
-rsync ${RSYNC_OPTS} ${LINK_DEST_OPT:+"${LINK_DEST_OPT}/srv-volumes/"} \
+${RSYNC_CMD} ${RSYNC_OPTS} ${LINK_DEST_OPT:+"${LINK_DEST_OPT}/srv-volumes/"} \
     "${SRV_VOLUMES}/" "${CURRENT_BACKUP}/srv-volumes/" || {
     echo "[!] warning: /srv/docker-data/volumes sync had some non-critical warnings."
 }
@@ -216,7 +222,7 @@ if [ -d "${SRV_NOTES}" ]; then
     echo ""
     echo "[*] syncing /srv/notes..."
     mkdir -p "${CURRENT_BACKUP}/srv-notes"
-    rsync ${RSYNC_OPTS} ${LINK_DEST_OPT:+"${LINK_DEST_OPT}/srv-notes/"} \
+    ${RSYNC_CMD} ${RSYNC_OPTS} ${LINK_DEST_OPT:+"${LINK_DEST_OPT}/srv-notes/"} \
         "${SRV_NOTES}/" "${CURRENT_BACKUP}/srv-notes/" || true
 fi
 
@@ -224,7 +230,7 @@ if [ -d "${SRV_TEST}" ]; then
     echo ""
     echo "[*] syncing /srv/test..."
     mkdir -p "${CURRENT_BACKUP}/srv-test"
-    rsync ${RSYNC_OPTS} ${LINK_DEST_OPT:+"${LINK_DEST_OPT}/srv-test/"} \
+    ${RSYNC_CMD} ${RSYNC_OPTS} ${LINK_DEST_OPT:+"${LINK_DEST_OPT}/srv-test/"} \
         "${SRV_TEST}/" "${CURRENT_BACKUP}/srv-test/" || true
 fi
 
@@ -232,7 +238,7 @@ fi
 if [ -d "${HOME_LUCA}" ]; then
     echo ""
     echo "[*] syncing /home/luca (excluding temporary caches)..."
-    rsync ${RSYNC_OPTS} \
+    ${RSYNC_CMD} ${RSYNC_OPTS} \
         --exclude='.cache' \
         --exclude='.npm' \
         --exclude='.vscode-server' \
@@ -247,7 +253,7 @@ fi
 if [ -d "${SYS_ETC}" ]; then
     echo ""
     echo "[*] syncing /etc system configurations..."
-    rsync ${RSYNC_OPTS} ${LINK_DEST_OPT:+"${LINK_DEST_OPT}/system-etc/"} \
+    ${RSYNC_CMD} ${RSYNC_OPTS} ${LINK_DEST_OPT:+"${LINK_DEST_OPT}/system-etc/"} \
         "${SYS_ETC}/" "${CURRENT_BACKUP}/system-etc/" || true
     echo "[ok] /etc synced."
 fi

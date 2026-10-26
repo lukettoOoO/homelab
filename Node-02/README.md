@@ -411,3 +411,40 @@ Set-DnsClientServerAddress -InterfaceAlias "Ethernet" -ServerAddresses ("10.0.0.
   ```bash
   sudo apt update && sudo apt install -y sshfs
   ```
+
+**[Date: 26-10-2026]**
+
+### Repurposing WSL: Ansible Automation Node & Active Directory Integration Lab
+
+- **Architectural Shift & Role Definition:**
+  - Evaluated the original idea of using WSL as an SSHFS filesystem hypervisor.
+  - Identified performance and stability bottlenecks: SSHFS user-space FUSE translation layered over WSL's 9P filesystem bridge introduces significant I/O latency, high CPU overhead, and potential Explorer lockups during network hiccups.
+  - Re-affirmed that the primary Active Directory Domain Controller (`windows-server-2022-dionysus`) must remain clean, predictable, and resilient, while native file sharing (SMB/NFS) is best handled directly by Node-01.
+  - Successfully repurposed the Ubuntu WSL instance for two high-value homelab roles:
+    1. **Ansible Control Node & Automation Hub:** Orchestrating Windows Server locally (via WinRM/SSH) and remote Linux nodes (`debian-eos`, `proxmox`, and `MikroTik`) over SSH.
+    2. **Active Directory & Linux Integration Lab:** A zero-risk testing sandbox for Kerberos authentication (`kinit`, `klist`) and LDAP queries (`ldapsearch`) directly against the local domain controller.
+
+- **Environment Preparation & Package Provisioning:**
+  - Updated APT package repositories and installed foundational utilities:
+    ```bash
+    sudo apt update
+    sudo apt install -y python3 python3-pip git curl dnsutils
+    ```
+  - Installed Ansible core automation engine:
+    ```bash
+    sudo apt install -y ansible
+    ```
+
+    - Verified installation with `ansible --version` (`ansible 2.10.8` running on Python `3.10.12`).
+  - Installed Active Directory, Kerberos 5, and LDAP client tooling:
+    ```bash
+    sudo apt install -y krb5-user ldap-utils
+    ```
+  - Configured Kerberos realm parameters (`sudo dpkg-reconfigure krb5-config`):
+    - **Default Kerberos Realm:** `AD.HOME.OLYMPUS-LUCA.ONLINE`
+    - **KDC / Kerberos Server:** `10.0.0.30`
+    - **Administrative Server:** `10.0.0.30`
+  - Initialized dedicated workspace directories:
+    ```bash
+    mkdir -p ~/ansible ~/ad-lab
+    ```

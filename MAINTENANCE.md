@@ -104,14 +104,14 @@ Target: `ssh luca@10.0.0.10`
 ### 3.3 MacBook-to-Nextcloud Daily Sync Verification (`20:00` LaunchAgent)
 Target: Management Workstation (`MacBook`)
 
-> **Note:** On macOS, the Nextcloud menu bar icon can report *Up to date* even when the `FileProviderExt` virtual filesystem (`~/Library/CloudStorage/Nextcloud-...`) has failed to upload individual files (`isUploaded = 0`, `NSFileProviderErrorDomain Code=-2005`) during server downtime. `/Users/luca/bin/nextcloud-backup.sh` now checks `https://nc.olympus-luca.online/status.php` prior to copying and verifies `isUploaded = 1` via `fileproviderctl evaluate` afterward, raising a macOS alert if any file remains un-uploaded.
+> **Note:** `/Users/luca/bin/nextcloud-backup.sh` mirrors `~/Documents` into the local Nextcloud FileProvider folder (`~/Library/CloudStorage/Nextcloud-.../Documents/`) via `rclone copy` after verifying Nextcloud endpoint health (`https://nc.olympus-luca.online/status.php`). The native Nextcloud macOS FileProvider extension handles background uploading directly to the server.
 
 - [ ] **Inspect MacBook Nextcloud Backup Log & Trigger Verification:**
   ```bash
   tail -n 30 /Users/luca/Library/Logs/nextcloud-backup.log
   /Users/luca/bin/nextcloud-backup.sh
   ```
-  *Acceptance Criteria:* Script exits with `0` and logs `INFO  : All Documents synced and verified as uploaded on nc.olympus-luca.online.` with zero `isUploaded=0` or `resource deadlock avoided` errors.
+  *Acceptance Criteria:* Script exits with `0` and logs `INFO  : All Documents copied to Nextcloud successfully. Nextcloud sync active.`
 
 ### 3.4 VM 100 (`windows-server-2022-dionysus`) Snapshot & Off-Node Backup
 Target: `ssh root@10.0.0.20`

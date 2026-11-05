@@ -448,3 +448,40 @@ Set-DnsClientServerAddress -InterfaceAlias "Ethernet" -ServerAddresses ("10.0.0.
     ```bash
     mkdir -p ~/ansible ~/ad-lab
     ```
+
+**[Date: 05-11-2026]**
+
+### Thermal Overheat Recovery, Hardware Watchdog & Kernel Hardening
+
+- **Incident Diagnosis & Post-Mortem Analysis:**
+  - Node-02 (`10.0.0.20`) and Windows VM 100 (`10.0.0.30`) became completely unreachable over ICMP and SSH.
+  - Physical inspection revealed the HP EliteDesk chassis was scorching hot while the internal blower fan remained at minimal idle RPM.
+  - Journal analysis revealed the node had suffered a silent hard lockup on October 29 without cutting power, leaving hardware components energized and baking inside the 1L chassis for 7 days.
+  - Historical boot analysis (`last -x`) uncovered a chronic cycle of thermal-trip crashes every 1–4 hours, after which the BIOS auto-restarted the node (`After Power Loss: Power On`).
+
+- **Fail-Safe Hardening Applied on Proxmox VE:**
+  - **Intel Chipset Hardware Watchdog (`iTCO_wdt`):**
+    - Enabled the native Intel PCH hardware watchdog module to prevent prolonged unmonitored system lockups:
+      ```bash
+      echo "iTCO_wdt" >> /etc/modules
+      modprobe iTCO_wdt
+      ```
+    - *Effect:* If the kernel or CPU ever freezes for more than 30 seconds, the hardware watchdog automatically forces a hard reboot. The node will never remain stuck in a frozen state.
+
+  - **Automated Kernel Panic Recovery:**
+    - Configured kernel sysctl parameters to automatically reboot 10 seconds after a panic or oops instead of hanging indefinitely:
+      ```bash
+      cat > /etc/sysctl.d/99-watchdog-panic.conf << 'EOF'
+      kernel.panic = 10
+      kernel.panic_on_oops = 1
+      EOF
+      sysctl -p /etc/sysctl.d/99-watchdog-panic.conf
+      ```
+
+  - **Cron & Mail Queue Cleanup:**
+    - Removed a stale cronjob in `/etc/crontab` that was invoking `etherwake` every 5 minutes against a missing USB Ethernet adapter (`enxc84d4428bc43`).
+    - Flushed the stuck Postfix mail delivery queue (`postsuper -d ALL`).
+
+  - **Thermal Prevention Action Items:**
+    - Verified that `Increase Idle Fan Speed(%)` in BIOS is currently set to `0%`. Scheduled increasing it to `20%–25%` via HP Computer Setup (F10) to maintain continuous airflow across the copper heatsink.
+

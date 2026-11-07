@@ -755,8 +755,18 @@ done
 - Verified macOS backup automation (`nextcloud-backup.sh`): confirmed pre-flight healthcheck, file exclusions, and post-copy upload status validation.
 - Executed post-maintenance verification sweep from MacBook with a 100% success rate across ICMP reachability, internal HTTPS endpoints, Cloudflare tunnels, and AD/DNS/SSH/RDP service ports.
 
+### 2026-11-07 — Quarterly Backup Restore Drill, Token Audit & Cloudflared Security Upgrade
+- Executed quarterly file-level restore validation drill on Node-01: woke and mounted `/dev/backup-disk` read-only at `/mnt/backup`, restored `dashboard/docker-compose.yml` from `/mnt/backup/homelab-backups/latest/srv-docker/` to `/tmp/restore-test/`, verified bit-for-bit SHA-256 checksum match (`8f1956b2...a761`) against live `/srv/docker/dashboard/docker-compose.yml`, and cleanly unmounted `/mnt/backup`.
+- Verified Nextcloud PostgreSQL cluster dump (`nextcloud_database.sql`, `116MB`): confirmed valid SQL header (`-- PostgreSQL database cluster dump`) and intact completion footer (`-- PostgreSQL database cluster dump complete`).
+- Validated self-hosted GitLab Gitaly storage integrity: cloned `root/homelab.git` mirror into `/tmp/gitlab-clone-test` and passed full object verification (`git fsck --full` across 1,479 objects, 0 errors).
+- Audited Personal Access Tokens in `/srv/docker/github-backup/backup.env`: confirmed `GITHUB_TOKEN` is active (`HTTP/2 200`, no expiry) and `GITLAB_TOKEN` (`github-backup`) is active and valid through `2027-09-01`.
+- Verified Cloudflare DNS-01 API tokens (`credentials-1` and `credentials-3`) in Nginx Proxy Manager (`status: active`) and confirmed Let's Encrypt wildcard certificates (`*.olympus-luca.online` and `*.home.olympus-luca.online`) remain valid through `2027-01-23`.
+- Audited `$HOME/.cloudflared/` credential permissions (`700` directory, `600` files), verified Argo origin token (`cert.pem`) against active tunnel `e76021be-987c-4797-b788-1147f4fdd9d9`, and upgraded `cloudflared-nextcloud` from `2026.10.3` to `2026.10.7` (`latest`) with 4 active QUIC edge connections (`otp01`, `otp02`, `fra18`, `fra21`).
+- Reviewed Nextcloud user accounts, quotas, and authentication status via `occ user:list --info` and `occ twofactorauth:state`.
+
 | Date (`YYYY-MM-DD`) | Operator | Backups Verified | Node-01 Updated | Node-02 Updated | VM 100 Updated | Network Audited | Notes / Remedial Actions |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :--- |
 | `2026-10-24` | Luca | `[ ]` | `[ ]` | `[ ]` | `[ ]` | `[ ]` | Initial SOP established |
-| `2026-11-__` | Luca | `[ ]` | `[ ]` | `[ ]` | `[ ]` | `[ ]` | |
+| `2026-10-25` | Luca | `[x]` | `[x]` | `[x]` | `[x]` | `[x]` | Full maintenance, ACPI fix, Nextcloud v34, GitLab & SMART audit |
+| `2026-11-07` | Luca | `[x]` | `[x]` | `[ ]` | `[ ]` | `[ ]` | Quarterly restore drill (9.1), token/cert audit (9.2) & `cloudflared` `2026.10.7` upgrade |
 | `2026-12-__` | Luca | `[ ]` | `[ ]` | `[ ]` | `[ ]` | `[ ]` | |

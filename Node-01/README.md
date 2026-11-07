@@ -388,7 +388,7 @@ services:
     container_name: homelab-dashboard
     restart: always
     ports:
-      - '8000:80'
+      - "8000:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - ./html:/usr/share/nginx/html:ro

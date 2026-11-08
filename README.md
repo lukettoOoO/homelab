@@ -1,5 +1,7 @@
 # Olympus Homelab
 
+![homelab](homelab.jpeg)
+
 ![Debian 13](https://img.shields.io/badge/Debian_13-A81D33?style=flat-square&logo=debian&logoColor=white)
 ![Proxmox VE](https://img.shields.io/badge/Proxmox_VE_8-E57000?style=flat-square&logo=proxmox&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)

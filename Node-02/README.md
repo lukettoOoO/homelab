@@ -485,3 +485,22 @@ Set-DnsClientServerAddress -InterfaceAlias "Ethernet" -ServerAddresses ("10.0.0.
   - **Thermal Prevention Action Items:**
     - Verified that `Increase Idle Fan Speed(%)` in BIOS is currently set to `0%`. Scheduled increasing it to `20%–25%` via HP Computer Setup (F10) to maintain continuous airflow across the copper heatsink.
 
+**[Date: 08-11-2026]**
+
+### Proxmox Node Hostname Migration (`proxmox` → `atlas`) & HP System BIOS / Super I/O Firmware Upgrade
+
+- **Standalone PVE Node Hostname Migration (`proxmox` → `atlas`):**
+  - Created a pre-migration backup of `/etc/pve`, `/etc/hosts`, `/etc/hostname`, and `/etc/postfix/main.cf` under `/root/pve-rename-backup/` and gracefully shut down `VM 100` (`qm shutdown 100`).
+  - Updated `/etc/hosts` to map `10.0.0.20` to `atlas.home.olympus-luca.online atlas`, applied `hostnamectl set-hostname atlas`, updated `/etc/mailname` and `/etc/postfix/main.cf`, and copied RRD telemetry caches (`/var/lib/rrdcached/db/pve2-{node,storage}/`) to `atlas`.
+  - Rebooted Node-02 to initialize `/etc/pve/nodes/atlas/` inside `pmxcfs`, moved `/etc/pve/nodes/proxmox/qemu-server/100.conf` to `/etc/pve/nodes/atlas/qemu-server/100.conf` (updating `/etc/pve/.vmlist`), updated SSH key comments in `/etc/pve/priv/authorized_keys`, regenerated node TLS certificates (`pvecm updatecerts --force`), restarted `pvedaemon`/`pveproxy`/`pvestatd`, and removed the legacy `/etc/pve/nodes/proxmox` directory.
+
+- **HP EliteDesk 800 G4 System BIOS & Super I/O Firmware Upgrade (`Q21 v02.14.01` → `v02.31.00`):**
+  - Audited current firmware state via `hp-bioscfg` (`/sys/class/firmware-attributes/hp-bioscfg/attributes/`): confirmed the node was running outdated 2020 firmware (**`Q21 Ver. 02.14.01`**, `10/16/2020`) and **Super I/O `7.9.51`**, with `dmesg` reporting legacy ACPI/WMI table errors (`hp-wmi: Failed to apply initial fan settings: -22` and `hp_bioscfg: Returned error 0x4, "Invalid command type"`).
+  - Verified Intel CPU microcode package is active and current (`intel-microcode 3.20251111.1~deb13u1`).
+  - Downloaded the official HP Q21 Firmware Pack SoftPaq (`sp161583.exe`, `MD5: 710f9c82e77feace82b678edbe7abac4`), extracted `Q21_023100.bin` and `Q21_023100.inf` via `7z`, and staged the firmware directly onto the internal NVMe EFI System Partition (`/boot/efi/Hewlett-Packard/BIOS/New/`, `/boot/efi/EFI/HP/BIOS/New/`, and `/boot/efi/EFI/HP/DEVFW/firmware.bin`).
+  - Applied the update via HP Computer Setup (`F10` → *Update System BIOS* → *Update System and Supported Device Firmware Using Local Media*), upgrading:
+    - **System BIOS Version:** `Q21 Ver. 02.14.01 (10/16/2020)` $\rightarrow$ **`Q21 Ver. 02.31.00 (07/08/2025)`**
+    - **Super I/O (SIO) Firmware Version:** `7.9.51` $\rightarrow$ **`7.9.55`** (hardware thermal and fan curve controller)
+  - Verified `VM 100` (`windows-server-2022-dionysus`) booted cleanly (`status: running`) and purged temporary firmware staging files from `/boot/efi` (`1%` usage, `1013M` free).
+
+

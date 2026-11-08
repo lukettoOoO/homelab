@@ -11,7 +11,7 @@
 | **Gateway Router** | `MikroTik` | `10.0.0.1` | `https://router.home.olympus-luca.online` | RouterOS v7 | MikroTik hEX S (RB760iGS) / MT7621A 2C / 256MB RAM / 16MB Flash | WAN NAT (`ether1`), `bridge-olympus`, DHCP (`.100-.200`), Static Split DNS, Firewall |
 | **Core Switch** | `TL-SG108E` | `10.0.0.2` | `https://switch.home.olympus-luca.online` | TP-Link Easy Smart | 8-Port Gigabit RJ45 / Fanless | L2 Gigabit switching (Port 1: Router, Port 2: Node-01, Port 3: Node-02) |
 | **Node-01 (Eos)** | `debian-eos` | `10.0.0.10` (`100.80.227.117` Tailscale) | `https://home.olympus-luca.online` | Debian 13 (Trixie) | ASUS X550LB / i3-4010U (2C/4T) / 8GB RAM / 240GB SSD (`/`) / 750GB SATA HDD (`/srv`) / 465GB USB HDD (`/mnt/backup`) | Docker Host, Nextcloud AIO, GitLab CE, NPM, Netdata, Cloudflared, Tailscale Subnet Router, Nightly Backups |
-| **Node-02 (Atlas)** | `proxmox` | `10.0.0.20` | `https://pve.home.olympus-luca.online` (`:8006`) | Proxmox VE 8.x | HP EliteDesk 800 G4 / i5-8500T (6C) / 16GB DDR4 / 256GB NVMe SSD (`/dev/nvme0n1`) / Intel i219LM + USB LAN (WoL) | Type-1 Hypervisor (`local` + `local-lvm`), Direct-Link Wake-on-LAN orchestrator for Node-01 |
+| **Node-02 (Atlas)** | `atlas` | `10.0.0.20` | `https://pve.home.olympus-luca.online` (`:8006`) | Proxmox VE 8.x | HP EliteDesk 800 G4 / i5-8500T (6C) / 16GB DDR4 / 256GB NVMe SSD (`/dev/nvme0n1`) / Intel i219LM + USB LAN (WoL) | Type-1 Hypervisor (`local` + `local-lvm`), Direct-Link Wake-on-LAN orchestrator for Node-01 |
 | **VM 100 (Dionysus)** | `windows-server-2022-dionysus` | `10.0.0.30` | `dionysus.home.olympus-luca.online` | Windows Server 2022 + Ubuntu 22.04 WSL2 | 2 vCPU / 6GB RAM / 70GB VirtIO Disk (`local-lvm`) | Active Directory DC (`ad.home.olympus-luca.online` / `DIONYSUS`), DNS Server, IIS Web Server, RDP (`:3389`), OpenSSH (`:22`) |
 
 ### 1.2 Service Port & Routing Map (Node-01 `10.0.0.10`)
@@ -36,7 +36,7 @@ Execute maintenance procedures strictly in the following order to guarantee that
 2. [Section 4: Network Layer, DNS & Remote Access](#4-network-layer-dns--remote-access-1000024)
 3. [Section 5: Node-01 (`debian-eos`) — Host OS, Storage & Hardware](#5-node-01-debian-eos--100010--host-os-storage--hardware)
 4. [Section 6: Node-01 (`debian-eos`) — Docker Engine & Application Stack](#6-node-01-debian-eos--100010--docker-engine--application-stack)
-5. [Section 7: Node-02 (`proxmox`) — Hypervisor & Hardware](#7-node-02-proxmox--atlas--100020--hypervisor--hardware)
+5. [Section 7: Node-02 (`atlas`) — Hypervisor & Hardware](#7-node-02-atlas--100020--hypervisor--hardware)
 6. [Section 8: VM 100 (`windows-server-2022-dionysus`) — AD DS, DNS, IIS & WSL](#8-vm-100-windows-server-2022-dionysus--100030--ad-ds-dns-iis--wsl)
 7. [Section 9: Quarterly & Semi-Annual Maintenance Procedures](#9-quarterly--semi-annual-maintenance-procedures)
 8. [Section 10: Post-Maintenance Verification & Sign-Off](#10-post-maintenance-verification--sign-off)
@@ -500,7 +500,7 @@ Target: `ssh luca@10.0.0.10`
 
 ---
 
-## 7. Node-02 (`proxmox` / Atlas - `10.0.0.20`) — Hypervisor & Hardware
+## 7. Node-02 (`atlas` - `10.0.0.20`) — Hypervisor & Hardware
 
 Target: `ssh root@10.0.0.20` (or via Proxmox Web UI at `https://pve.home.olympus-luca.online`)
 
@@ -677,7 +677,7 @@ Execute the following deep-maintenance tasks once every quarter (January, April,
   - **Battery Safety Inspection:** Given the degraded internal lithium-ion battery (~48% health), physically inspect the laptop chassis and trackpad for any mechanical swelling or abnormal thermal output.
   - **Thermal Maintenance:** Clear dust accumulation from CPU heatsink fins and fan exhaust vents.
   - **External Storage Enclosure (`Axagon EE35-XA3`):** Verify USB 3.0 data cable seating, DC power connection, and confirm the hardware power rocker switch remains in the `I (ON)` position.
-- [ ] **Node-02 (`proxmox` — HP EliteDesk 800 G4) & Network Appliances:**
+- [ ] **Node-02 (`atlas` — HP EliteDesk 800 G4) & Network Appliances:**
   - Clear dust from the HP EliteDesk intake bezel and rear exhaust vents.
   - Verify physical RJ45 latch integrity across MikroTik hEX S (`ether1`–`ether3`) and TP-Link Switch (`Ports 1–3`).
 
@@ -764,9 +764,14 @@ done
 - Audited `$HOME/.cloudflared/` credential permissions (`700` directory, `600` files), verified Argo origin token (`cert.pem`) against active tunnel `e76021be-987c-4797-b788-1147f4fdd9d9`, and upgraded `cloudflared-nextcloud` from `2026.10.3` to `2026.10.7` (`latest`) with 4 active QUIC edge connections (`otp01`, `otp02`, `fra18`, `fra21`).
 - Reviewed Nextcloud user accounts, quotas, and authentication status via `occ user:list --info` and `occ twofactorauth:state`.
 
+### 2026-11-08 — Node-02 Hostname Migration (`proxmox` → `atlas`) & HP BIOS / Super I/O Firmware Upgrade
+- Migrated Node-02 (`10.0.0.20`) hostname from `proxmox` to `atlas`: updated `/etc/hosts`, `/etc/hostname`, `/etc/mailname`, and `/etc/postfix/main.cf`, migrated RRD telemetry databases, moved `VM 100` (`100.conf`) under `/etc/pve/nodes/atlas/qemu-server/`, regenerated node TLS certificates (`pvecm updatecerts --force`), and removed legacy `/etc/pve/nodes/proxmox`.
+- Upgraded HP EliteDesk 800 G4 (35W) system firmware via local EFI System Partition staging (`sp161583.exe` / `Q21_023100.bin`): updated System BIOS from `Q21 Ver. 02.14.01 (10/16/2020)` to `Q21 Ver. 02.31.00 (07/08/2025)` and Super I/O thermal/fan controller firmware from `7.9.51` to `7.9.55`, alongside active `intel-microcode 3.20251111.1~deb13u1`.
+
 | Date (`YYYY-MM-DD`) | Operator | Backups Verified | Node-01 Updated | Node-02 Updated | VM 100 Updated | Network Audited | Notes / Remedial Actions |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :--- |
 | `2026-10-24` | Luca | `[ ]` | `[ ]` | `[ ]` | `[ ]` | `[ ]` | Initial SOP established |
 | `2026-10-25` | Luca | `[x]` | `[x]` | `[x]` | `[x]` | `[x]` | Full maintenance, ACPI fix, Nextcloud v34, GitLab & SMART audit |
 | `2026-11-07` | Luca | `[x]` | `[x]` | `[ ]` | `[ ]` | `[ ]` | Quarterly restore drill (9.1), token/cert audit (9.2) & `cloudflared` `2026.10.7` upgrade |
+| `2026-11-08` | Luca | `[x]` | `[ ]` | `[x]` | `[ ]` | `[ ]` | Node-02 hostname rename (`proxmox` $\rightarrow$ `atlas`) & HP BIOS/SIO upgrade (`Q21 v02.31.00` / `SIO 7.9.55`) |
 | `2026-12-__` | Luca | `[ ]` | `[ ]` | `[ ]` | `[ ]` | `[ ]` | |

@@ -7,6 +7,7 @@
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)
 ![MikroTik](https://img.shields.io/badge/RouterOS_v7-293239?style=flat-square&logo=mikrotik&logoColor=white)
 ![Windows Server](https://img.shields.io/badge/Windows_Server_2022-0078D6?style=flat-square&logo=windows&logoColor=white)
+![Arch Linux](https://img.shields.io/badge/Arch_Linux-1793D1?style=flat-square&logo=arch-linux&logoColor=white)
 ![Cloudflare](https://img.shields.io/badge/Cloudflare_Tunnel-F38020?style=flat-square&logo=cloudflare&logoColor=white)
 ![Tailscale](https://img.shields.io/badge/Tailscale-242424?style=flat-square&logo=tailscale&logoColor=white)
 ![Ansible](https://img.shields.io/badge/Ansible-EE0000?style=flat-square&logo=ansible&logoColor=white)
@@ -60,6 +61,9 @@ flowchart TB
                 WinSrv["Windows Server 2022 - AD DS, DNS, IIS, RDP & OpenSSH"]
                 WSL["Ubuntu 22.04 WSL2 - Ansible & Kerberos/LDAP Lab"]
             end
+            subgraph VM101["VM 101: Athena (10.0.0.40)"]
+                ArchDesktop["Arch Linux - KDE Plasma 6 (Wayland), KRDP & OpenSSH"]
+            end
         end
     end
 
@@ -88,6 +92,7 @@ flowchart TB
 | **Node-01 (`Eos`)**     | `debian-eos`                   | `10.0.0.10` | Debian 13 (Trixie)                        | Repurposed ASUS X550LB, i3-4010U (2C/4T), 8 GB RAM, 240 GB SSD (`/`) + 750 GB HDD (`/srv`) + 465 GB USB HDD (`/mnt/backup`), built-in battery backup | Docker Host, Cloudflared, Tailscale Subnet Router, NPM, Nextcloud, GitLab, Nightly Backups       |
 | **Node-02 (`Atlas`)**   | `atlas`                        | `10.0.0.20` | Proxmox VE 8.x                            | HP EliteDesk 800 G4 Mini (35W), i5-8500T (6C), 16 GB DDR4, 256 GB NVMe SSD                                                                           | Type-1 KVM/QEMU Hypervisor (`local` + `local-lvm`)                                               |
 | **VM 100 (`Dionysus`)** | `windows-server-2022-dionysus` | `10.0.0.30` | Windows Server 2022 + Ubuntu 22.04 (WSL2) | 2 vCPU, 6 GB RAM, 70 GB VirtIO Disk, UEFI (OVMF) + TPM 2.0                                                                                           | Active Directory DC (`DIONYSUS`), AD DNS, IIS, RDP/SSH, Ansible Control Node & Kerberos/LDAP Lab |
+| **VM 101 (`Athena`)**   | `arch-desktop-athena`          | `10.0.0.40` | Arch Linux (KDE Plasma 6 Wayland)         | 4 vCPU (`host`), 8 GB RAM, 32 GB VirtIO Disk, UEFI (OVMF), VirtIO-GPU (128 MiB)                                                                      | Remote Linux Workstation, KDE Plasma 6 (Wayland + Krohnkite tiling), KRDP (`:3389`), OpenSSH (`:22`) |
 
 ---
 
@@ -104,6 +109,7 @@ flowchart TB
 | **Nextcloud AIO Panel**   | Node-01          | `https://nc-aio.home.olympus-luca.online`    | Private (LAN / Tailscale)  | Lifecycle & container orchestration console for Nextcloud AIO                          |
 | **Proxmox VE Web UI**     | Node-02          | `https://pve.home.olympus-luca.online`       | Private (LAN / Tailscale)  | Hypervisor cluster management, VM console, and snapshot administration                 |
 | **Active Directory / DC** | VM 100           | `dionysus.home.olympus-luca.online`          | Private (LAN / Tailscale)  | AD DS forest (`ad.home.olympus-luca.online`), DNS, IIS, RDP (`:3389`), OpenSSH (`:22`) |
+| **Arch Linux Desktop**    | VM 101           | `athena.home.olympus-luca.online`            | Private (LAN / Tailscale)  | KDE Plasma 6 Wayland remote workstation, KRDP (`:3389`), OpenSSH (`:22`)               |
 | **Network Appliances**    | Gateway / Switch | `router` / `switch.home.olympus-luca.online` | Private (LAN / Tailscale)  | MikroTik WebFig/SSH (`10.0.0.1`) and TP-Link Easy Smart UI (`10.0.0.2`)                |
 
 ---
@@ -142,7 +148,7 @@ homelab/
 │   ├── gitlab/          # GitLab CE Compose deployment & GitHub mirror script
 │   ├── nextcloud/       # Nextcloud All-in-One Compose deployment & notes
 │   └── notes/           # Service configuration references (NGINX, etc.)
-├── Node-02/             # Atlas (Proxmox VE 8) & Dionysus (Windows Server 2022 AD / WSL2 Ansible) logs
+├── Node-02/             # Atlas (Proxmox VE), Dionysus (Windows Server 2022 AD / WSL2) & Athena (Arch Linux KDE) logs
 ├── Experimental/        # Phase-0 prototype documentation (VirtualBox VMs & initial tests)
 ├── Learning/            # Hands-on labs & engineering notes:
 │   ├── Docker/          # Docker Engine & Docker Compose
@@ -160,7 +166,7 @@ homelab/
 
 - **[Networking Architecture & RouterOS Setup](Networking/README.md)** — Physical cabling, MikroTik bridge/NAT/firewall setup, switch configuration, and Tailscale Split DNS.
 - **[Node-01 (`Eos`) Engineering Log](Node-01/README.md)** — Debian 13 LVM setup, Docker stack deployments, Cloudflare Tunnel, LVM recovery post-mortem, and performance tuning.
-- **[Node-02 (`Atlas` & `Dionysus`) Engineering Log](Node-02/README.md)** — Proxmox VE installation, Windows Server 2022 Active Directory promotion, WSL2 Ansible/Kerberos integration lab, and hardware watchdog hardening.
+- **[Node-02 (`Atlas`, `Dionysus` & `Athena`) Engineering Log](Node-02/README.md)** — Proxmox VE installation, Windows Server 2022 Active Directory promotion, WSL2 Ansible/Kerberos lab, Arch Linux KDE Plasma 6 KRDP workstation, and hardware watchdog hardening.
 - **[Monthly Maintenance Runbook](MAINTENANCE.md)** — End-to-end checklist for backup audits, security updates, SMART disk health, AD replication checks, and disaster recovery drills.
 - **[Phase-0 Experimental Setup](Experimental/README.md)** — Early virtualization experiments prior to dedicated node deployment.
 
@@ -173,5 +179,5 @@ Routine upgrades, health audits, and disaster recovery checks follow the strict 
 1. **Pre-Maintenance & Backup Verification** — Verify nightly USB snapshots, SQL dumps, GitHub mirrors, and Proxmox `vzdump` backups before touching packages.
 2. **Network Layer & Remote Access Audit** — Check MikroTik flash/RAM health, firewall counters, Tailscale subnet routing, and `cloudflared` tunnel health.
 3. **Node-01 Host & Container Stack Updates** — Audit LVM/SMART disk health, apply Debian security updates, and update Docker stacks (`Nextcloud AIO`, `GitLab CE`, `NPM`, `cloudflared`).
-4. **Node-02 Hypervisor & VM 100 Updates** — Check NVMe SMART wearout, apply Proxmox VE updates, verify Active Directory health (`dcdiag` / `repadmin`), and patch Windows Server + WSL2.
+4. **Node-02 Hypervisor & VM Updates (`VM 100` & `VM 101`)** — Check NVMe SMART wearout, apply Proxmox VE updates, verify Active Directory health (`dcdiag` / `repadmin`), patch Windows Server + WSL2, and run rolling Arch Linux updates (`pacman -Syu` / `yay`) with KRDP health checks.
 5. **Post-Maintenance Sign-Off** — Validate end-to-end HTTPS reachability, TLS certificate expiry windows, and monitoring alerts.

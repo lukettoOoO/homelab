@@ -13,6 +13,7 @@
 | **Node-01 (Eos)** | `debian-eos` | `10.0.0.10` (`100.80.227.117` Tailscale) | `https://home.olympus-luca.online` | Debian 13 (Trixie) | ASUS X550LB / i3-4010U (2C/4T) / 8GB RAM / 240GB SSD (`/`) / 750GB SATA HDD (`/srv`) / 465GB USB HDD (`/mnt/backup`) | Docker Host, Nextcloud AIO, GitLab CE, NPM, Netdata, Cloudflared, Tailscale Subnet Router, Nightly Backups |
 | **Node-02 (Atlas)** | `atlas` | `10.0.0.20` | `https://pve.home.olympus-luca.online` (`:8006`) | Proxmox VE 8.x | HP EliteDesk 800 G4 / i5-8500T (6C) / 16GB DDR4 / 256GB NVMe SSD (`/dev/nvme0n1`) / Intel i219LM + USB LAN (WoL) | Type-1 Hypervisor (`local` + `local-lvm`), Direct-Link Wake-on-LAN orchestrator for Node-01 |
 | **VM 100 (Dionysus)** | `windows-server-2022-dionysus` | `10.0.0.30` | `dionysus.home.olympus-luca.online` | Windows Server 2022 + Ubuntu 22.04 WSL2 | 2 vCPU / 6GB RAM / 70GB VirtIO Disk (`local-lvm`) | Active Directory DC (`ad.home.olympus-luca.online` / `DIONYSUS`), DNS Server, IIS Web Server, RDP (`:3389`), OpenSSH (`:22`) |
+| **VM 101 (Athena)** | `arch-desktop-athena` (`arch-athena`) | `10.0.0.40` | `athena.home.olympus-luca.online` | Arch Linux (KDE Plasma 6 Wayland) | 4 vCPU (`host`) / 8GB RAM / 32GB VirtIO Disk (`local-lvm`) / VirtIO-GPU (`128 MiB`) | Remote Linux Workstation, KDE Plasma 6 (Wayland + Krohnkite tiling), KRDP (`:3389`), OpenSSH (`:22`) |
 
 ### 1.2 Service Port & Routing Map (Node-01 `10.0.0.10`)
 
@@ -38,8 +39,9 @@ Execute maintenance procedures strictly in the following order to guarantee that
 4. [Section 6: Node-01 (`debian-eos`) — Docker Engine & Application Stack](#6-node-01-debian-eos--100010--docker-engine--application-stack)
 5. [Section 7: Node-02 (`atlas`) — Hypervisor & Hardware](#7-node-02-atlas--100020--hypervisor--hardware)
 6. [Section 8: VM 100 (`windows-server-2022-dionysus`) — AD DS, DNS, IIS & WSL](#8-vm-100-windows-server-2022-dionysus--100030--ad-ds-dns-iis--wsl)
-7. [Section 9: Quarterly & Semi-Annual Maintenance Procedures](#9-quarterly--semi-annual-maintenance-procedures)
-8. [Section 10: Post-Maintenance Verification & Sign-Off](#10-post-maintenance-verification--sign-off)
+7. [Section 8B: VM 101 (`arch-desktop-athena`) — Arch Linux Rolling Maintenance & KRDP](#8b-vm-101-arch-desktop-athena--100040--arch-linux-rolling-maintenance--krdp)
+8. [Section 9: Quarterly & Semi-Annual Maintenance Procedures](#9-quarterly--semi-annual-maintenance-procedures)
+9. [Section 10: Post-Maintenance Verification & Sign-Off](#10-post-maintenance-verification--sign-off)
 
 ---
 
@@ -113,26 +115,26 @@ Target: Management Workstation (`MacBook`)
   ```
   *Acceptance Criteria:* Script exits with `0` and logs `INFO  : All Documents copied to Nextcloud successfully. Nextcloud sync active.`
 
-### 3.4 VM 100 (`windows-server-2022-dionysus`) Snapshot & Off-Node Backup
+### 3.4 Node-02 VMs (`VM 100` & `VM 101`) Snapshots & Off-Node Backups
 Target: `ssh root@10.0.0.20`
 
-- [ ] **Create Pre-Maintenance Proxmox Snapshot:**
+- [ ] **Create Pre-Maintenance Proxmox Snapshots (`VM 100` & `VM 101`):**
   ```bash
-  qm snapshot 100 "pre-maint-$(date +%Y%m%d)" --description "Monthly maintenance snapshot $(date +%Y-%m-%d)"
-  qm listsnapshot 100
+  for vmid in 100 101; do
+    qm snapshot "$vmid" "pre-maint-$(date +%Y%m%d)" --description "Monthly maintenance snapshot $(date +%Y-%m-%d)"
+    qm listsnapshot "$vmid"
+  done
   ```
 
-- [ ] **Generate Compressed VM Archive (`vzdump`) & Replicate to Node-01:**
+- [ ] **Generate Compressed VM Archives (`vzdump`) & Replicate to Node-01:**
   ```bash
-  # Create compressed backup archive in /var/lib/vz/dump
-  vzdump 100 --mode snapshot --compress zstd --dumpdir /var/lib/vz/dump
-
-  # Transfer latest archive to Node-01 /srv for inclusion in nightly USB backup
-  LATEST_DUMP=$(ls -t /var/lib/vz/dump/vzdump-qemu-100-*.vma.zst | head -n 1)
-  scp "$LATEST_DUMP" luca@10.0.0.10:/srv/docker/backup/
-
-  # Prune local Node-02 archives older than 14 days to conserve NVMe capacity
-  find /var/lib/vz/dump/ -name "vzdump-qemu-100-*" -mtime +14 -delete
+  # Create compressed backup archives in /var/lib/vz/dump for both VMs
+  for vmid in 100 101; do
+    vzdump "$vmid" --mode snapshot --compress zstd --dumpdir /var/lib/vz/dump
+    LATEST_DUMP=$(ls -t /var/lib/vz/dump/vzdump-qemu-"${vmid}"-*.vma.zst | head -n 1)
+    scp "$LATEST_DUMP" luca@10.0.0.10:/srv/docker/backup/
+    find /var/lib/vz/dump/ -name "vzdump-qemu-${vmid}-*" -mtime +14 -delete
+  done
   ```
 
 ### 3.5 Network Appliance Configuration Backups
@@ -183,7 +185,7 @@ Target: `ssh admin@10.0.0.1`
   ```routeros
   /ip dns static print
   ```
-  *Acceptance Criteria:* Explicit static A records resolve `router.home.`, `switch.home.`, `pve.home.`, `home.`, `gitlab.home.`, `npm.home.`, `nd.home.`, and `nc-aio.home.` to `10.0.0.10`, and `dionysus.home.` to `10.0.0.30`, with no wildcard rule overriding `dionysus.home.`.
+  *Acceptance Criteria:* Explicit static A records resolve `router.home.`, `switch.home.`, `pve.home.`, `home.`, `gitlab.home.`, `npm.home.`, `nd.home.`, and `nc-aio.home.` to `10.0.0.10`, `dionysus.home.` to `10.0.0.30`, and `athena.home.` to `10.0.0.40`, with no wildcard rule overriding `dionysus.home.` or `athena.home.`.
 
 - [ ] **Review DHCP Leases & System Logs:**
   ```routeros
@@ -554,7 +556,7 @@ Target: `ssh root@10.0.0.20` (or via Proxmox Web UI at `https://pve.home.olympus
   apt dist-upgrade -y
   apt autoremove -y
   ```
-  *Note:* Always use `apt dist-upgrade` (or `pveupgrade`) on Proxmox VE. If a new `proxmox-kernel-*` package is installed, schedule a hypervisor reboot after completing Section 8.
+  *Note:* Always use `apt dist-upgrade` (or `pveupgrade`) on Proxmox VE. If a new `proxmox-kernel-*` package is installed, schedule a hypervisor reboot after completing Sections 8 and 8B.
 
 ---
 
@@ -650,6 +652,76 @@ Target: `ssh root@10.0.0.20`
 
 ---
 
+## 8B. VM 101 (`arch-desktop-athena` - `10.0.0.40`) — Arch Linux Rolling Maintenance & KRDP
+
+Target: `ssh luca@athena.home.olympus-luca.online` (or `ssh luca@10.0.0.40`).
+
+### 8B.1 System Capacity, Uptime & Failed Systemd Units
+- [ ] **Inspect Filesystem Capacity, Memory & Failed Units:**
+  ```bash
+  uptime
+  free -h
+  df -h / /boot
+  systemctl --failed
+  systemctl --user --failed
+  ```
+  *Acceptance Criteria:* Root disk (`/` on 32GB VirtIO disk) utilization is **< 80%**; `/boot` (EFI / UKI partition) has sufficient free space for kernel updates; zero failed system or user units.
+
+### 8B.2 Arch Linux Rolling Upgrades (`pacman` & AUR `yay`)
+- [ ] **Review Arch Linux News Before Upgrading:**
+  Check [https://archlinux.org/news/](https://archlinux.org/news/) for any manual intervention advisories affecting `linux`, `systemd`, `plasma`, `sddm`, or `krdp` before upgrading.
+- [ ] **Apply Official Repository & AUR Updates:**
+  ```bash
+  sudo pacman -Syu
+  yay -Sua
+  ```
+  *Note:* If the `linux` kernel, `mesa`, `kwin`, `plasma-workspace`, or `krdp` packages are updated, reboot the VM (`sudo reboot`) once cleanup completes.
+
+### 8B.3 Pacman Cache, Orphaned Packages, `.pacnew` Audit & Journal Vacuum
+- [ ] **Audit `.pacnew`/`.pacsave` Config Files & Orphaned Packages:**
+  ```bash
+  # Check for unhandled config merges (review with diff/pacdiff if any appear)
+  sudo find /etc -regextype posix-extended -regex ".+\.pac(new|save)" 2>/dev/null
+
+  # List orphaned dependencies (remove only after verifying nothing needed is listed)
+  pacman -Qdtq
+  # Optional removal: sudo pacman -Rns $(pacman -Qdtq)
+  ```
+
+- [ ] **Clean Pacman/Yay Package Caches & Vacuum Systemd Journal:**
+  ```bash
+  # Keep only installed package versions in cache to conserve 32GB disk capacity
+  sudo pacman -Sc --noconfirm
+  yay -Sc --noconfirm
+
+  # Trim systemd journals
+  sudo journalctl --disk-usage
+  sudo journalctl --vacuum-time=14d --vacuum-size=300M
+  ```
+
+### 8B.4 KRDP, SDDM Auto-Login & QEMU Guest Agent Verification
+- [ ] **Verify Core Services, Auto-Login Persistence & RDP Listening Socket:**
+  ```bash
+  systemctl is-active sshd qemu-guest-agent NetworkManager sddm
+  cat /etc/sddm.conf.d/autologin.conf
+  systemctl --user is-active plasma-workspace.target app-org.kde.krdpserver.service
+  ss -tulpn | grep 3389
+  ```
+  *Acceptance Criteria:* All four system services report `active`; `/etc/sddm.conf.d/autologin.conf` specifies `User=luca` and `Session=plasma.desktop`; both `plasma-workspace.target` and `app-org.kde.krdpserver.service` report `active`; `krdpserver` is listening on `*:3389`.
+- [ ] **Verify Unattended RDP Reconnection After Reboot (If Rebooted):**
+  Reconnect from macOS **Windows App** to `athena.home.olympus-luca.online` and confirm smooth `VirtIO-GPU` session rendering without touching the Proxmox console.
+
+### 8B.5 Post-Update Proxmox Snapshot Cleanup
+Target: `ssh root@10.0.0.20`
+
+- [ ] **Remove Temporary Pre-Maintenance Snapshot After VM 101 Verification:**
+  ```bash
+  qm listsnapshot 101
+  qm delsnapshot 101 "pre-maint-$(date +%Y%m%d)"
+  ```
+
+---
+
 ## 9. Quarterly & Semi-Annual Maintenance Procedures
 
 Execute the following deep-maintenance tasks once every quarter (January, April, July, October).
@@ -686,7 +758,7 @@ Execute the following deep-maintenance tasks once every quarter (January, April,
 ### 9.4 Cold-Boot & Wake-on-LAN Recovery Drill (Semi-Annual)
 - [ ] Validate automated recovery sequence from a cold power state:
   1. MikroTik hEX S and TP-Link Switch initialize L2/L3 routing and WAN NAT within 60 seconds.
-  2. Node-02 powers on automatically via BIOS AC power recovery and starts VM 100 (`onboot: 1`).
+  2. Node-02 powers on automatically via BIOS AC power recovery and starts VM 100 (`dionysus`) and VM 101 (`athena`) (`onboot: 1`).
   3. Node-02 transmits a Wake-on-LAN magic packet via `enxc84d4428bc43` (`wakeonlan` / `etherwake`) to wake Node-01 (`enp2s0f1`).
   4. Node-01 mounts `/srv`, initializes all Docker containers, establishes the Cloudflare Tunnel, and advertises `10.0.0.0/24` over Tailscale.
 
@@ -698,7 +770,7 @@ Execute the following verification script from the management workstation (MacBo
 
 ```bash
 echo "=== 1. ICMP Reachability Sweep (10.0.0.0/24) ==="
-for ip in 10.0.0.1 10.0.0.2 10.0.0.10 10.0.0.20 10.0.0.30; do
+for ip in 10.0.0.1 10.0.0.2 10.0.0.10 10.0.0.20 10.0.0.30 10.0.0.40; do
   ping -c 1 -W 1000 "$ip" >/dev/null 2>&1 && echo "[OK] $ip reachable" || echo "[FAIL] $ip unreachable"
 done
 
@@ -730,6 +802,11 @@ done
 echo -e "\n=== 4. Windows Server AD / DNS / SSH / RDP Port Verification ==="
 for port in 22 53 80 389 3389; do
   nc -zv -G 2 10.0.0.30 "$port" 2>&1 | grep -E "succeeded|open"
+done
+
+echo -e "\n=== 5. Arch Linux (Athena) SSH & KRDP Port Verification ==="
+for port in 22 3389; do
+  nc -zv -G 2 10.0.0.40 "$port" 2>&1 | grep -E "succeeded|open"
 done
 ```
 
@@ -770,16 +847,19 @@ done
 - Migrated Node-02 (`10.0.0.20`) hostname from `proxmox` to `atlas`: updated `/etc/hosts`, `/etc/hostname`, `/etc/mailname`, and `/etc/postfix/main.cf`, migrated RRD telemetry databases, moved `VM 100` (`100.conf`) under `/etc/pve/nodes/atlas/qemu-server/`, regenerated node TLS certificates (`pvecm updatecerts --force`), and removed legacy `/etc/pve/nodes/proxmox`.
 - Upgraded HP EliteDesk 800 G4 (35W) system firmware via local EFI System Partition staging (`sp161583.exe` / `Q21_023100.bin`): updated System BIOS from `Q21 Ver. 02.14.01 (10/16/2020)` to `Q21 Ver. 02.31.00 (07/08/2025)` and Super I/O thermal/fan controller firmware from `7.9.51` to `7.9.55`, alongside active `intel-microcode 3.20251111.1~deb13u1`.
 
-### 2026-11-17 — Node-02 Headless `i915` / C-State Crash Fix, `iTCO_wdt` Binding & Wake-on-LAN Persistence
+### 2026-11-17 — Node-02 Headless `i915` / C-State Crash Fix, `iTCO_wdt` Binding, Wake-on-LAN & VM 101 (`Athena`) Deployment
 - Diagnosed and permanently resolved the recurring 1–4 hour unlogged resets and headless idle freezes on Node-02 (`atlas` - HP EliteDesk 800 G4 `i5-8500T`) by adding `i915.enable_dc=0 intel_idle.max_cstate=1` to `GRUB_CMDLINE_LINUX_DEFAULT` in `/etc/default/grub`.
 - Configured Proxmox `watchdog-mux` (`/etc/default/pve-ha-manager` with `WATCHDOG_MODULE=iTCO_wdt` and `/etc/modprobe.d/blacklist-softdog.conf`) to bind directly to the Intel PCH hardware watchdog (`Watchdog driver 'iTCO_wdt', version 6` on `/dev/watchdog0`) instead of `softdog`.
 - Woke `atlas` (`c4:65:16:b5:10:b8`) remotely from `Node-01` (`10.0.0.10`) via Wake-on-LAN and persisted `post-up /usr/sbin/ethtool -s nic0 wol g` in `/etc/network/interfaces`.
+- Provisioned **VM 101 (`arch-desktop-athena`)** on `atlas` (4 vCPU `host`, 8 GB RAM, 32 GB VirtIO disk, OVMF UEFI, `VirtIO-GPU` 128 MiB, `onboot: 1`, QEMU Guest Agent) running Arch Linux with KDE Plasma 6 (Wayland), OpenSSH (`:22`), and native Wayland KRDP (`:3389`).
+- Assigned static IPv4 `10.0.0.40/24` and registered MikroTik Split DNS A record `athena.home.olympus-luca.online` $\rightarrow$ `10.0.0.40`, enabling direct LAN and remote Tailscale access via macOS *Windows App*.
+- Configured persistent SDDM Wayland auto-login (`/etc/sddm.conf.d/autologin.conf` with `User=luca` / `Session=plasma.desktop`) to ensure `plasma-workspace.target` and `app-org.kde.krdpserver.service` auto-start cleanly on reboot, and tuned RDP responsiveness (`VirtIO-GPU`, `Blur` disabled, `Instant` animations, Catppuccin Mocha + Krohnkite auto-tiling).
 
-| Date (`YYYY-MM-DD`) | Operator | Backups Verified | Node-01 Updated | Node-02 Updated | VM 100 Updated | Network Audited | Notes / Remedial Actions |
-| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :--- |
-| `2026-10-24` | Luca | `[ ]` | `[ ]` | `[ ]` | `[ ]` | `[ ]` | Initial SOP established |
-| `2026-10-25` | Luca | `[x]` | `[x]` | `[x]` | `[x]` | `[x]` | Full maintenance, ACPI fix, Nextcloud v34, GitLab & SMART audit |
-| `2026-11-07` | Luca | `[x]` | `[x]` | `[ ]` | `[ ]` | `[ ]` | Quarterly restore drill (9.1), token/cert audit (9.2) & `cloudflared` `2026.10.7` upgrade |
-| `2026-11-08` | Luca | `[x]` | `[ ]` | `[x]` | `[ ]` | `[ ]` | Node-02 hostname rename (`proxmox` $\rightarrow$ `atlas`) & HP BIOS/SIO upgrade (`Q21 v02.31.00` / `SIO 7.9.55`) |
-| `2026-11-17` | Luca | `[ ]` | `[ ]` | `[x]` | `[ ]` | `[ ]` | Headless `i915.enable_dc=0` / `intel_idle.max_cstate=1` fix, `iTCO_wdt` binding & `nic0` WoL persistence |
-| `2026-12-__` | Luca | `[ ]` | `[ ]` | `[ ]` | `[ ]` | `[ ]` | |
+| Date (`YYYY-MM-DD`) | Operator | Backups Verified | Node-01 Updated | Node-02 Updated | VM 100 Updated | VM 101 Updated | Network Audited | Notes / Remedial Actions |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| `2026-10-24` | Luca | `[ ]` | `[ ]` | `[ ]` | `[ ]` | `—` | `[ ]` | Initial SOP established |
+| `2026-10-25` | Luca | `[x]` | `[x]` | `[x]` | `[x]` | `—` | `[x]` | Full maintenance, ACPI fix, Nextcloud v34, GitLab & SMART audit |
+| `2026-11-07` | Luca | `[x]` | `[x]` | `[ ]` | `[ ]` | `—` | `[ ]` | Quarterly restore drill (9.1), token/cert audit (9.2) & `cloudflared` `2026.10.7` upgrade |
+| `2026-11-08` | Luca | `[x]` | `[ ]` | `[x]` | `[ ]` | `—` | `[ ]` | Node-02 hostname rename (`proxmox` $\rightarrow$ `atlas`) & HP BIOS/SIO upgrade (`Q21 v02.31.00` / `SIO 7.9.55`) |
+| `2026-11-17` | Luca | `[ ]` | `[ ]` | `[x]` | `[ ]` | `[x]` | `[x]` | Headless `i915`/C-state fix, `iTCO_wdt`, WoL persistence; deployed VM 101 (`Athena`, `10.0.0.40`), Split DNS & KRDP |
+| `2026-12-__` | Luca | `[ ]` | `[ ]` | `[ ]` | `[ ]` | `[ ]` | `[ ]` | |

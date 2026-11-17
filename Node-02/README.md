@@ -528,5 +528,65 @@ Set-DnsClientServerAddress -InterfaceAlias "Ethernet" -ServerAddresses ("10.0.0.
      - Woke `atlas` (`c4:65:16:b5:10:b8`) remotely from `Node-01` (`10.0.0.10`) using an interface-bound UDP Magic Packet (`10.0.0.255:7/9`).
      - Persisted `post-up /usr/sbin/ethtool -s nic0 wol g` inside `/etc/network/interfaces` and confirmed `Wake-on: g` across reboots.
 
+### VM 101 (`arch-desktop-athena`) — Arch Linux & KDE Plasma 6 Remote Desktop Deployment
+
+- **Purpose:** Provision a lightweight, aesthetic remote Linux workstation on `atlas` accessible from macOS (both on the local LAN and remotely via Node-01's Tailscale Subnet Router) over native RDP (`Windows App`) and OpenSSH.
+- Downloaded the latest official Arch Linux ISO (`archlinux-x86_64.iso`) directly into `local (atlas)` from `https://geo.mirror.pkgbuild.com/iso/latest/archlinux-x86_64.iso`.
+- **Proxmox VM Configuration (`VM 101`):**
+
+| Tab / Section | Parameter / Option | Configured Value                                          |
+| :------------ | :----------------- | :-------------------------------------------------------- |
+| **General**   | Node               | `atlas`                                                   |
+| **General**   | VM ID              | `101`                                                     |
+| **General**   | Name               | `arch-desktop-athena`                                     |
+| **General**   | Start at boot      | Checked (`onboot: 1`)                                     |
+| **OS**        | ISO Image          | `local:iso/archlinux-x86_64.iso` (unmounted post-install) |
+| **OS**        | Guest OS Type      | `Linux` (`6.x - 2.6 Kernel`, `l26`)                       |
+| **System**    | Graphic card       | `VirtIO-GPU` (`128 MiB` VRAM, upgraded from `Default`)    |
+| **System**    | Machine            | `q35`                                                     |
+| **System**    | BIOS               | `OVMF (UEFI)`                                             |
+| **System**    | EFI Disk           | `local-lvm` (`4 MiB`), **Pre-Enroll keys: Unchecked**     |
+| **System**    | SCSI Controller    | `VirtIO SCSI single`                                      |
+| **System**    | Qemu Guest Agent   | Checked (`agent: 1`)                                      |
+| **Disks**     | Bus/Device         | `VirtIO Block` (`virtio0`, `iothread=on`)                 |
+| **Disks**     | Storage / Size     | `local-lvm` / `32 GiB`                                    |
+| **CPU**       | Sockets / Cores    | `1` socket / `4` cores, Type: `host`                      |
+| **Memory**    | Memory (MiB)       | `8192` (8 GB RAM)                                         |
+| **Network**   | Bridge / Model     | `vmbr0` / `VirtIO (paravirtualized)`, Firewall enabled    |
+| **Network**   | MAC Address        | `BC:24:11:70:11:CB`                                       |
+
+- **Arch Linux Installation (`archinstall` & Post-Install Chroot):**
+  - Configured via `archinstall` with Romania mirrors, default `ext4` layout on `/dev/vda`, `systemd-boot` (UKI enabled), `zram` swap (`zstd`), hostname `arch-athena`, timezone `Europe/Bucharest`, sudo user `luca`, **KDE Plasma** desktop profile (`All open-source` graphics, `sddm` greeter), `NetworkManager`, and `PipeWire`.
+  - Installed essential base utilities and enabled background daemons inside the installation `chroot`:
+    ```bash
+    pacman -S --noconfirm qemu-guest-agent openssh git base-devel nano firefox
+    systemctl enable sshd qemu-guest-agent
+    ```
+  - Powered off the VM, detached the installation ISO (`ide2: none,media=cdrom`), and booted directly into **KDE Plasma 6 (Wayland)** (`Plasma 6.8.3`).
+
+- **Static Networking & Split DNS Integration:**
+  - Configured static IPv4 in NetworkManager (`Wired connection 1`): `10.0.0.40/24`, Gateway `10.0.0.1`, DNS `10.0.0.1, 1.1.1.1`.
+  - Added static A record `athena.home.olympus-luca.online` $\rightarrow$ `10.0.0.40` on MikroTik (`10.0.0.1`), making SSH (`:22`) and RDP (`:3389`) reachable both locally and over Tailscale without installing a dedicated Tailscale client in the VM.
+
+- **Native Wayland Remote Desktop (`KRDP`) & Unattended Reboot Fix:**
+  - Installed KDE's native Wayland RDP server (`sudo pacman -S --needed krdp`), enabled `app-org.kde.krdpserver.service` (`Autostart on login`, port `3389`), and authorized system user `luca` via *System Settings -> Security & Privacy -> Remote Desktop*.
+  - **Troubleshooting (`Error 0x204` After Cold Reboot):**
+    - Initial reboot testing caused macOS *Windows App* connections to fail with `0x204` despite `app-org.kde.krdpserver.service` being enabled.
+    - Diagnostics over SSH (`systemctl --user status app-org.kde.krdpserver.service` and `plasma-workspace.target`) revealed `plasma-workspace.target` was `inactive (dead)` because SDDM auto-login had not been written to `/etc/sddm.conf.d/`, leaving the VM idle at the SDDM login screen (since `krdpserver` is `WantedBy=plasma-workspace.target`).
+    - **Resolution:** Explicitly configured SDDM auto-login into the Plasma Wayland session:
+      ```bash
+      SESSION=$(basename $(ls /usr/share/wayland-sessions/*.desktop | head -n 1))
+      sudo mkdir -p /etc/sddm.conf.d
+      printf "[Autologin]\nUser=luca\nSession=%s\n" "$SESSION" | sudo tee /etc/sddm.conf.d/autologin.conf
+      sudo systemctl restart sddm
+      ```
+    - Confirmed `app-org.kde.krdpserver.service` enters `active (running)` automatically after boot (`*:3389`) and verified unattended reconnection from macOS *Windows App* (`athena.home.olympus-luca.online`).
+    - Disabled automatic sleep/suspend (*Power Management*) and automatic screen locking (*Screen Locking*) to prevent headless session interruption; remote access remains authenticated via KRDP credentials and private LAN/Tailscale boundaries.
+
+- **Workstation Environment, Auto-Tiling & RDP Performance Tuning:**
+  - Provisioned desktop/CLI tooling (`konsole`, `kitty`, `dolphin`, `ark`, `spectacle`, `ttf-jetbrains-mono-nerd`, `fastfetch`, `starship`, `btop`, `eza`, `bat`, `papirus-icon-theme`) and `yay` (`yay-bin` from AUR).
+  - Configured **Catppuccin Mocha** color scheme (`Breeze Dark` + `Papirus-Dark` icons), opaque top floating panel (`34px`), Catppuccin Mocha `kitty.conf` (`background_opacity 1.0`), `starship` prompt, `eza` aliases, and **Krohnkite** KWin script (via KDE Store) for Hyprland-style automatic window tiling with gaps.
+  - **RDP Smoothness Optimization:** Upgraded Proxmox virtual display from `Default` (Standard VGA, 16 MiB) to **`VirtIO-GPU` (`128 MiB` VRAM)**, disabled the KWin `Blur` effect, and set KDE *Animations* to **`Instant`**, eliminating software-compositing choppiness over H.264 RDP streaming.
+
 
 

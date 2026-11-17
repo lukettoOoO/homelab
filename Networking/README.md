@@ -25,6 +25,7 @@
 | **Node 01 (Eos)**      | `enp2s0f1` (Realtek Gigabit)     | `10.0.0.10/24`              | Nextcloud, GitLab, NPM, Netdata                            |
 | **Node 02 (Proxmox)**  | `vmbr0` on `eno1` (Intel i219LM) | `10.0.0.20/24`              | Hypervisor Web UI (`:8006`)                                |
 | **Windows VM (100)**   | Virtual NIC (VirtIO)             | `10.0.0.30/24`              | RDP (`:3389`), SSH (`:22`)                                 |
+| **Arch Linux VM (101)** | Virtual NIC (VirtIO)            | `10.0.0.40/24`              | `arch-desktop-athena` — KRDP (`:3389`), SSH (`:22`)        |
 | **DHCP Pool**          | MacBook & temporary devices      | `10.0.0.100` - `10.0.0.200` | Dynamic pool                                               |
 | **Future VMs / Nodes** | Reserved for expansion           | `TBD`                       | Additional VMs and nodes may be added as the homelab grows |
 
@@ -45,6 +46,8 @@
 | **Node 02 (Proxmox Dionysus)**   | [https://pve.home.olympus-luca.online](https://pve.home.olympus-luca.online)           | `10.0.0.20:8006`                               | HTTPS (Reverse Proxy / NPM), SSH (`22`)                     |
 | **VM 100 (Windows Server 2022)** | `dionysus.home.olympus-luca.online`                                                    | `10.0.0.30:3389`                               | Remote Desktop (RDP - Windows App)                          |
 | **VM 100 OpenSSH**               | `dionysus.home.olympus-luca.online`                                                    | `10.0.0.30:22`                                 | SSH CLI (`Administrator@dionysus.home.olympus-luca.online`) |
+| **VM 101 (Arch Linux - Athena)** | `athena.home.olympus-luca.online`                                                      | `10.0.0.40:3389`                               | Remote Desktop (KRDP - Windows App)                         |
+| **VM 101 OpenSSH**               | `athena.home.olympus-luca.online`                                                      | `10.0.0.40:22`                                 | SSH CLI (`luca@athena.home.olympus-luca.online`)            |
 | **Tailscale Subnet Router**      | Subnet route `10.0.0.0/24`                                                             | `100.80.227.117` -> `10.0.0.10`                | WireGuard / Tailnet VPN                                     |
 
 - Network equipment details:
@@ -319,3 +322,19 @@ Only `https://nc.olympus-luca.online` is publicly reachable. No ports were opene
       - **Nameserver**: `10.0.0.1` (MikroTik Gateway)
       - **Search Domain**: `home.olympus-luca.online`
     - Guarantees seamless resolution and reachability of all homelab appliances and servers when operating outside the local network.
+
+---
+
+### Adding VM 101 (`Athena`) Static Split DNS Record
+
+**[Date: 17-11-2026]**
+
+- Assigned static IPv4 **`10.0.0.40/24`** (Gateway `10.0.0.1`, DNS `10.0.0.1, 1.1.1.1`) via NetworkManager on `VM 101` (`arch-desktop-athena`) to align with the Olympus `.10/.20/.30/.40` static host numbering scheme.
+- Registered an explicit static DNS A record on MikroTik RouterOS (`10.0.0.1`):
+
+  ```routeros
+  /ip dns static add name="athena.home.olympus-luca.online" address=10.0.0.40
+  /ip dns cache flush
+  ```
+
+- Verified ICMP (`ping athena.home.olympus-luca.online`), OpenSSH (`:22`), and KRDP (`:3389`) reachability both on the local LAN and remotely through the existing Node-01 Tailscale Subnet Router (`10.0.0.0/24`) and Split DNS (`home.olympus-luca.online`), requiring no additional Tailscale client inside the VM.

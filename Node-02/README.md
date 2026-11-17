@@ -503,4 +503,30 @@ Set-DnsClientServerAddress -InterfaceAlias "Ethernet" -ServerAddresses ("10.0.0.
     - **Super I/O (SIO) Firmware Version:** `7.9.51` $\rightarrow$ **`7.9.55`** (hardware thermal and fan curve controller)
   - Verified `VM 100` (`windows-server-2022-dionysus`) booted cleanly (`status: running`) and purged temporary firmware staging files from `/boot/efi` (`1%` usage, `1013M` free).
 
+**[Date: 17-11-2026]**
+
+### Headless `i915` Display C-State / CPU C-State Crash Fix, `iTCO_wdt` Watchdog Binding & Wake-on-LAN Persistence
+
+- **Root-Cause Analysis (Recurring 1–4h Resets & Headless Idle Lockups):**
+  - Following another unlogged idle lockup (`Nov 15 11:17`), `sensors` telemetry confirmed the CPU (`44–46°C`), PCH (`41°C`), and NVMe (`43.9°C`) run completely cool under normal load—ruling out active thermal overheating during operation.
+  - Instead, `last -x` and `journalctl -u watchdog-mux` revealed 5–10 daily unlogged resets caused by a well-known **HP EliteDesk 800 G4 Mini (`i5-8500T` Coffee Lake)** headless bug: when running without a monitor connected to DisplayPort, the `i915` GPU driver attempts to enter Display C-States (`DC5`/`DC6`) while the CPU enters deep package C-states, hanging or hard-resetting the system bus (and occasionally locking the CPU at full voltage for days, which previously caused the chassis to heat up while frozen).
+  - Additionally, `journalctl -u watchdog-mux` revealed that Proxmox's `watchdog-mux.service` was defaulting to `Software Watchdog` (`softdog`) on `/dev/watchdog0`, leaving `iTCO_wdt` unarmed on `/dev/watchdog1`.
+
+- **Permanent Remediation Applied on `atlas` (`10.0.0.20`):**
+  1. **Disabled `i915` Display C-States & Deep CPU C-States in GRUB (`/etc/default/grub`):**
+     ```text
+     GRUB_CMDLINE_LINUX_DEFAULT="quiet pcie_aspm=off e1000e.SmartPowerDownEnable=0 i915.enable_dc=0 intel_idle.max_cstate=1"
+     ```
+     Applied via `update-grub` and verified in `/proc/cmdline`.
+  2. **Bound Proxmox `watchdog-mux` to Intel Hardware Watchdog (`iTCO_wdt`):**
+     ```bash
+     echo "WATCHDOG_MODULE=iTCO_wdt" > /etc/default/pve-ha-manager
+     echo "blacklist softdog" > /etc/modprobe.d/blacklist-softdog.conf
+     ```
+     Verified after reboot via `journalctl -u watchdog-mux` (`Loading watchdog module 'iTCO_wdt'` / `Watchdog driver 'iTCO_wdt', version 6` on `/dev/watchdog0`).
+  3. **Remote Wake-on-LAN Recovery & Persistence (`nic0`):**
+     - Woke `atlas` (`c4:65:16:b5:10:b8`) remotely from `Node-01` (`10.0.0.10`) using an interface-bound UDP Magic Packet (`10.0.0.255:7/9`).
+     - Persisted `post-up /usr/sbin/ethtool -s nic0 wol g` inside `/etc/network/interfaces` and confirmed `Wake-on: g` across reboots.
+
+
 

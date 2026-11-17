@@ -530,13 +530,15 @@ Target: `ssh root@10.0.0.20` (or via Proxmox Web UI at `https://pve.home.olympus
   ```
   *Acceptance Criteria:* Zero `Detected Hardware Unit Hang` events logged since boot.
 
-- [ ] **Verify GRUB Kernel Parameters & `ethtool` Offload Settings:**
+- [ ] **Verify GRUB Kernel Parameters, Hardware Watchdog (`iTCO_wdt`) & `ethtool` Settings:**
   ```bash
   cat /proc/cmdline
+  journalctl -u watchdog-mux -b --no-pager
+  ethtool nic0 | grep -i "Wake-on"
   ethtool -g nic0 2>/dev/null || ethtool -g eno1
   ethtool -k nic0 2>/dev/null | grep -E "tcp-segmentation-offload|generic-segmentation-offload|generic-receive-offload" || ethtool -k eno1 | grep -E "tcp-segmentation-offload|generic-segmentation-offload|generic-receive-offload"
   ```
-  *Acceptance Criteria:* `/proc/cmdline` contains `pcie_aspm=off e1000e.SmartPowerDownEnable=0`; RX/TX ring buffers are `4096`; `tso`, `gso`, and `gro` report `off`.
+  *Acceptance Criteria:* `/proc/cmdline` contains `pcie_aspm=off e1000e.SmartPowerDownEnable=0 i915.enable_dc=0 intel_idle.max_cstate=1`; `watchdog-mux` reports `Watchdog driver 'iTCO_wdt'`; `nic0` reports `Wake-on: g`; RX/TX ring buffers are `4096`; `tso`, `gso`, and `gro` report `off`.
 
 - [ ] **Verify Direct-Link USB Ethernet Adapter for Node-01 Wake-on-LAN:**
   ```bash
@@ -768,10 +770,16 @@ done
 - Migrated Node-02 (`10.0.0.20`) hostname from `proxmox` to `atlas`: updated `/etc/hosts`, `/etc/hostname`, `/etc/mailname`, and `/etc/postfix/main.cf`, migrated RRD telemetry databases, moved `VM 100` (`100.conf`) under `/etc/pve/nodes/atlas/qemu-server/`, regenerated node TLS certificates (`pvecm updatecerts --force`), and removed legacy `/etc/pve/nodes/proxmox`.
 - Upgraded HP EliteDesk 800 G4 (35W) system firmware via local EFI System Partition staging (`sp161583.exe` / `Q21_023100.bin`): updated System BIOS from `Q21 Ver. 02.14.01 (10/16/2020)` to `Q21 Ver. 02.31.00 (07/08/2025)` and Super I/O thermal/fan controller firmware from `7.9.51` to `7.9.55`, alongside active `intel-microcode 3.20251111.1~deb13u1`.
 
+### 2026-11-17 — Node-02 Headless `i915` / C-State Crash Fix, `iTCO_wdt` Binding & Wake-on-LAN Persistence
+- Diagnosed and permanently resolved the recurring 1–4 hour unlogged resets and headless idle freezes on Node-02 (`atlas` - HP EliteDesk 800 G4 `i5-8500T`) by adding `i915.enable_dc=0 intel_idle.max_cstate=1` to `GRUB_CMDLINE_LINUX_DEFAULT` in `/etc/default/grub`.
+- Configured Proxmox `watchdog-mux` (`/etc/default/pve-ha-manager` with `WATCHDOG_MODULE=iTCO_wdt` and `/etc/modprobe.d/blacklist-softdog.conf`) to bind directly to the Intel PCH hardware watchdog (`Watchdog driver 'iTCO_wdt', version 6` on `/dev/watchdog0`) instead of `softdog`.
+- Woke `atlas` (`c4:65:16:b5:10:b8`) remotely from `Node-01` (`10.0.0.10`) via Wake-on-LAN and persisted `post-up /usr/sbin/ethtool -s nic0 wol g` in `/etc/network/interfaces`.
+
 | Date (`YYYY-MM-DD`) | Operator | Backups Verified | Node-01 Updated | Node-02 Updated | VM 100 Updated | Network Audited | Notes / Remedial Actions |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :--- |
 | `2026-10-24` | Luca | `[ ]` | `[ ]` | `[ ]` | `[ ]` | `[ ]` | Initial SOP established |
 | `2026-10-25` | Luca | `[x]` | `[x]` | `[x]` | `[x]` | `[x]` | Full maintenance, ACPI fix, Nextcloud v34, GitLab & SMART audit |
 | `2026-11-07` | Luca | `[x]` | `[x]` | `[ ]` | `[ ]` | `[ ]` | Quarterly restore drill (9.1), token/cert audit (9.2) & `cloudflared` `2026.10.7` upgrade |
 | `2026-11-08` | Luca | `[x]` | `[ ]` | `[x]` | `[ ]` | `[ ]` | Node-02 hostname rename (`proxmox` $\rightarrow$ `atlas`) & HP BIOS/SIO upgrade (`Q21 v02.31.00` / `SIO 7.9.55`) |
+| `2026-11-17` | Luca | `[ ]` | `[ ]` | `[x]` | `[ ]` | `[ ]` | Headless `i915.enable_dc=0` / `intel_idle.max_cstate=1` fix, `iTCO_wdt` binding & `nic0` WoL persistence |
 | `2026-12-__` | Luca | `[ ]` | `[ ]` | `[ ]` | `[ ]` | `[ ]` | |

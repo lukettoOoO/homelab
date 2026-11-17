@@ -125,8 +125,8 @@ flowchart TB
 ### System & Kernel Hardening Highlights
 
 - **Storage Isolation:** Dedicated SSD LVM volume group (`vg_system`) for OS root `/` and separate SATA HDD volume group (`vg_data`) at `/srv` for Docker volumes, containerd layers, and repositories—eliminating multi-disk LVM failure domains.
-- **NIC Hang Remediation (Node-02):** Resolved Intel `i219LM` (`e1000e`) hardware unit hangs on Proxmox by disabling PCIe ASPM (`pcie_aspm=off e1000e.SmartPowerDownEnable=0`), turning off hardware TSO/GSO/EEE offloading, and expanding RX/TX ring buffers to `4096`.
-- **Fail-Safe Watchdog Recovery (Node-02):** Enabled the Intel PCH hardware watchdog (`iTCO_wdt`) and kernel panic auto-reboot (`kernel.panic = 10`, `kernel.panic_on_oops = 1`) to prevent unmonitored thermal or kernel lockups.
+- **NIC Hang & Headless C-State Remediation (Node-02):** Resolved Intel `i219LM` (`e1000e`) hardware unit hangs and Coffee Lake / `i915` headless Display C-state freezes (`pcie_aspm=off e1000e.SmartPowerDownEnable=0 i915.enable_dc=0 intel_idle.max_cstate=1`), disabled hardware TSO/GSO/EEE offloading, expanded RX/TX ring buffers to `4096`, and enabled persistent Wake-on-LAN (`wol g`) on `nic0`.
+- **Fail-Safe Watchdog Recovery (Node-02):** Bound Proxmox `watchdog-mux` directly to the Intel PCH hardware watchdog (`WATCHDOG_MODULE=iTCO_wdt`, blacklisting `softdog`) alongside kernel panic auto-reboot (`kernel.panic = 10`, `kernel.panic_on_oops = 1`) to guarantee hardware-level recovery from any lockup.
 - **Container & Host Firewalling (Node-01):** Enforced host-level UFW paired with `ufw-docker` rules, non-root container execution where supported, `600`/`700` credential permissions, and global Docker JSON log rotation.
 
 ---

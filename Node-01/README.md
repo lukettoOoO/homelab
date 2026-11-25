@@ -1580,3 +1580,68 @@ sudo docker exec -it gitlab gitlab-ctl status
 - Verified container health (`docker compose ps` and `curl -I http://10.0.0.10:8088` $\rightarrow$ `HTTP/1.1 200 OK`).
 - Confirmed external TLS termination and HTTP/2 delivery through Cloudflare edge network.
 - Negligible system resource impact: container consumes < 15 MB RAM at idle on Haswell i3-4010U, preserving CPU headroom for GitLab CE and Nextcloud.
+
+---
+
+## Nextcloud AIO Storage Tiering & Performance Tuning
+
+**Date: 2026-11-24**
+
+### Diagnosis
+
+- `iostat -dx` during Nextcloud browsing showed 44–93 ms read latency on the 5400 rpm HDD (`sda` / `/srv`), where Docker's `data-root` (`/srv/docker-data`) stored Nextcloud's PostgreSQL database, PHP app code, and Redis alongside user data (`ncdata`).
+- `vg_system` (Kingston SSD) still had 172.8 GB unallocated.
+- Default `vm.swappiness=60` pushed ~1.8 GB of idle pages into swap despite ~4 GB available RAM.
+- `occ setupchecks` flagged Nextcloud `debug` mode enabled in production.
+
+### Actions Taken
+
+1. **Dedicated SSD Volume & Bind Mounts for Hot Nextcloud Volumes:**
+   - Created a 40 GB logical volume `vg_system/lv_fast`, formatted as `ext4` (`noatime`), and mounted at `/mnt/fast` in `/etc/fstab`.
+   - Stopped Nextcloud AIO containers cleanly, synced `nextcloud_aio_database` (1.6 GB), `nextcloud_aio_nextcloud` (~3.0 GB), `nextcloud_aio_redis`, and the thumbnail cache (`appdata_oc8pr5pr7y51/preview`, ~18.7 GB) to `/mnt/fast/`, and bind-mounted them back to their original paths in `/etc/fstab`.
+   - Kept bulky user files (`/srv/docker/nextcloud/ncdata`), Docker images, and GitLab on the HDD; `Node-01/backup/backup.sh` requires no changes because its `rsync` follows the bind mounts.
+   - Added `/etc/systemd/system/docker.service.d/override.conf` with `RequiresMountsFor` for `/mnt/fast` and all four bind mountpoints, then verified automatic mount ordering across a full reboot (`findmnt | grep -E 'nextcloud_aio|nc_preview'`).
+2. **Kernel Swap Tuning:**
+   - Set `vm.swappiness=10` in `/etc/sysctl.d/99-swappiness.conf` and applied via `sysctl --system`.
+3. **Preview Pre-Generation & Production Config:**
+   - Installed `previewgenerator` (`5.15.0`), capped preview dimensions (`preview_max_x/y = 2048`, `jpeg_quality = 60`, `squareSizes = "32 256"`, `widthSizes = "256 384"`, `heightSizes = "256"`), ran a full `occ preview:generate-all` across all 5 users, and added a root cron job (`*/10 * * * *`) running `occ preview:pre-generate`.
+   - Disabled `debug` mode via `occ config:system:set debug --value=false --type=boolean`.
+
+### Storage Tiering & Tuning Architecture
+
+```mermaid
+flowchart LR
+    subgraph SSD["Kingston SSD (vg_system) - Fast Random I/O"]
+        OS["lv_root (46.6 GB) - Debian OS"]
+        SWAP["lv_swap (3.7 GB) - vm.swappiness=10"]
+        subgraph FAST["lv_fast (40 GB) mounted at /mnt/fast (noatime)"]
+            DB["nextcloud_aio_database (1.6 GB)"]
+            APP["nextcloud_aio_nextcloud (~3.0 GB)"]
+            RD["nextcloud_aio_redis"]
+            PREV["nc_preview (~18.7 GB)"]
+        end
+    end
+
+    subgraph HDD["Samsung HDD (vg_data) - /srv Bulk Storage"]
+        V_DB["/srv/docker-data/volumes/nextcloud_aio_database"]
+        V_APP["/srv/docker-data/volumes/nextcloud_aio_nextcloud"]
+        V_RD["/srv/docker-data/volumes/nextcloud_aio_redis"]
+        V_PREV["/srv/docker/nextcloud/ncdata/appdata_.../preview"]
+        NCDATA["ncdata (User Files ~160 GB)"]
+        OTHER["Docker Images & GitLab CE"]
+    end
+
+    subgraph CFG["Host & Nextcloud Tuning"]
+        UNIT["docker.service.d/override.conf (RequiresMountsFor)"]
+        CRON["Root Cron (*/10 min preview:pre-generate)"]
+        DBG["Nextcloud Config (debug=false, preview caps)"]
+    end
+
+    DB -. "bind mount" .-> V_DB
+    APP -. "bind mount" .-> V_APP
+    RD -. "bind mount" .-> V_RD
+    PREV -. "bind mount" .-> V_PREV
+    UNIT --> FAST
+    CRON --> PREV
+    DBG --> APP
+```

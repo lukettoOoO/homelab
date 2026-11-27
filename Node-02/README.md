@@ -588,5 +588,37 @@ Set-DnsClientServerAddress -InterfaceAlias "Ethernet" -ServerAddresses ("10.0.0.
   - Configured **Catppuccin Mocha** color scheme (`Breeze Dark` + `Papirus-Dark` icons), opaque top floating panel (`34px`), Catppuccin Mocha `kitty.conf` (`background_opacity 1.0`), `starship` prompt, `eza` aliases, and **Krohnkite** KWin script (via KDE Store) for Hyprland-style automatic window tiling with gaps.
   - **RDP Smoothness Optimization:** Upgraded Proxmox virtual display from `Default` (Standard VGA, 16 MiB) to **`VirtIO-GPU` (`128 MiB` VRAM)**, disabled the KWin `Blur` effect, and set KDE *Animations* to **`Instant`**, eliminating software-compositing choppiness over H.264 RDP streaming.
 
+**[Date: 27-11-2026]**
+
+### VM 100 (`windows-server-2022-dionysus`) — Role Audit, WSUS Decommissioning, RDP Audio, AD Restructuring & Encrypted SMB3 Share
+
+- **Service Health Audit & WSUS Decommissioning:**
+  - Triaged Server Manager service alerts across AD DS and Local Server: restarted stopped AD **Intersite Messaging (`IsmServ`)** service and changed non-critical **Google Updater** services from `Automatic` to `Manual` startup.
+  - Audited idle memory consumption (~44% of 6 GB RAM) and identified **WSUS** (`SQL Server Windows NT` / WID at ~161 MB, `IIS Worker Process` at ~139 MB, and `WSUS` service at ~35 MB) consuming significant overhead with no other Windows clients to patch on a 70 GB disk.
+  - Removed the **Windows Server Update Services (WSUS)** role and **Windows Internal Database (WID)** feature via Server Manager and rebooted cleanly.
+  - Cleaned up leftover WSUS artifacts in **IIS Manager** by removing the `WSUS Administration` site and `WsusPool` application pool, leaving the `WEB` site clean for future personal website backup / GitLab CI/CD deployment.
+
+- **RDP Audio Redirection Enablement:**
+  - Enabled the **Windows Audio (`Audiosrv`)** service (`Startup type: Automatic`) via `services.msc`.
+  - Enabled **Allow audio and video playback redirection** in Local Group Policy (`gpedit.msc` → *Computer Configuration → Administrative Templates → Windows Components → Remote Desktop Services → Remote Desktop Session Host → Device and Resource Redirection*), applied via `gpupdate /force`.
+  - Verified `fDisableAudio = 0` under `HKLM\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp` and confirmed **Remote Audio** playback over macOS *Windows App* RDP.
+
+- **DNS Configuration (`0.0.10.in-addr.arpa`):**
+  - Verified DNS Forwarders are properly ordered (`10.0.0.1` MikroTik gateway primary, `1.1.1.1` fallback).
+  - Created an AD-integrated IPv4 **Reverse Lookup Zone** (`0.0.10.in-addr.arpa`) with secure dynamic updates enabled for `10.0.0.0/24` PTR resolution.
+
+- **Active Directory OU Restructuring (`Olympus`):**
+  - Removed legacy tutorial OUs (`Seinfeld` and sub-OUs) after unchecking *Protect object from accidental deletion* via **View → Advanced Features** in ADUC.
+  - Built a production-style `Olympus` OU hierarchy under `ad.home.olympus-luca.online`:
+    - `Olympus/Users` — migrated primary user account `Luca` into this OU.
+    - `Olympus/Groups` — created Global Security Groups `Olympus-Admins` and `Olympus-SMB-Users` (with `Luca` added as member).
+    - `Olympus/ServiceAccounts` — provisioned dedicated read-only service account `svc-ldap` (*User cannot change password* + *Password never expires*) for upcoming Proxmox/GitLab/Nextcloud LDAP integration.
+
+- **File & Storage Services — Encrypted SMB3 Share:**
+  - Provisioned a new SMB Share (`\\10.0.0.30\Olympus` mapped to `C:\Shares\Olympus`) via Server Manager (*SMB Share - Quick*).
+  - Enabled **Access-Based Enumeration** and **Encrypt data access** (enforcing SMB3 transport encryption), and assigned `Modify` NTFS permissions to `Olympus-SMB-Users`.
+  - Verified end-to-end Active Directory authentication by mounting `smb://10.0.0.30/Olympus` from macOS Finder (`DIONYSUS\luca`).
+
+
 
 
